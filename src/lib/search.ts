@@ -35,29 +35,34 @@ export function parseQuery(raw: string): ParsedQuery {
   return { gradeWords, wantsShabbat, wantsChol, maxDuration, noEquipment, topicWords };
 }
 
+function wordMatches(haystack: string, word: string): boolean {
+  if (haystack.includes(word)) return true;
+  // Hebrew has rich morphology (אמונה/אמוני/אמונית) — fall back to a shared root prefix
+  if (word.length >= 4) {
+    const root = word.slice(0, 4);
+    if (haystack.includes(root)) return true;
+  }
+  return false;
+}
+
 function scoreActivity(a: Activity, q: ParsedQuery): number {
   let score = 0;
-  const haystack = [
-    a.title,
-    a.description,
-    ...a.subtopics,
-    ...a.tags,
-    ...a.values,
-    a.ageLabel,
-  ].join(' ');
+  const strongHaystack = [a.title, ...a.tags, ...a.values].join(' ');
+  const weakHaystack = [a.description, ...a.subtopics, a.ageLabel].join(' ');
 
   for (const word of q.topicWords) {
-    if (haystack.includes(word)) score += 2;
+    if (wordMatches(strongHaystack, word)) score += 3;
+    else if (wordMatches(weakHaystack, word)) score += 1;
   }
 
-  if (q.wantsShabbat && (a.shabbat === 'שבת' || a.shabbat === 'שניהם')) score += 2;
-  if (q.wantsChol && (a.shabbat === 'חול' || a.shabbat === 'שניהם')) score += 1;
+  if (q.wantsShabbat && (a.shabbat === 'שבת' || a.shabbat === 'שניהם')) score += 3;
+  if (q.wantsChol && (a.shabbat === 'חול' || a.shabbat === 'שניהם')) score += 3;
   if (q.wantsShabbat && a.shabbat === 'חול') score -= 3;
 
-  if (q.maxDuration && a.duration <= q.maxDuration) score += 2;
+  if (q.maxDuration && a.duration <= q.maxDuration) score += 3;
   if (q.maxDuration && a.duration > q.maxDuration + 10) score -= 2;
 
-  if (q.noEquipment && a.equipment.length === 0) score += 2;
+  if (q.noEquipment && a.equipment.length === 0) score += 3;
 
   for (const g of q.gradeWords) {
     if (a.ageLabel.includes(g)) score += 3;
@@ -66,8 +71,17 @@ function scoreActivity(a: Activity, q: ParsedQuery): number {
   return score;
 }
 
+function hasNoSignal(q: ParsedQuery): boolean {
+  return q.topicWords.length === 0 && !q.wantsShabbat && !q.wantsChol && q.maxDuration === null && !q.noEquipment && q.gradeWords.length === 0;
+}
+
 export function searchActivities(raw: string, limit = 6): Activity[] {
   const q = parseQuery(raw);
+
+  if (hasNoSignal(q)) {
+    return [...activities].sort((a, b) => b.rating - a.rating).slice(0, limit);
+  }
+
   const scored = activities
     .map((a) => ({ activity: a, score: scoreActivity(a, q) }))
     .filter(({ score }) => score >= 3)
