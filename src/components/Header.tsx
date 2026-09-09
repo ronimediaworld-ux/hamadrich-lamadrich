@@ -10,12 +10,12 @@ const navLinks = [
   { to: '/category/methods', label: 'מתודות' },
   { to: '/category/readings', label: 'קטעי קריאה' },
   { to: '/category/staff-study', label: 'לימוד צוות' },
+  { to: '/category/tools', label: 'סיטואציות בהדרכה' },
   { to: '/chuparim', label: 'צ׳ופרים' },
   { to: '/ai', label: 'עוזר AI', flame: true },
 ];
 
 const secondaryLinks = [
-  { to: '/category/tools', label: 'סיטואציות בהדרכה' },
   { to: '/about', label: 'אודות' },
   { to: '/contact', label: 'יצירת קשר' },
 ];

@@ -39,7 +39,7 @@ export const categories: CategoryDef[] = [
   {
     slug: 'tools',
     label: 'סיטואציות בהדרכה',
-    description: 'תשובות מהירות לרגעים לא פשוטים בהדרכה',
+    description: 'מצבים אמיתיים שקורים בהדרכה בתנועת נוער — עם חניכים, הורים ובצוות — ואיך להתמודד איתם',
     color: 'sky',
     icon: 'toolbox',
   },
