@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { chuparim } from '../data/chuparim';
 import { TeenAvatar } from '../components/TeenAvatar';
 import { Reveal } from '../components/Reveal';
@@ -22,7 +23,7 @@ export function Chuparim() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 18 }}>
         {chuparim.map((c, i) => (
           <Reveal key={c.id} delay={(i % 6) * 40}>
-            <div className="card" style={{ padding: 20 }}>
+            <Link to={`/chupar/${c.id}`} className="card" style={{ display: 'block', padding: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                 <div style={{ flex: 'none', width: 44, height: 44, borderRadius: '50%', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   <TeenAvatar character={c.character} size={32} />
@@ -39,7 +40,7 @@ export function Chuparim() {
               <div style={{ padding: '10px 14px', borderRadius: 10, background: 'var(--yellow-tint)', fontSize: 13 }}>
                 <b>טיפ: </b>{c.tip}
               </div>
-            </div>
+            </Link>
           </Reveal>
         ))}
       </div>

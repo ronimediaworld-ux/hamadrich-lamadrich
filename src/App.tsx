@@ -9,6 +9,7 @@ import { ActivityDetail } from './pages/ActivityDetail';
 import { ReadingDetail } from './pages/ReadingDetail';
 import { AIAssistant } from './pages/AIAssistant';
 import { Chuparim } from './pages/Chuparim';
+import { ChuparDetail } from './pages/ChuparDetail';
 import { SearchResults } from './pages/SearchResults';
 import { Favorites } from './pages/Favorites';
 import { About } from './pages/About';
@@ -38,6 +39,7 @@ export default function App() {
           <Route path="/reading/:id" element={<ReadingDetail />} />
           <Route path="/ai" element={<AIAssistant />} />
           <Route path="/chuparim" element={<Chuparim />} />
+          <Route path="/chupar/:id" element={<ChuparDetail />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/about" element={<About />} />
