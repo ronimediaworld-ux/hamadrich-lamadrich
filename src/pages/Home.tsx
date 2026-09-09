@@ -170,8 +170,8 @@ export function Home() {
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.1)', fontSize: 13, fontWeight: 700, marginBottom: 18 }}>
                 עוזר AI
               </div>
-              <h2 style={{ fontSize: 30, fontWeight: 800, marginBottom: 12 }}>לא צ׳אט כללי — עורך תוכן שמכיר את המאגר</h2>
-              <p style={{ fontSize: 14.5, color: '#CBBFA6', marginBottom: 22, maxWidth: '42ch' }}>קודם מחפש במאגר הקיים, מציע את הכי מתאים, ורק כשבאמת אין — עוזר ליצור פעולה חדשה.</p>
+              <h2 style={{ fontSize: 30, fontWeight: 800, marginBottom: 12 }}>שאלו אותו כל דבר — הוא מכיר את המאגר וגם את ההדרכה</h2>
+              <p style={{ fontSize: 14.5, color: '#CBBFA6', marginBottom: 22, maxWidth: '42ch' }}>קודם מחפש במאגר הקיים, ואז עונה על כל שאלה — עצה בהדרכה, רעיון לצ׳ופר, או פעולה חדשה לגמרי.</p>
               <Link to="/ai" className="btn btn-flame">פתחו את הצ׳אט</Link>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

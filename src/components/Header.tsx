@@ -14,6 +14,12 @@ const navLinks = [
   { to: '/ai', label: 'עוזר AI', flame: true },
 ];
 
+const secondaryLinks = [
+  { to: '/category/tools', label: 'סיטואציות בהדרכה' },
+  { to: '/about', label: 'אודות' },
+  { to: '/contact', label: 'יצירת קשר' },
+];
+
 export function Header() {
   const [q, setQ] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -88,6 +94,15 @@ export function Header() {
             key={l.to}
             to={l.to}
             style={{ padding: '11px 4px', fontSize: 15.5, fontWeight: 700, borderBottom: '1px solid var(--line)', color: l.flame ? 'var(--flame-ink)' : 'var(--ink)' }}
+          >
+            {l.label}
+          </Link>
+        ))}
+        {secondaryLinks.map((l) => (
+          <Link
+            key={l.to}
+            to={l.to}
+            style={{ padding: '11px 4px', fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}
           >
             {l.label}
           </Link>

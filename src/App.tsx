@@ -11,6 +11,8 @@ import { AIAssistant } from './pages/AIAssistant';
 import { Chuparim } from './pages/Chuparim';
 import { SearchResults } from './pages/SearchResults';
 import { Favorites } from './pages/Favorites';
+import { About } from './pages/About';
+import { Contact } from './pages/Contact';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -38,6 +40,8 @@ export default function App() {
           <Route path="/chuparim" element={<Chuparim />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/favorites" element={<Favorites />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </div>
       {!isChat && <Footer />}

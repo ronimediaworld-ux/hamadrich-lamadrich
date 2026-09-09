@@ -9,11 +9,13 @@ export function Footer() {
           <MascotIcon size={22} />
           המדריך למדריך · רוני גרוס
         </div>
-        <div style={{ display: 'flex', gap: 20, fontSize: 13.5, color: 'var(--ink-soft)' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, fontSize: 13.5, color: 'var(--ink-soft)' }}>
           <Link to="/category/activities">מאגר פעולות</Link>
           <Link to="/chuparim">צ׳ופרים</Link>
           <Link to="/ai">עוזר AI</Link>
           <Link to="/category/tools">סיטואציות בהדרכה</Link>
+          <Link to="/about">אודות</Link>
+          <Link to="/contact">יצירת קשר</Link>
         </div>
       </div>
     </div>

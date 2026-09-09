@@ -47,6 +47,11 @@ const SYSTEM_PROMPT = `אתה "ניצוץ" — עורך תוכן חינוכי ו
   "tip": "string (טיפ מעשי למדריך)"
 }`;
 
+const CHAT_SYSTEM_PROMPT = `אתה "ניצוץ" — עוזר AI חם, בקיא ומועיל באתר "המדריך למדריך", אתר שנועד למדריכות ומדריכים בתנועות נוער.
+אתה יכול לענות על כל שאלה שמדריך/ה עשוי/ה לשאול — לא רק ליצור פעולות: עצות הדרכה, התמודדות עם חניכים, רעיונות לצ'ופרים, שאלות כלליות, או סתם שיחה.
+כשמבקשים ממך במפורש ליצור פעולה חדשה, בנה אותה במבנה מלא: מטרות, פתיחה, משחק/מתודה, דיון, הסבר למדריך, סיכום וטיפ.
+כתוב תמיד בעברית, בטון חם וישיר, בלי להיות מיותר ארוך. אתה חלק מאתר של רוני גרוס עבור מדריכי תנועות נוער בישראל.`;
+
 function activeProvider() {
   if (GEMINI_API_KEY) return 'gemini';
   if (ANTHROPIC_API_KEY) return 'anthropic';
@@ -70,6 +75,51 @@ async function callGemini(query) {
   }
   const data = await response.json();
   return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+}
+
+async function callGeminiChat(messages) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+  const contents = messages.map((m) => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] },
+      contents,
+    }),
+  });
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Gemini API error ${response.status}: ${errText}`);
+  }
+  const data = await response.json();
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+}
+
+async function callAnthropicChat(messages) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: ANTHROPIC_MODEL,
+      max_tokens: 1200,
+      system: CHAT_SYSTEM_PROMPT,
+      messages: messages.map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content })),
+    }),
+  });
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Anthropic API error ${response.status}: ${errText}`);
+  }
+  const data = await response.json();
+  return data?.content?.[0]?.text ?? '';
 }
 
 async function callAnthropic(query) {
@@ -125,6 +175,29 @@ app.post('/api/generate-activity', async (req, res) => {
   } catch (err) {
     console.error('generate-activity failed', err);
     return res.status(500).json({ error: 'generation_failed', message: 'לא הצלחנו ליצור פעולה כרגע. נסו לנסח מחדש את הבקשה.' });
+  }
+});
+
+app.post('/api/chat', async (req, res) => {
+  const { messages } = req.body ?? {};
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return res.status(400).json({ error: 'missing_messages', message: 'לא התקבלה שיחה תקינה.' });
+  }
+
+  const provider = activeProvider();
+  if (!provider) {
+    return res.status(503).json({
+      error: 'no_api_key',
+      message: 'מפתח ה-API של מודל השפה לא הוגדר עדיין בשרת. הגדירו GEMINI_API_KEY (חינמי) או ANTHROPIC_API_KEY בקובץ .env.',
+    });
+  }
+
+  try {
+    const reply = provider === 'gemini' ? await callGeminiChat(messages) : await callAnthropicChat(messages);
+    return res.json({ reply, provider, model: provider === 'gemini' ? GEMINI_MODEL : ANTHROPIC_MODEL });
+  } catch (err) {
+    console.error('chat failed', err);
+    return res.status(500).json({ error: 'chat_failed', message: 'לא הצלחנו לקבל תשובה כרגע. נסו שוב בעוד רגע.' });
   }
 });
 
