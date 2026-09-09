@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "server": "node server/index.js",
+    "server": "PORT=3001 node server/index.js",
     "dev:full": "concurrently -n vite,api -c blue,magenta \"npm:dev\" \"npm:server\"",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "build": "npm run sitemap && tsc -b && vite build",

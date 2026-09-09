@@ -10,7 +10,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 3001;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5-20250929';
@@ -58,22 +58,40 @@ function activeProvider() {
   return null;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Gemini occasionally returns a transient 503 ("high demand") — worth a couple of quick retries
+// before giving up, since the exact same request usually succeeds seconds later.
+async function fetchGeminiWithRetry(url, body) {
+  const delays = [800, 2000];
+  let lastErrText = '';
+  for (let attempt = 0; attempt <= delays.length; attempt++) {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (response.ok) return response.json();
+
+    lastErrText = await response.text();
+    const retryable = response.status === 503 || response.status === 429;
+    if (!retryable || attempt === delays.length) {
+      throw new Error(`Gemini API error ${response.status}: ${lastErrText}`);
+    }
+    await sleep(delays[attempt]);
+  }
+  throw new Error(`Gemini API error: ${lastErrText}`);
+}
+
 async function callGemini(query) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-      contents: [{ role: 'user', parts: [{ text: `בקשת המדריך/ה: ${query}` }] }],
-      generationConfig: { responseMimeType: 'application/json' },
-    }),
+  const data = await fetchGeminiWithRetry(url, {
+    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+    contents: [{ role: 'user', parts: [{ text: `בקשת המדריך/ה: ${query}` }] }],
+    generationConfig: { responseMimeType: 'application/json' },
   });
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Gemini API error ${response.status}: ${errText}`);
-  }
-  const data = await response.json();
   return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
 }
 
@@ -83,19 +101,10 @@ async function callGeminiChat(messages) {
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
   }));
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] },
-      contents,
-    }),
+  const data = await fetchGeminiWithRetry(url, {
+    systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] },
+    contents,
   });
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Gemini API error ${response.status}: ${errText}`);
-  }
-  const data = await response.json();
   return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
 }
 

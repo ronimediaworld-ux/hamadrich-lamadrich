@@ -22,6 +22,7 @@ export function AIAssistant() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const sendingRef = useRef(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -30,7 +31,8 @@ export function AIAssistant() {
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     const text = input.trim();
-    if (!text || loading) return;
+    if (!text || sendingRef.current) return;
+    sendingRef.current = true;
 
     const userEntry: ChatEntry = { role: 'user', content: text };
     const matches = searchActivities(text, 3);
@@ -46,13 +48,16 @@ export function AIAssistant() {
       setEntries((prev) => [...prev, { role: 'assistant', content: 'לפני הכל, מצאתי כמה פעולות מהמאגר שרלוונטיות:', matches }]);
     }
 
-    const result = await sendChatMessage(historyForApi);
-    setLoading(false);
-
-    if (result.ok) {
-      setEntries((prev) => [...prev, { role: 'assistant', content: result.reply }]);
-    } else {
-      setEntries((prev) => [...prev, { role: 'assistant', content: result.message, isError: true }]);
+    try {
+      const result = await sendChatMessage(historyForApi);
+      if (result.ok) {
+        setEntries((prev) => [...prev, { role: 'assistant', content: result.reply }]);
+      } else {
+        setEntries((prev) => [...prev, { role: 'assistant', content: result.message, isError: true }]);
+      }
+    } finally {
+      setLoading(false);
+      sendingRef.current = false;
     }
   }
 
