@@ -3,7 +3,7 @@ import { MascotIcon } from '../components/TeenAvatar';
 import { Reveal } from '../components/Reveal';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
-const SUBMIT_EMAIL = 'rotemgross10@gmail.com';
+const SUBMIT_EMAIL = 'ronimediaworldd@gmail.com';
 
 // כשיהיה טופס Google מוכן — מדביקים כאן את כתובת ה-embed
 // (Google Forms → שליחה → < > → "הטמעת HTML" → מעתיקים רק את ה-src מתוך ה-iframe).
