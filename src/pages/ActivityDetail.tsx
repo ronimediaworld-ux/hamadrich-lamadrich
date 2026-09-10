@@ -201,7 +201,7 @@ export function ActivityDetail() {
                 )}
 
                 <Section label="סיכום" step={++step}>
-                  <p style={{ margin: 0 }}>{activity.summary}</p>
+                  <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{activity.summary}</p>
                 </Section>
               </>
             );
