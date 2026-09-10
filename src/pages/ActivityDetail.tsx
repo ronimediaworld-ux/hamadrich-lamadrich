@@ -141,7 +141,26 @@ export function ActivityDetail() {
             <div style={{ flex: 1, height: 1, background: 'var(--line)' }} />
           </div>
 
-          {(() => {
+          {activity.flow && activity.flow.length > 0 ? (
+            activity.flow.map((s, i) => (
+              <Section key={i} label={s.label} step={i + 1}>
+                {s.body && <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{s.body}</p>}
+                {s.items && s.items.length > 0 && (
+                  <ul style={{ margin: s.body ? '8px 0 0' : 0, paddingInlineStart: 18 }}>
+                    {s.items.map((q, j) => <li key={j} style={{ marginBottom: 6 }}>{q}</li>)}
+                  </ul>
+                )}
+                {s.link && (
+                  <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px', marginTop: s.body || s.items ? 10 : 0 }}>
+                    <a href={s.link.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, color: 'var(--flame-ink)', textDecoration: 'underline' }}>
+                      {s.link.title} ↗
+                    </a>
+                  </div>
+                )}
+                {s.note && <p style={{ margin: '8px 0 0', fontSize: 13.5, color: 'var(--ink-faint)' }}>{s.note}</p>}
+              </Section>
+            ))
+          ) : (() => {
             let step = 0;
             return (
               <>

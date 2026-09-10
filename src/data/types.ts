@@ -17,6 +17,14 @@ export interface Appendix {
   content: string;
 }
 
+export interface FlowStep {
+  label: string;
+  body?: string;
+  items?: string[];
+  link?: SourceLink;
+  note?: string;
+}
+
 export interface Activity {
   id: string;
   title: string;
@@ -45,6 +53,7 @@ export interface Activity {
   discussion: string[];
   reading?: { label: string; text: string };
   sourceLink?: SourceLink;
+  flow?: FlowStep[];
   guideNotes: string;
   questions?: string[];
   summary: string;
