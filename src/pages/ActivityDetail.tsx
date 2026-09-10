@@ -159,12 +159,6 @@ export function ActivityDetail() {
                   <p style={{ margin: 0 }}>{activity.method}</p>
                 </Section>
 
-                <Section label="דיון" step={++step}>
-                  <ul style={{ margin: 0, paddingInlineStart: 18 }}>
-                    {activity.discussion.map((q, i) => <li key={i} style={{ marginBottom: 6 }}>{q}</li>)}
-                  </ul>
-                </Section>
-
                 {activity.reading && (
                   <Section label="קטע קריאה" step={++step}>
                     <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px' }}>
@@ -175,10 +169,10 @@ export function ActivityDetail() {
                 )}
 
                 {activity.sourceLink && (
-                  <Section label="קטע קריאה — מקור חיצוני" step={++step}>
+                  <Section label="מקור חיצוני — צפייה/קריאה" step={++step}>
                     <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px' }}>
                       <p style={{ margin: '0 0 8px', fontSize: 14 }}>
-                        הקטע לא מובא כאן מטעמי זכויות יוצרים. יש להדפיס אותו מראש מהמקור:
+                        התוכן לא מובא כאן מטעמי זכויות יוצרים. יש לפתוח/להדפיס אותו מהמקור:
                       </p>
                       <a
                         href={activity.sourceLink.url}
@@ -191,6 +185,12 @@ export function ActivityDetail() {
                     </div>
                   </Section>
                 )}
+
+                <Section label="דיון" step={++step}>
+                  <ul style={{ margin: 0, paddingInlineStart: 18 }}>
+                    {activity.discussion.map((q, i) => <li key={i} style={{ marginBottom: 6 }}>{q}</li>)}
+                  </ul>
+                </Section>
 
                 {activity.questions && (
                   <Section label="שאלות נוספות" step={++step}>
