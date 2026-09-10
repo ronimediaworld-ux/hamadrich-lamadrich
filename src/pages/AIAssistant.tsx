@@ -1,10 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MascotIcon } from '../components/TeenAvatar';
 import { ActivityCard } from '../components/ActivityCard';
 import { searchActivities } from '../lib/search';
 import { sendChatMessage, type ChatMessage } from '../lib/aiChat';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { getActivity } from '../data/activities';
+import {
+  listConversations,
+  getConversation,
+  saveConversation,
+  deleteConversation,
+  newConversationId,
+  relativeTime,
+  type Conversation,
+  type StoredEntry,
+} from '../lib/chatHistory';
 import type { Activity } from '../data/types';
 
 interface ChatEntry {
@@ -16,17 +27,71 @@ interface ChatEntry {
 
 const suggestions = ['פעולה על חברות לכיתה ז׳', 'איך מתמודדים עם חניך שמפריע?', 'רעיון לצ׳ופר זול וטוב', 'משהו בלי ציוד ל-20 דקות'];
 
+function toStored(entries: ChatEntry[]): StoredEntry[] {
+  return entries.map((e) => ({
+    role: e.role,
+    content: e.content,
+    isError: e.isError,
+    matchIds: e.matches?.map((m) => m.id),
+  }));
+}
+
+function fromStored(entries: StoredEntry[]): ChatEntry[] {
+  return entries.map((e) => ({
+    role: e.role,
+    content: e.content,
+    isError: e.isError,
+    matches: e.matchIds?.map((id) => getActivity(id)).filter((a): a is Activity => Boolean(a)),
+  }));
+}
+
 export function AIAssistant() {
   useDocumentTitle('עוזר AI');
   const [entries, setEntries] = useState<ChatEntry[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [convId, setConvId] = useState<string>(() => newConversationId());
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
   const sendingRef = useRef(false);
 
   useEffect(() => {
+    setConversations(listConversations());
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [entries, loading]);
+
+  function persist(next: ChatEntry[]) {
+    if (next.length === 0) return;
+    saveConversation(convId, toStored(next));
+    setConversations(listConversations());
+  }
+
+  function startNewChat() {
+    setEntries([]);
+    setConvId(newConversationId());
+    setInput('');
+    setHistoryOpen(false);
+  }
+
+  function openChat(id: string) {
+    const c = getConversation(id);
+    if (!c) return;
+    setEntries(fromStored(c.entries));
+    setConvId(c.id);
+    setHistoryOpen(false);
+  }
+
+  function removeChat(id: string, e: React.MouseEvent) {
+    e.stopPropagation();
+    deleteConversation(id);
+    const rest = listConversations();
+    setConversations(rest);
+    if (id === convId) startNewChat();
+  }
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
@@ -40,36 +105,86 @@ export function AIAssistant() {
       .filter((en) => !en.isError)
       .map((en) => ({ role: en.role, content: en.content }));
 
-    setEntries((prev) => [...prev, userEntry]);
+    let working: ChatEntry[] = [...entries, userEntry];
+    if (matches.length > 0) {
+      working = [...working, { role: 'assistant', content: 'לפני הכל, מצאתי כמה פעולות מהמאגר שרלוונטיות:', matches }];
+    }
+    setEntries(working);
     setInput('');
     setLoading(true);
-
-    if (matches.length > 0) {
-      setEntries((prev) => [...prev, { role: 'assistant', content: 'לפני הכל, מצאתי כמה פעולות מהמאגר שרלוונטיות:', matches }]);
-    }
+    persist(working);
 
     try {
       const result = await sendChatMessage(historyForApi);
-      if (result.ok) {
-        setEntries((prev) => [...prev, { role: 'assistant', content: result.reply }]);
-      } else {
-        setEntries((prev) => [...prev, { role: 'assistant', content: result.message, isError: true }]);
-      }
+      const replyEntry: ChatEntry = result.ok
+        ? { role: 'assistant', content: result.reply }
+        : { role: 'assistant', content: result.message, isError: true };
+      const done = [...working, replyEntry];
+      setEntries(done);
+      persist(done);
     } finally {
       setLoading(false);
       sendingRef.current = false;
     }
   }
 
+  const hasHistory = conversations.length > 0;
+  const activeExists = useMemo(() => conversations.some((c) => c.id === convId), [conversations, convId]);
+
   return (
     <div className="wrap" style={{ paddingTop: 24, paddingBottom: 24, maxWidth: 760, display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 68px)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
         <MascotIcon size={40} />
-        <div>
+        <div style={{ flex: 1 }}>
           <h1 style={{ fontSize: 22, fontWeight: 800 }}>עוזר AI — ניצוץ</h1>
           <p style={{ fontSize: 13, color: 'var(--ink-faint)' }}>שאלו אותי כל דבר — הדרכה, רעיונות, צ׳ופרים, או בקשו פעולה חדשה</p>
         </div>
+        <div style={{ display: 'flex', gap: 8, flex: 'none' }}>
+          {hasHistory && (
+            <button
+              className="chip"
+              onClick={() => setHistoryOpen((v) => !v)}
+              style={{ fontSize: 13 }}
+            >
+              היסטוריה ({conversations.length})
+            </button>
+          )}
+          {(entries.length > 0 || activeExists) && (
+            <button className="chip" onClick={startNewChat} style={{ fontSize: 13 }}>שיחה חדשה +</button>
+          )}
+        </div>
       </div>
+
+      {historyOpen && (
+        <div className="card" style={{ padding: 10, marginBottom: 14, maxHeight: 260, overflowY: 'auto' }}>
+          {conversations.length === 0 ? (
+            <p style={{ fontSize: 13, color: 'var(--ink-faint)', padding: 8 }}>אין עדיין שיחות שמורות.</p>
+          ) : (
+            conversations.map((c) => (
+              <div
+                key={c.id}
+                onClick={() => openChat(c.id)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10, padding: '9px 10px', borderRadius: 10, cursor: 'pointer',
+                  background: c.id === convId ? 'var(--flame-tint)' : 'transparent',
+                }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.title}</div>
+                  <div style={{ fontSize: 11.5, color: 'var(--ink-faint)' }}>{relativeTime(c.updatedAt)}</div>
+                </div>
+                <button
+                  onClick={(e) => removeChat(c.id, e)}
+                  aria-label="מחיקת שיחה"
+                  style={{ flex: 'none', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 15, color: 'var(--ink-faint)', padding: 4 }}
+                >
+                  ✕
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      )}
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 16, overflowY: 'auto' }}>
         {entries.length === 0 && (
@@ -128,7 +243,7 @@ export function AIAssistant() {
       </form>
 
       <p style={{ fontSize: 12, color: 'var(--ink-faint)', marginTop: 10, textAlign: 'center' }}>
-        תשובות ה-AI עלולות לטעות — כדאי לבדוק לפני שמעבירים בפועל. <Link to="/category/activities" style={{ textDecoration: 'underline' }}>למאגר הפעולות</Link>
+        השיחות נשמרות במכשיר שלך בלבד. תשובות ה-AI עלולות לטעות — כדאי לבדוק לפני שמעבירים בפועל. <Link to="/category/activities" style={{ textDecoration: 'underline' }}>למאגר הפעולות</Link>
       </p>
     </div>
   );
