@@ -6,6 +6,7 @@ import { situations } from '../data/situations';
 import { methods } from '../data/methods';
 import { readings } from '../data/readings';
 import { staffStudy } from '../data/staffStudy';
+import { quickGames, type QuickGameKind } from '../data/quickGames';
 import { ActivityCard } from '../components/ActivityCard';
 import { Reveal } from '../components/Reveal';
 import { iconForName } from '../components/Icons';
@@ -33,6 +34,7 @@ export function CategoryPage() {
   const [domainFilter, setDomainFilter] = useState(initialDomain && activityDomains.includes(initialDomain) ? initialDomain : 'הכל');
   const [readingDomainFilter, setReadingDomainFilter] = useState('הכל');
   const [openMethod, setOpenMethod] = useState<string | null>(null);
+  const [quickKind, setQuickKind] = useState<QuickGameKind | 'הכל'>('הכל');
 
   const items = useMemo(() => activitiesByCategory(slug ?? ''), [slug]);
 
@@ -209,6 +211,40 @@ export function CategoryPage() {
               </div>
             </Reveal>
           ))}
+        </div>
+      )}
+
+      {slug === 'games' && (
+        <div style={{ marginBottom: 36 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 800 }}>משחקים מהירים</h2>
+            <span style={{ fontSize: 13, color: 'var(--ink-faint)' }}>{quickGames.length} משחקי חצר ומעגל לשליפה מהירה</span>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+            {(['הכל', 'ריצה', 'מעגל', 'כוח', 'שטח', 'חשיבה', 'ראווה'] as const).map((k) => (
+              <button key={k} className={`chip${quickKind === k ? ' is-active' : ''}`} onClick={() => setQuickKind(k)}>{k}</button>
+            ))}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
+            {quickGames
+              .filter((g) => quickKind === 'הכל' || g.kind === quickKind)
+              .map((g) => (
+                <Reveal key={g.id}>
+                  <div className="card" style={{ padding: 18 }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 6 }}>
+                      <h3 style={{ fontSize: 16, fontWeight: 800 }}>{g.name}</h3>
+                      <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--flame-ink)' }}>{g.kind}</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--ink-faint)', marginBottom: 8 }}>{g.players} · {g.needs}</div>
+                    <p style={{ fontSize: 13.5, color: 'var(--ink-soft)', lineHeight: 1.65, margin: 0 }}>{g.description}</p>
+                  </div>
+                </Reveal>
+              ))}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '32px 0 4px' }}>
+            <h2 style={{ fontSize: 20, fontWeight: 800 }}>משחקים מובנים</h2>
+            <div style={{ flex: 1, height: 1, background: 'var(--line)' }} />
+          </div>
         </div>
       )}
 
