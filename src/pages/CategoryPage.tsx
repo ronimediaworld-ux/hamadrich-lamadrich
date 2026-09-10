@@ -221,7 +221,7 @@ export function CategoryPage() {
             <span style={{ fontSize: 13, color: 'var(--ink-faint)' }}>{quickGames.length} משחקי חצר ומעגל לשליפה מהירה</span>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-            {(['הכל', 'ריצה', 'מעגל', 'כוח', 'שטח', 'חשיבה', 'ראווה'] as const).map((k) => (
+            {(['הכל', 'ריצה', 'תופסת', 'מעגל', 'כוח', 'כדור', 'שטח', 'חשיבה', 'הצגה', 'קבוצתי', 'רגיעה', 'יצירה', 'ראווה'] as const).map((k) => (
               <button key={k} className={`chip${quickKind === k ? ' is-active' : ''}`} onClick={() => setQuickKind(k)}>{k}</button>
             ))}
           </div>
