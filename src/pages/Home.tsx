@@ -96,7 +96,7 @@ export function Home() {
           </div>
         </Reveal>
         <Reveal delay={40}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0,1fr))', gap: 16 }}>
+          <div className="home-cats" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0,1fr))', gap: 16 }}>
             {categories.map((c) => (
               <Link
                 key={c.slug}
@@ -140,7 +140,7 @@ export function Home() {
       {/* PARSHA MODULE */}
       <div className="wrap" style={{ paddingBottom: 50 }}>
         <Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 0, background: 'var(--magenta-tint)', border: '1px solid var(--magenta)', borderRadius: 18, overflow: 'hidden' }}>
+          <div className="home-split" style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 0, background: 'var(--magenta-tint)', border: '1px solid var(--magenta)', borderRadius: 18, overflow: 'hidden' }}>
             <div style={{ padding: '34px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--magenta-ink)' }}>השבוע בפרשת השבוע</span>
               <h3 style={{ fontSize: 26, fontWeight: 800 }}>פרשת נח</h3>
@@ -165,7 +165,7 @@ export function Home() {
       {/* AI TEASER */}
       <div className="wrap" style={{ paddingBottom: 50 }}>
         <Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 40, alignItems: 'center', background: '#241C11', color: '#F3ECDD', borderRadius: 24, padding: 46 }}>
+          <div className="home-split home-ai" style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 40, alignItems: 'center', background: '#241C11', color: '#F3ECDD', borderRadius: 24, padding: 46 }}>
             <div>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.1)', fontSize: 13, fontWeight: 700, marginBottom: 18 }}>
                 עוזר AI
@@ -202,7 +202,7 @@ export function Home() {
       {/* CTA */}
       <div className="wrap" style={{ paddingBottom: 70 }}>
         <Reveal>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, background: 'linear-gradient(135deg, var(--flame), var(--magenta))', border: '2px solid var(--ink)', borderRadius: 24, padding: '36px 44px', color: '#FFF6EC' }}>
+          <div className="cta-banner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, background: 'linear-gradient(135deg, var(--flame), var(--magenta))', border: '2px solid var(--ink)', borderRadius: 24, color: '#FFF6EC' }}>
             <div>
               <h3 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6 }}>יש לכם פעולה מטורפת?</h3>
               <p style={{ fontSize: 14.5, opacity: 0.92 }}>שתפו את כל המדריכים — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p>

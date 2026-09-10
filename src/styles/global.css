@@ -184,14 +184,35 @@ button {
 
 /* ---- header responsive ---- */
 .header-nav { display: flex; align-items: center; gap: 22px; }
-.header-search-wrap { flex: 0 1 260px; }
+.header-search-wrap { display: flex; align-items: center; gap: 6px; flex: 0 1 260px; }
 .header-burger { display: none; }
 .header-mobile-panel { display: none; }
 @media (max-width: 900px) {
-  .header-nav { display: none; }
-  .header-search-wrap { display: none; }
+  .header-nav { display: none !important; }
+  .header-search-wrap { display: none !important; }
   .header-burger { display: flex; }
   .header-mobile-panel.is-open { display: flex; }
+}
+
+/* ---- CTA banner responsive ---- */
+.cta-banner { padding: 36px 44px; }
+@media (max-width: 620px) {
+  .cta-banner {
+    flex-direction: column;
+    align-items: flex-start !important;
+    padding: 28px 22px;
+  }
+  .cta-banner .btn { width: 100%; justify-content: center; }
+}
+
+/* ---- home page responsive ---- */
+@media (max-width: 720px) {
+  .home-cats { grid-template-columns: 1fr !important; }
+  .home-split { grid-template-columns: 1fr !important; gap: 20px !important; }
+  .home-split > div { padding: 26px 22px !important; }
+  .home-split .btn { align-self: stretch !important; justify-content: center; }
+  .home-ai { padding: 26px 22px !important; }
+  .home-ai > div { padding: 0 !important; }
 }
 
 /* ---- print ---- */

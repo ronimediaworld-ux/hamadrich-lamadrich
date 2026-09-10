@@ -52,7 +52,7 @@ export function Header() {
           ))}
         </nav>
 
-        <form onSubmit={onSearch} className="header-search-wrap" style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--bg)', border: '2px solid var(--ink)', borderRadius: 999, padding: '6px 6px 6px 14px' }}>
+        <form onSubmit={onSearch} className="header-search-wrap" style={{ background: 'var(--bg)', border: '2px solid var(--ink)', borderRadius: 999, padding: '6px 6px 6px 14px' }}>
           <SearchIcon size={16} color="var(--ink-soft)" />
           <input
             value={q}
