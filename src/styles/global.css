@@ -220,6 +220,18 @@ button {
   .detail-hero { grid-template-columns: 1fr !important; gap: 22px !important; }
 }
 
+/* ---- "אני ניצוץ" -> AI chat link ---- */
+.nitzotz-cta {
+  cursor: pointer;
+  transition: transform .14s, box-shadow .14s, background .14s;
+}
+.nitzotz-cta:hover {
+  transform: translateY(-2px);
+  background: var(--flame-tint);
+  box-shadow: 0 10px 20px -12px #241c1155;
+}
+.nitzotz-cta:active { transform: scale(.97); }
+
 /* ---- print ---- */
 @media print {
   .no-print { display: none !important; }

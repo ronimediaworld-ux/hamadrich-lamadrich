@@ -68,10 +68,16 @@ export function Home() {
         </Reveal>
 
         <Reveal delay={170}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, background: 'var(--paper)', border: '2px solid var(--ink)', borderRadius: 999, padding: '6px 18px 6px 8px', marginTop: 22 }}>
+          <Link
+            to="/ai"
+            className="nitzotz-cta"
+            aria-label="פתיחת הצ׳אט עם ניצוץ, עוזר ה-AI"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 12, background: 'var(--paper)', border: '2px solid var(--ink)', borderRadius: 999, padding: '7px 16px 7px 8px', marginTop: 22 }}
+          >
             <MascotIcon size={32} />
-            <span style={{ fontSize: 13.5, fontWeight: 700 }}>היי, אני ניצוץ — אלווה אתכם למצוא את הפעולה הנכונה</span>
-          </div>
+            <span style={{ fontSize: 13.5, fontWeight: 700 }}>היי, אני ניצוץ — לחצו כדי לשוחח איתי בצ׳אט</span>
+            <span aria-hidden="true" style={{ fontWeight: 800, color: 'var(--flame-ink)' }}>←</span>
+          </Link>
         </Reveal>
 
         <Reveal delay={200}>
