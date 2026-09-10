@@ -16,6 +16,7 @@ const navLinks = [
 ];
 
 const secondaryLinks = [
+  { to: '/submit', label: 'שליחת פעולה' },
   { to: '/about', label: 'אודות' },
   { to: '/contact', label: 'יצירת קשר' },
 ];

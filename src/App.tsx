@@ -14,6 +14,7 @@ import { SearchResults } from './pages/SearchResults';
 import { Favorites } from './pages/Favorites';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
+import { SubmitActivity } from './pages/SubmitActivity';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -44,6 +45,7 @@ export default function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/submit" element={<SubmitActivity />} />
         </Routes>
       </div>
       {!isChat && <Footer />}

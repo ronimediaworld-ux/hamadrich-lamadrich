@@ -62,27 +62,44 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Gemini occasionally returns a transient 503 ("high demand") — worth a couple of quick retries
-// before giving up, since the exact same request usually succeeds seconds later.
+async function fetchWithTimeout(url, options, ms) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Gemini occasionally returns a transient 503 ("high demand"), hangs, or drops the
+// connection — worth a couple of quick retries before giving up, since the exact
+// same request usually succeeds seconds later.
 async function fetchGeminiWithRetry(url, body) {
   const delays = [800, 2000];
-  let lastErrText = '';
+  let lastErr = 'unknown';
   for (let attempt = 0; attempt <= delays.length; attempt++) {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (response.ok) return response.json();
+    try {
+      const response = await fetchWithTimeout(
+        url,
+        { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) },
+        25000,
+      );
+      if (response.ok) return response.json();
 
-    lastErrText = await response.text();
-    const retryable = response.status === 503 || response.status === 429;
-    if (!retryable || attempt === delays.length) {
-      throw new Error(`Gemini API error ${response.status}: ${lastErrText}`);
+      lastErr = `${response.status}: ${await response.text()}`;
+      const retryable = response.status === 503 || response.status === 429 || response.status >= 500;
+      if (!retryable || attempt === delays.length) {
+        throw new Error(`Gemini API error ${lastErr}`);
+      }
+    } catch (err) {
+      // network error / abort / timeout — retry unless we're out of attempts
+      lastErr = err?.message || String(err);
+      if (attempt === delays.length) throw new Error(`Gemini request failed: ${lastErr}`);
     }
     await sleep(delays[attempt]);
   }
-  throw new Error(`Gemini API error: ${lastErrText}`);
+  throw new Error(`Gemini request failed: ${lastErr}`);
 }
 
 async function callGemini(query) {
@@ -202,8 +219,21 @@ app.post('/api/chat', async (req, res) => {
   }
 
   try {
-    const reply = provider === 'gemini' ? await callGeminiChat(messages) : await callAnthropicChat(messages);
-    return res.json({ reply, provider, model: provider === 'gemini' ? GEMINI_MODEL : ANTHROPIC_MODEL });
+    let reply;
+    let usedProvider = provider;
+    try {
+      reply = provider === 'gemini' ? await callGeminiChat(messages) : await callAnthropicChat(messages);
+    } catch (primaryErr) {
+      // If the primary provider failed and the other one is configured, fall back to it.
+      if (provider === 'gemini' && ANTHROPIC_API_KEY) {
+        console.error('gemini chat failed, falling back to anthropic', primaryErr?.message);
+        reply = await callAnthropicChat(messages);
+        usedProvider = 'anthropic';
+      } else {
+        throw primaryErr;
+      }
+    }
+    return res.json({ reply, provider: usedProvider, model: usedProvider === 'gemini' ? GEMINI_MODEL : ANTHROPIC_MODEL });
   } catch (err) {
     console.error('chat failed', err);
     return res.status(500).json({ error: 'chat_failed', message: 'לא הצלחנו לקבל תשובה כרגע. נסו שוב בעוד רגע.' });

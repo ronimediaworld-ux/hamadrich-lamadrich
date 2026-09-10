@@ -205,9 +205,9 @@ export function Home() {
           <div className="cta-banner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, background: 'linear-gradient(135deg, var(--flame), var(--magenta))', border: '2px solid var(--ink)', borderRadius: 24, color: '#FFF6EC' }}>
             <div>
               <h3 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6 }}>יש לכם פעולה מטורפת?</h3>
-              <p style={{ fontSize: 14.5, opacity: 0.92 }}>שתפו את כל המדריכים — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p>
+              <p style={{ fontSize: 14.5, opacity: 0.92 }}>שתפו אותה, אפשר גם לצרף קובץ — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p>
             </div>
-            <Link to="/ai" className="btn" style={{ background: '#FFF6EC', color: '#241C11', flex: 'none' }}>הצעת תוכן דרך עוזר ה-AI</Link>
+            <Link to="/submit" className="btn" style={{ background: '#FFF6EC', color: '#241C11', flex: 'none' }}>שליחת פעולה</Link>
           </div>
         </Reveal>
       </div>
