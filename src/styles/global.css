@@ -215,6 +215,11 @@ button {
   .home-ai > div { padding: 0 !important; }
 }
 
+/* ---- detail page hero responsive ---- */
+@media (max-width: 720px) {
+  .detail-hero { grid-template-columns: 1fr !important; gap: 22px !important; }
+}
+
 /* ---- print ---- */
 @media print {
   .no-print { display: none !important; }

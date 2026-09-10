@@ -69,7 +69,7 @@ export function ActivityDetail() {
       </div>
 
       <Reveal>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 40, marginBottom: 30 }}>
+        <div className="detail-hero" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 40, marginBottom: 30 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
               <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'var(--bg)', border: '1px solid var(--line)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -170,6 +170,24 @@ export function ActivityDetail() {
                     <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px' }}>
                       <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink-faint)', marginBottom: 6 }}>{activity.reading.label}</div>
                       <div style={{ fontStyle: 'italic' }}>{activity.reading.text}</div>
+                    </div>
+                  </Section>
+                )}
+
+                {activity.sourceLink && (
+                  <Section label="קטע קריאה — מקור חיצוני" step={++step}>
+                    <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px' }}>
+                      <p style={{ margin: '0 0 8px', fontSize: 14 }}>
+                        הקטע לא מובא כאן מטעמי זכויות יוצרים. יש להדפיס אותו מראש מהמקור:
+                      </p>
+                      <a
+                        href={activity.sourceLink.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontWeight: 700, color: 'var(--flame-ink)', textDecoration: 'underline' }}
+                      >
+                        {activity.sourceLink.title} ↗
+                      </a>
                     </div>
                   </Section>
                 )}

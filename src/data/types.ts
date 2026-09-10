@@ -44,6 +44,7 @@ export interface Activity {
   method: string;
   discussion: string[];
   reading?: { label: string; text: string };
+  sourceLink?: SourceLink;
   guideNotes: string;
   questions?: string[];
   summary: string;
