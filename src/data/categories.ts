@@ -56,7 +56,7 @@ export function getCategory(slug: string): CategoryDef | undefined {
   return categories.find((c) => c.slug === slug);
 }
 
-const domainTags = ['ערכים', 'אמונה', 'פרשת שבוע'] as const;
+const domainTags = ['פרשת שבוע', 'אמונה', 'ערכים'] as const;
 
 export function getActivityDomain(tags: string[]): string {
   return domainTags.find((d) => tags.includes(d)) ?? 'כללי';
