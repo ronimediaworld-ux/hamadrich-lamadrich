@@ -46,6 +46,8 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/submit" element={<SubmitActivity />} />
+          {/* כל כתובת לא מוכרת (וגם פתיחה של האתר בתוך תצוגה מוטמעת) נוחתת על מסך הבית */}
+          <Route path="*" element={<Home />} />
         </Routes>
       </div>
       {!isChat && <Footer />}
