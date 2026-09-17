@@ -1,6 +1,9 @@
 import { Link, useParams } from 'react-router-dom';
 import { getReading } from '../data/readings';
 import { Reveal } from '../components/Reveal';
+import { CopyButton } from '../components/CopyButton';
+import { PrintButton } from '../components/PrintButton';
+import { readingToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 const domainColor: Record<string, { bg: string; fg: string }> = {
@@ -24,10 +27,6 @@ export function ReadingDetail() {
   }
 
   const colors = domainColor[reading.domain];
-
-  function handlePrint() {
-    window.print();
-  }
 
   return (
     <div className="wrap" style={{ paddingTop: 24, paddingBottom: 80 }}>
@@ -54,7 +53,10 @@ export function ReadingDetail() {
             <b>איך משתמשים בזה בפעולה: </b>{reading.howToUse}
           </div>
 
-          <button className="btn btn-flame no-print" onClick={handlePrint}>הורדה להדפסה</button>
+          <div className="no-print" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <PrintButton filename={`${reading.id}.html`} title={reading.title} text={readingToText(reading)} />
+            <CopyButton text={readingToText(reading)} label="העתקת הקטע כטקסט" copiedLabel="✓ הועתק" />
+          </div>
         </div>
       </Reveal>
     </div>

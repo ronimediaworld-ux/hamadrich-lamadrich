@@ -1,8 +1,10 @@
 import { Link, useParams } from 'react-router-dom';
 import { getChupar } from '../data/chuparim';
 import { TeenAvatar } from '../components/TeenAvatar';
-import { DownloadIcon } from '../components/Icons';
 import { Reveal } from '../components/Reveal';
+import { CopyButton } from '../components/CopyButton';
+import { PrintButton } from '../components/PrintButton';
+import { chuparToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 export function ChuparDetail() {
@@ -17,10 +19,6 @@ export function ChuparDetail() {
         <Link to="/chuparim" className="btn btn-outline" style={{ marginTop: 16 }}>חזרה לצ׳ופרים</Link>
       </div>
     );
-  }
-
-  function handlePrint() {
-    window.print();
   }
 
   return (
@@ -55,9 +53,10 @@ export function ChuparDetail() {
             {chupar.tip}
           </div>
 
-          <button className="btn btn-flame no-print" onClick={handlePrint}>
-            <DownloadIcon size={15} />הורדה להדפסה
-          </button>
+          <div className="no-print" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <PrintButton filename={`${chupar.id}.html`} title={chupar.title} text={chuparToText(chupar)} />
+            <CopyButton text={chuparToText(chupar)} label="העתקת הצ׳ופר כטקסט" copiedLabel="✓ הועתק" />
+          </div>
         </div>
       </Reveal>
     </div>

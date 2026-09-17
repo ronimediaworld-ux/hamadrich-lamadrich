@@ -6,6 +6,7 @@ import { MascotIcon } from '../components/TeenAvatar';
 import { SearchIcon, ChevronDownIcon } from '../components/Icons';
 import { categories } from '../data/categories';
 import { activities } from '../data/activities';
+import { getCurrentParsha } from '../lib/parsha';
 
 const shortcuts = ['אני צריך פעולה', 'משחק מהיר', 'פרשת השבוע', 'פעולה לשבת', 'משהו בלי ציוד', 'פעולה אמונית', '20 דקות פנויות'];
 
@@ -23,6 +24,11 @@ export function Home() {
   const [q, setQ] = useState('');
   const navigate = useNavigate();
   const recommended = recommendedIds.map((id) => activities.find((a) => a.id === id)!).filter(Boolean);
+
+  const currentParsha = getCurrentParsha();
+  const parshaActivities = currentParsha
+    ? activities.filter((a) => a.categorySlug === 'activities' && a.tags.includes(currentParsha)).slice(0, 6)
+    : [];
 
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -149,20 +155,29 @@ export function Home() {
           <div className="home-split" style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 0, background: 'var(--magenta-tint)', border: '1px solid var(--magenta)', borderRadius: 18, overflow: 'hidden' }}>
             <div style={{ padding: '34px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--magenta-ink)' }}>השבוע בפרשת השבוע</span>
-              <h3 style={{ fontSize: 26, fontWeight: 800 }}>פרשת נח</h3>
+              <h3 style={{ fontSize: 26, fontWeight: 800 }}>{currentParsha ? `פרשת ${currentParsha}` : 'פרשת השבוע'}</h3>
               <p style={{ fontSize: 14, color: 'var(--ink-soft)', maxWidth: '36ch' }}>לא רק ללמד את הפרשה — לקחת ממנה רעיון אחד ולהפוך אותו לפעולה.</p>
-              <Link to="/category/activities?domain=פרשת שבוע" className="btn btn-outline" style={{ marginTop: 8, alignSelf: 'flex-start' }}>לכל פעולות הפרשה</Link>
+              <Link to="/category/activities?domain=פרשת שבוע" className="btn btn-outline" style={{ marginTop: 8, alignSelf: 'flex-start' }}>לכל פעולות פרשת השבוע</Link>
             </div>
-            <div style={{ padding: '34px 36px', display: 'flex', flexWrap: 'wrap', alignContent: 'center', gap: 8 }}>
-              {['אחריות אישית', 'השפעה של הסביבה', 'להיות שונה מהחברה', 'בניית עולם מחדש', 'כוחו של אדם אחד'].map((t) => (
-                <button
-                  key={t}
-                  onClick={() => navigate(`/search?q=${encodeURIComponent(t)}`)}
-                  style={{ padding: '8px 14px', borderRadius: 10, background: 'var(--paper)', border: '1px solid var(--magenta)', fontSize: 13.5, fontWeight: 600, cursor: 'pointer' }}
-                >
-                  {t}
-                </button>
-              ))}
+            <div style={{ padding: '34px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
+              {parshaActivities.length > 0 ? (
+                parshaActivities.map((a) => (
+                  <Link
+                    key={a.id}
+                    to={`/activity/${a.id}`}
+                    style={{ padding: '10px 14px', borderRadius: 10, background: 'var(--paper)', border: '1px solid var(--magenta)', fontSize: 13.5, fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}
+                  >
+                    <span>{a.title}</span>
+                    <span style={{ color: 'var(--ink-faint)', fontWeight: 500, fontSize: 12, whiteSpace: 'nowrap' }}>{a.ageLabel}</span>
+                  </Link>
+                ))
+              ) : (
+                <p style={{ fontSize: 13.5, color: 'var(--ink-soft)' }}>
+                  {currentParsha
+                    ? 'עדיין לא הוספנו פעולות לפרשה הזו — כאן תמצאו את כל פעולות פרשת השבוע, וניצוץ יכול לבנות לכם פעולה חדשה.'
+                    : 'כאן תמצאו את כל פעולות פרשת השבוע, וניצוץ יכול לבנות לכם פעולה חדשה לכל פרשה.'}
+                </p>
+              )}
             </div>
           </div>
         </Reveal>
@@ -188,6 +203,38 @@ export function Home() {
                 <div style={{ fontWeight: 700, marginBottom: 4 }}>מצאתי 2 פעולות מהמאגר שמתאימות:</div>
                 <div style={{ fontSize: 13.5, color: '#5B4E3C' }}>אמונה בזמן קושי · מעגל של תודה</div>
               </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+
+      {/* BUILD YOUR OWN */}
+      <div className="wrap" style={{ paddingBottom: 50 }}>
+        <Reveal>
+          <div
+            className="home-split"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 24,
+              flexWrap: 'wrap',
+              background: 'var(--sky-tint)',
+              border: '1px solid var(--sky)',
+              borderRadius: 18,
+              padding: '28px 34px',
+            }}
+          >
+            <div>
+              <h2 style={{ fontSize: 23, fontWeight: 800, marginBottom: 6 }}>רוצים לבנות פעולה בעצמכם?</h2>
+              <p style={{ fontSize: 14.5, color: 'var(--ink-soft)', maxWidth: '54ch' }}>
+                גם אם בא לכם לנסות לבד — יש לכם כלים. "נדבר ת׳כלס" מראה איך מרכיבים פעולה שלב־שלב,
+                ולצידו מאגר מתודות, קטעי קריאה ומשחקים מוכנים לשלוף.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <Link to="/how-to-build" className="btn btn-flame">נדבר ת׳כלס</Link>
+              <Link to="/category/methods" className="btn btn-outline">מתודות</Link>
             </div>
           </div>
         </Reveal>

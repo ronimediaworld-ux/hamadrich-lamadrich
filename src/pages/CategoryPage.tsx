@@ -9,7 +9,9 @@ import { staffStudy } from '../data/staffStudy';
 import { quickGames, type QuickGameKind } from '../data/quickGames';
 import { ActivityCard } from '../components/ActivityCard';
 import { Reveal } from '../components/Reveal';
+import { CopyButton } from '../components/CopyButton';
 import { iconForName } from '../components/Icons';
+import { situationToText, methodToText, staffStudyToText, quickGameToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 const colorBg: Record<string, string> = {
@@ -96,7 +98,10 @@ export function CategoryPage() {
           {situations.map((s) => (
             <Reveal key={s.id}>
               <div className="card" style={{ padding: 26 }}>
-                <h3 style={{ fontSize: 19, fontWeight: 800, marginBottom: 10 }}>{s.title}</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
+                  <h3 style={{ fontSize: 19, fontWeight: 800 }}>{s.title}</h3>
+                  <CopyButton variant="mini" text={situationToText(s)} />
+                </div>
                 <p style={{ fontSize: 14.5, color: 'var(--ink-soft)', marginBottom: 14 }}>{s.scenario}</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
                   <div>
@@ -128,7 +133,10 @@ export function CategoryPage() {
             return (
               <Reveal key={m.id}>
                 <div className="card" style={{ padding: 22, cursor: 'pointer' }} onClick={() => setOpenMethod(open ? null : m.id)}>
-                  <h3 style={{ fontSize: 17, fontWeight: 800, marginBottom: 6 }}>{m.title}</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 6 }}>
+                    <h3 style={{ fontSize: 17, fontWeight: 800 }}>{m.title}</h3>
+                    <CopyButton variant="mini" text={methodToText(m)} />
+                  </div>
                   <p style={{ fontSize: 13.5, color: 'var(--ink-faint)', marginBottom: open ? 12 : 0 }}>{m.suitableFor}</p>
                   {open && (
                     <div style={{ fontSize: 14, color: 'var(--ink-soft)', lineHeight: 1.7 }}>
@@ -185,7 +193,7 @@ export function CategoryPage() {
             .sort((a, b) => (a.series?.title ?? '').localeCompare(b.series?.title ?? '') || (a.series?.part ?? 0) - (b.series?.part ?? 0))
             .map((s) => (
             <Reveal key={s.id}>
-              <div className="card" style={{ padding: 22 }}>
+              <Link to={`/staff-study/${s.id}`} className="card" style={{ padding: 22, display: 'block' }}>
                 <span style={{ display: 'inline-block', padding: '4px 11px', borderRadius: 999, background: 'var(--magenta-tint)', color: 'var(--magenta-ink)', fontSize: 11.5, fontWeight: 700, marginBottom: 10 }}>
                   {s.topic}
                 </span>
@@ -194,7 +202,10 @@ export function CategoryPage() {
                     מערך: {s.series.title} · מפגש {s.series.part}{s.series.total ? `/${s.series.total}` : ''}
                   </div>
                 )}
-                <h3 style={{ fontSize: 17, fontWeight: 800, marginBottom: 8 }}>{s.title}</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 8 }}>
+                  <h3 style={{ fontSize: 17, fontWeight: 800 }}>{s.title}</h3>
+                  <CopyButton variant="mini" text={staffStudyToText(s)} />
+                </div>
                 <p style={{ fontSize: 13.5, color: 'var(--ink-soft)', marginBottom: 12 }}>{s.description}</p>
                 <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginBottom: 4 }}>{s.duration} דק׳ · {s.forWhom}</div>
                 {s.sourceLink && (
@@ -208,7 +219,7 @@ export function CategoryPage() {
                     מקור: {s.sourceLink.title} ↗
                   </a>
                 )}
-              </div>
+              </Link>
             </Reveal>
           ))}
         </div>
@@ -234,6 +245,7 @@ export function CategoryPage() {
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 6 }}>
                       <h3 style={{ fontSize: 16, fontWeight: 800 }}>{g.name}</h3>
                       <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--flame-ink)' }}>{g.kind}</span>
+                      <CopyButton variant="mini" text={quickGameToText(g)} style={{ marginInlineStart: 'auto' }} />
                     </div>
                     <div style={{ fontSize: 12, color: 'var(--ink-faint)', marginBottom: 8 }}>{g.players} · {g.needs}</div>
                     <p style={{ fontSize: 13.5, color: 'var(--ink-soft)', lineHeight: 1.65, margin: 0 }}>{g.description}</p>

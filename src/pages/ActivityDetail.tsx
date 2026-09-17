@@ -3,9 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 import { getActivity } from '../data/activities';
 import { getCategory, getActivityDomain } from '../data/categories';
 import { TeenAvatar } from '../components/TeenAvatar';
-import { ClockIcon, UsersIcon, StarIcon, MapPinIcon, DownloadIcon, HeartIcon } from '../components/Icons';
+import { ClockIcon, UsersIcon, StarIcon, MapPinIcon, HeartIcon } from '../components/Icons';
 import { Reveal } from '../components/Reveal';
 import { isFavorite, toggleFavorite } from '../lib/favorites';
+import { activityToText } from '../lib/contentText';
+import { CopyButton } from '../components/CopyButton';
+import { PrintButton } from '../components/PrintButton';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 function Section({ label, step, children }: { label: string; step?: number; children: React.ReactNode }) {
@@ -56,10 +59,6 @@ export function ActivityDetail() {
   const category = getCategory(activity.categorySlug);
   const badgeLabel = activity.categorySlug === 'activities' ? getActivityDomain(activity.tags) : category?.label;
 
-  function handlePrint() {
-    window.print();
-  }
-
   return (
     <div className="wrap" style={{ paddingTop: 24, paddingBottom: 80 }}>
       <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5, color: 'var(--ink-faint)', marginBottom: 18 }}>
@@ -104,9 +103,7 @@ export function ActivityDetail() {
               <b>ציוד: </b>{activity.equipment.length ? activity.equipment.join(', ') : 'ללא ציוד מיוחד'}
             </div>
             <div className="no-print" style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-              <button className="btn btn-flame" onClick={handlePrint} style={{ flex: 1, justifyContent: 'center' }}>
-                <DownloadIcon size={15} />הורדה להדפסה
-              </button>
+              <PrintButton filename={`${activity.id}.html`} title={activity.title} text={activityToText(activity)} style={{ flex: 1 }} />
               <button
                 className="btn btn-outline"
                 onClick={handleSave}
@@ -116,6 +113,11 @@ export function ActivityDetail() {
                 {saved ? 'נשמר במועדפים' : 'שמירה למועדפים'}
               </button>
             </div>
+            <CopyButton
+              text={activityToText(activity)}
+              label="העתקת הפעולה כטקסט"
+              copiedLabel="✓ הועתק — אפשר להדביק ולערוך"
+            />
           </div>
         </div>
       </Reveal>
@@ -142,24 +144,35 @@ export function ActivityDetail() {
           </div>
 
           {activity.flow && activity.flow.length > 0 ? (
-            activity.flow.map((s, i) => (
-              <Section key={i} label={s.label} step={i + 1}>
-                {s.body && <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{s.body}</p>}
-                {s.items && s.items.length > 0 && (
-                  <ul style={{ margin: s.body ? '8px 0 0' : 0, paddingInlineStart: 18 }}>
-                    {s.items.map((q, j) => <li key={j} style={{ marginBottom: 6 }}>{q}</li>)}
-                  </ul>
-                )}
-                {s.link && (
-                  <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px', marginTop: s.body || s.items ? 10 : 0 }}>
-                    <a href={s.link.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, color: 'var(--flame-ink)', textDecoration: 'underline' }}>
-                      {s.link.title} ↗
+            <>
+              {activity.flow.map((s, i) => (
+                <Section key={i} label={s.label} step={i + 1}>
+                  {s.body && <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{s.body}</p>}
+                  {s.items && s.items.length > 0 && (
+                    <ul style={{ margin: s.body ? '8px 0 0' : 0, paddingInlineStart: 18 }}>
+                      {s.items.map((q, j) => <li key={j} style={{ marginBottom: 6 }}>{q}</li>)}
+                    </ul>
+                  )}
+                  {s.link && (
+                    <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px', marginTop: s.body || s.items ? 10 : 0 }}>
+                      <a href={s.link.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, color: 'var(--flame-ink)', textDecoration: 'underline' }}>
+                        {s.link.title} ↗
+                      </a>
+                    </div>
+                  )}
+                  {s.note && <p style={{ margin: '8px 0 0', fontSize: 13.5, color: 'var(--ink-faint)' }}>{s.note}</p>}
+                </Section>
+              ))}
+              {activity.sourceLink && (
+                <Section label="מקור חיצוני — צפייה/קריאה" step={activity.flow.length + 1}>
+                  <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px' }}>
+                    <a href={activity.sourceLink.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, color: 'var(--flame-ink)', textDecoration: 'underline' }}>
+                      {activity.sourceLink.title} ↗
                     </a>
                   </div>
-                )}
-                {s.note && <p style={{ margin: '8px 0 0', fontSize: 13.5, color: 'var(--ink-faint)' }}>{s.note}</p>}
-              </Section>
-            ))
+                </Section>
+              )}
+            </>
           ) : (() => {
             let step = 0;
             return (

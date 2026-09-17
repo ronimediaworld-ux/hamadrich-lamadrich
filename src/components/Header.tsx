@@ -12,13 +12,14 @@ const navLinks = [
   { to: '/category/staff-study', label: 'לימוד צוות' },
   { to: '/category/tools', label: 'סיטואציות בהדרכה' },
   { to: '/chuparim', label: 'צ׳ופרים' },
+  { to: '/how-to-build', label: 'נדבר ת׳כלס' },
   { to: '/ai', label: 'עוזר AI', flame: true },
 ];
 
 const secondaryLinks = [
   { to: '/submit', label: 'שליחת פעולה' },
   { to: '/about', label: 'אודות' },
-  { to: '/contact', label: 'יצירת קשר' },
+  { to: '/reviews', label: 'דירוג והמלצות' },
 ];
 
 export function Header() {

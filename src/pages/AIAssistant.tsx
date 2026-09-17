@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MascotIcon } from '../components/TeenAvatar';
 import { ActivityCard } from '../components/ActivityCard';
+import { CopyButton } from '../components/CopyButton';
 import { searchActivities } from '../lib/search';
 import { sendChatMessage, type ChatMessage } from '../lib/aiChat';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
@@ -215,6 +216,11 @@ export function AIAssistant() {
             >
               {en.content}
             </div>
+            {en.role === 'assistant' && !en.isError && en.content && (
+              <div style={{ marginTop: 6 }}>
+                <CopyButton variant="mini" text={en.content} label="העתקה" />
+              </div>
+            )}
             {en.matches && en.matches.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 10, maxWidth: '100%' }}>
                 {en.matches.map((a) => <ActivityCard key={a.id} activity={a} />)}
