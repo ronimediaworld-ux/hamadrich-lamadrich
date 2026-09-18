@@ -6,17 +6,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const SITE_URL = (process.env.SITE_URL || 'https://hamadrich-lamadrich.onrender.com').replace(/\/$/, '');
 
-function extractIds(file) {
-  const text = readFileSync(path.join(root, file), 'utf8');
-  const ids = [];
-  const re = /\bid:\s*'([^']+)'/g;
-  let m;
-  while ((m = re.exec(text))) ids.push(m[1]);
-  return ids;
+function extractIds(jsonFile) {
+  const data = JSON.parse(readFileSync(path.join(root, jsonFile), 'utf8'));
+  return data.map((item) => item.id);
 }
 
-const activityIds = extractIds('src/data/activities.ts');
-const readingIds = extractIds('src/data/readings.ts');
+const activityIds = extractIds('src/data/activities.json');
+const readingIds = extractIds('src/data/readings.json');
 const categorySlugs = ['activities', 'games', 'methods', 'readings', 'staff-study', 'tools', 'social-nights'];
 
 const staticUrls = ['/', '/chuparim', '/ai'];

@@ -17,6 +17,7 @@ import { About } from './pages/About';
 import { Reviews } from './pages/Reviews';
 import { HowToBuild } from './pages/HowToBuild';
 import { SubmitActivity } from './pages/SubmitActivity';
+import { Admin } from './pages/Admin';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -29,6 +30,18 @@ function ScrollToTop() {
 export default function App() {
   const location = useLocation();
   const isChat = location.pathname.startsWith('/ai');
+  const isAdmin = location.pathname.startsWith('/admin');
+
+  if (isAdmin) {
+    return (
+      <div style={{ minHeight: '100vh' }}>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
