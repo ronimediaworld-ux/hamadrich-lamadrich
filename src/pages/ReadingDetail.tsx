@@ -45,9 +45,35 @@ export function ReadingDetail() {
           <p style={{ fontSize: 15, color: 'var(--ink-soft)', marginBottom: 8 }}>{reading.description}</p>
           <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 28 }}>{reading.ageLabel} · מקור: {reading.source}</div>
 
-          <div className="card" style={{ padding: '28px 32px', marginBottom: 24, fontSize: 16.5, lineHeight: 1.95, whiteSpace: 'pre-line' }}>
+          <div className="card" style={{ padding: '28px 32px', marginBottom: reading.sourceLink ? 14 : 24, fontSize: 16.5, lineHeight: 1.95, whiteSpace: 'pre-line' }}>
             {reading.text}
           </div>
+
+          {reading.sourceLink && (
+            <a
+              href={reading.sourceLink.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="no-print"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 12,
+                padding: '14px 20px',
+                borderRadius: 12,
+                background: 'var(--flame-tint)',
+                color: 'var(--flame-ink)',
+                fontWeight: 700,
+                fontSize: 14.5,
+                marginBottom: 24,
+                textDecoration: 'none',
+              }}
+            >
+              <span>📄 {reading.sourceLink.title}</span>
+              <span style={{ flexShrink: 0 }}>לקריאת הטור המלא ↗</span>
+            </a>
+          )}
 
           <div style={{ padding: '16px 20px', borderRadius: 12, background: 'var(--yellow-tint)', fontSize: 14.5, marginBottom: 24 }}>
             <b>איך משתמשים בזה בפעולה: </b>{reading.howToUse}

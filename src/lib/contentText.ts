@@ -55,7 +55,7 @@ export function activityToText(a: Activity): string {
 }
 
 export function readingToText(r: Reading): string {
-  return clean([
+  const L = [
     r.title,
     `${r.ageLabel} · מקור: ${r.source}`,
     '',
@@ -63,8 +63,10 @@ export function readingToText(r: Reading): string {
     '',
     r.text,
     '',
-    `איך משתמשים בזה בפעולה: ${r.howToUse}`,
-  ]);
+  ];
+  if (r.sourceLink) L.push(`לקריאת הטור המלא: ${r.sourceLink.title} — ${r.sourceLink.url}`, '');
+  L.push(`איך משתמשים בזה בפעולה: ${r.howToUse}`);
+  return clean(L);
 }
 
 export function chuparToText(c: Chupar): string {

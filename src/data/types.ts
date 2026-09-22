@@ -105,6 +105,7 @@ export interface Reading {
   text: string;
   howToUse: string;
   source: string;
+  sourceLink?: SourceLink; // לקטע חיצוני (זכויות יוצרים) — קישור מעוצב לקריאת הטקסט המלא במקור
   tags: string[];
 }
 
