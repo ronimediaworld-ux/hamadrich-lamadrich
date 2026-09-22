@@ -59,10 +59,16 @@ export function ChuparDetail() {
             {chupar.tip}
           </div>
 
+          {chupar.canvaTemplateUrl && (
+            <div className="no-print" style={{ padding: '12px 16px', borderRadius: 10, background: 'var(--sky-tint)', fontSize: 13, marginBottom: 16 }}>
+              <b>רוצים לערוך ולהתאים את העיצוב?</b> לוחצים על הכפתור, ובקנבה פותחים את תפריט <b>File</b> (למעלה משמאל) ובוחרים <b>Make a copy</b> — זה יוצר לכם עותק אישי לעריכה, בלי לגעת בעיצוב המקורי.
+            </div>
+          )}
+
           <div className="no-print" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {chupar.canvaTemplateUrl && (
               <a href={chupar.canvaTemplateUrl} target="_blank" rel="noopener noreferrer" className="btn btn-flame">
-                עריכה והתאמה אישית בקנבה ↗
+                פתיחת העיצוב בקנבה ↗
               </a>
             )}
             <PrintButton filename={`${chupar.id}.html`} title={chupar.title} text={chuparToText(chupar)} />
