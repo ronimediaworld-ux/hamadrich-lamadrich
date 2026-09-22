@@ -24,6 +24,11 @@ export function Chuparim() {
         {chuparim.map((c, i) => (
           <Reveal key={c.id} delay={(i % 6) * 40}>
             <Link to={`/chupar/${c.id}`} className="card" style={{ display: 'block', padding: 20 }}>
+              {c.designImage && (
+                <div style={{ margin: '-20px -20px 14px', borderRadius: '18px 18px 0 0', overflow: 'hidden' }}>
+                  <img src={c.designImage} alt="" style={{ width: '100%', display: 'block', aspectRatio: '4/3', objectFit: 'cover' }} />
+                </div>
+              )}
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                 <div style={{ flex: 'none', width: 44, height: 44, borderRadius: '50%', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   <TeenAvatar character={c.character} size={32} />

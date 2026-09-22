@@ -72,6 +72,8 @@ export interface Chupar {
   description: string;
   tip: string;
   character: Character;
+  designImage?: string; // תמונת תצוגה מקדימה של עיצוב מקורי (קנבה וכו'), נתיב תחת public/
+  canvaTemplateUrl?: string; // קישור "שימוש בתבנית" של קנבה — מבקרים יכולים ללחוץ ולקבל עותק עריך משלהם
 }
 
 export interface Situation {

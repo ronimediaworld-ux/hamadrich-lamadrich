@@ -43,6 +43,12 @@ export function ChuparDetail() {
           <h1 style={{ fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 800, marginBottom: 12, lineHeight: 1.25 }}>{chupar.title}</h1>
           <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginBottom: 20 }}>{chupar.description}</p>
 
+          {chupar.designImage && (
+            <div className="card" style={{ padding: 0, marginBottom: 20, overflow: 'hidden' }}>
+              <img src={chupar.designImage} alt={`עיצוב: ${chupar.title}`} style={{ width: '100%', display: 'block' }} />
+            </div>
+          )}
+
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 20px', fontSize: 13.5, color: 'var(--ink-faint)', marginBottom: 24, paddingBottom: 20, borderBottom: '1px solid var(--line)' }}>
             <span><b>תקציב: </b>{chupar.budget}</span>
             <span><b>הכנה: </b>{chupar.prepTime}</span>
@@ -54,6 +60,11 @@ export function ChuparDetail() {
           </div>
 
           <div className="no-print" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            {chupar.canvaTemplateUrl && (
+              <a href={chupar.canvaTemplateUrl} target="_blank" rel="noopener noreferrer" className="btn btn-flame">
+                עריכה והתאמה אישית בקנבה ↗
+              </a>
+            )}
             <PrintButton filename={`${chupar.id}.html`} title={chupar.title} text={chuparToText(chupar)} />
             <CopyButton text={chuparToText(chupar)} label="העתקת הצ׳ופר כטקסט" copiedLabel="✓ הועתק" />
           </div>
