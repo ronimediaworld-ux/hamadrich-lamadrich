@@ -994,7 +994,7 @@
     "tip": "אפשר להמציא עוד \"תרופות\" וצבעים לפי הצורך של הקבוצה שלכם.",
     "character": "C",
     "print": {
-      "shape": "label",
+      "shape": "card",
       "layout": "label",
       "palette": "grape",
       "motif": "pill",
@@ -1092,7 +1092,7 @@
     "tip": "אפשר להפוך לטקס יומי קבוע — שניה לפני השינה, כל אחד מצביע על המקום שמתאים לו.",
     "character": "A",
     "print": {
-      "shape": "tag",
+      "shape": "cert",
       "layout": "center",
       "palette": "sunrise",
       "motif": "thermo",
@@ -1132,7 +1132,7 @@
     "tip": "אפשר לתלות במקום מרכזי בסניף או להקריא בקול כשמרגישים שכולם צריכים ריצ'רג'.",
     "character": "B",
     "print": {
-      "shape": "card",
+      "shape": "cert",
       "layout": "sign",
       "palette": "chalk",
       "motif": "bolt",

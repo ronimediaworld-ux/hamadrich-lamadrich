@@ -171,10 +171,18 @@ export function renderCard(c: Chupar, imgBase = '', name = ''): string {
   fs = Math.min(fs, Math.sqrt(area) / 6);
   if (isPoem) fs = Math.min(fs, 3.9);
   const sideMotif = pr.layout === 'split' || pr.layout === 'ticket';
-  const usableW = (sideMotif ? w * 0.62 : w - 12) * (pr.layout === 'label' ? 0.95 : 1);
+  const corner = hh % 2 === 0 ? 'left' : 'right';
+  const horiz = w / h >= 1.45;
+  const mSize = sideMotif ? Math.min(w, h) * 0.62 : horiz ? h * 0.58 : Math.min(w, h) * 0.4;
+  const reserve = mSize * 0.86 + 1.5;
+  const padBottom = sideMotif || horiz ? 5 : Math.max(5, reserve);
+  const padL = !sideMotif && horiz && corner === 'left' ? reserve : 6;
+  const padR = !sideMotif && horiz && corner === 'right' ? reserve : 6;
+  const centerPad = `padding:4mm ${padR}mm ${padBottom}mm ${padL}mm;`;
+  const usableW = (sideMotif ? w * 0.62 : w - padL - padR) * (pr.layout === 'label' ? 0.95 : 1);
   const motifH = sideMotif || isPoem ? 0 : 0;
   const chipRows = asChips ? Math.ceil(subParts.length / 2) : 0;
-  const usableH = h - 12 - motifH - chipRows * 7;
+  const usableH = h - 4 - padBottom - 2 - motifH - chipRows * 7;
   const countLines = (t: string, size: number) => t.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * size * 0.56) / usableW)), 0);
   const subText = asChips ? '' : (pr.sub ?? '');
   const fits = (size: number) => {
@@ -186,8 +194,8 @@ export function renderCard(c: Chupar, imgBase = '', name = ''): string {
   let handPoem = 0;
   if (isPoem) {
     const subLines = pr.sub ? 1.4 : 0;
-    const pw = w - 14;
-    const ph = h - 13;
+    const pw = w - padL - padR - 2;
+    const ph = h - 4 - padBottom - 2;
     handPoem = 7.5;
     const need = (sz: number) => pr.text.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * sz * 0.36) / pw)), 0) * sz * 1.05 + subLines * sz;
     while (handPoem > 3 && need(handPoem) > ph) handPoem -= 0.2;
@@ -195,9 +203,7 @@ export function renderCard(c: Chupar, imgBase = '', name = ''): string {
 
   const svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif(pr.motif, p)}</svg>`;
   const blob = `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%"><path d="${BLOBS[hh % BLOBS.length]}" fill="${f2}" opacity=".42"/></svg>`;
-  const mSize = Math.min(w, h) * (sideMotif ? 0.62 : 0.5);
   // בחירת פינה שממנה הציור "מציץ" — כמו הדובי בעיצוב המקורי
-  const corner = hh % 2 === 0 ? 'left' : 'right';
   const peek = `position:absolute;bottom:${-mSize * 0.14}mm;${corner}:${-mSize * 0.14}mm;width:${mSize}mm;height:${mSize}mm;`;
   const motifPeek = `<div style="${peek}">${blob}<div style="position:absolute;inset:0;transform:rotate(${corner === 'left' ? -8 : 8}deg)">${svg}</div></div>`;
   const brand = `<div style="position:absolute;bottom:.9mm;inset-inline:0;text-align:center;font-family:'Heebo',sans-serif;font-size:1.9mm;opacity:.45">המדריך למדריך</div>`;
@@ -219,7 +225,7 @@ export function renderCard(c: Chupar, imgBase = '', name = ''): string {
   const titleStyle = `font-family:${titleFont};font-weight:${titleWeight};font-size:${fs}mm;line-height:1.12;`;
 
   if (isPoem) {
-    return `<div style="${root}display:flex;align-items:center;justify-content:center;padding:4mm 5mm 5mm;"><div style="${frame}"></div>${motifPeek}
+    return `<div style="${root}display:flex;align-items:center;justify-content:center;${centerPad}"><div style="${frame}"></div>${motifPeek}
 <div style="position:relative;font-family:${hand};font-weight:700;font-size:${handPoem}mm;line-height:1.05;color:#111">${text}${subText ? `<div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:${Math.max(handPoem * 0.62, 3)}mm;margin-top:1.4mm">${esc(subText)}</div>` : ''}</div>${brand}</div>`;
   }
   if (pr.layout === 'split') {
@@ -239,7 +245,7 @@ export function renderCard(c: Chupar, imgBase = '', name = ''): string {
 <div style="position:relative;${titleStyle}">${text}</div>${rule}${chips}${handSub}${brand}</div>`;
   }
   // center / label / sign
-  return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 5mm;"><div style="${frame}"></div>${motifPeek}
+  return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;${centerPad}"><div style="${frame}"></div>${motifPeek}
 <div style="position:relative;${titleStyle}">${text}</div>${asChips || subText ? rule : ''}${chips}${handSub}${brand}</div>`;
 }
 
