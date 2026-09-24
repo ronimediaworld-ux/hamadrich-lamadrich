@@ -119,6 +119,10 @@ function hash(id: string): number {
 }
 
 // מייצר כרטיס אחד (HTML עם סגנון inline בלבד) — גודל במ"מ לפי הצורה
+// לוגו ניצוץ (הלהבה המחייכת של האתר) — תגית עגולה קטנה בפינת הכרטיס
+const NITZOTZ = `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><path d="M40 6c10 14 26 24 26 42a26 26 0 0 1-52 0c0-8 3-14 7-19 2 7 7 10 11 7-5-13 1-22 8-30z" fill="#F5A93B" stroke="#241C11" stroke-width="3" stroke-linejoin="round"/><circle cx="32" cy="52" r="4" fill="#241C11"/><circle cx="50" cy="52" r="4" fill="#241C11"/><path d="M32 62c3 3 13 3 16 0" stroke="#241C11" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
+const nitzotzBadge = (pos: string, size = 6.2) => `<div style="position:absolute;${pos};width:${size}mm;height:${size}mm;border-radius:50%;background:#fff;border:.3mm solid #111;padding:.75mm;box-sizing:border-box">${NITZOTZ}</div>`;
+
 export interface ChuparField { label: string }
 
 // שדות דינמיים: כל קו תחתון ארוך (___) בטקסט הכרטיס הוא מקום שאפשר למלא בשם או בפרט
@@ -174,7 +178,7 @@ export function renderCard(c: Chupar, imgBase = '', name = '', values: string[] 
 ${strip('left')}${strip('right')}
 <div style="position:absolute;left:8mm;right:8mm;top:1.6mm;bottom:1.6mm;border:.35mm solid #111;background:#FFF6DA"></div>
 <div style="position:absolute;left:8mm;top:1.6mm;bottom:1.6mm;width:23mm;background:#E0353B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1mm;border-inline-end:.5mm dashed #fff;box-sizing:border-box">
-<div style="width:13mm;height:13mm">${pop}</div>
+${nitzotzBadge('position:relative;top:0;left:0', 5)}<div style="width:13mm;height:13mm">${pop}</div>
 <div style="color:#fff;font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.6mm;line-height:1">כרטיס אחד</div></div>
 <div style="position:absolute;left:31mm;right:9mm;top:2mm;bottom:2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
 <div style="font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.4mm;line-height:1;letter-spacing:.06em">★ הקרנה מיוחדת ★</div>
@@ -194,7 +198,7 @@ ${strip('left')}${strip('right')}
       : `<span style="display:inline-block;min-width:${tfs * 2.6}mm;height:${tfs * 0.8}mm;border-bottom:${Math.max(.7, tfs * 0.09)}mm dotted #404040;vertical-align:baseline"></span>`;
     const chipCss = (bg: string, fg = '#111') => `background:${bg};color:${fg};font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.6mm;line-height:1;padding:.5mm 1.8mm .8mm;`;
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;">
-<div style="position:absolute;inset:1.8mm;border:.3mm solid #111;pointer-events:none"></div>
+<div style="position:absolute;inset:1.8mm;border:.3mm solid #111;pointer-events:none"></div>${nitzotzBadge('top:.6mm;right:.8mm', 5.6)}
 <div style="position:absolute;left:0;top:0;width:36mm;height:${h}mm">
 <svg viewBox="0 0 120 100" style="position:absolute;inset:0;width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M10 34c-2-16 16-26 34-20 14-8 34 0 38 18 14 6 24 22 12 38-8 12-22 12-30 8-4 14-24 22-38 12C8 78 2 60 10 34z" fill="#93A683"/></svg>
 <div style="position:absolute;left:7mm;top:5mm;width:22mm;height:22mm;background:#4A5D8F;transform:rotate(14deg)"></div>
@@ -202,7 +206,7 @@ ${strip('left')}${strip('right')}
 <div style="position:absolute;left:17mm;top:19mm;width:12mm;height:12mm;background:#404040;transform:rotate(0deg)"></div>
 <div style="position:absolute;left:14mm;top:22mm;width:16mm;height:16mm;background:#4A5D8F;opacity:.0"></div>
 </div>
-<div style="position:absolute;right:5mm;left:38mm;top:2.5mm;bottom:3mm;display:flex;flex-direction:column;justify-content:center;align-items:stretch">
+<div style="position:absolute;right:5mm;left:38mm;top:6.4mm;bottom:3mm;display:flex;flex-direction:column;justify-content:center;align-items:stretch">
 <div style="font-family:'Secular One','Rubik',sans-serif;font-size:${tfs}mm;line-height:1.1;text-align:center;white-space:nowrap">${esc(prefix)}${slot}</div>
 <div style="height:1mm;background:#404040;border-radius:1mm;margin:.8mm 1mm 1.4mm"></div>
 <div style="display:flex;flex-wrap:wrap;gap:1.4mm 2mm;align-items:center;justify-content:flex-start">
@@ -234,8 +238,8 @@ ${strip('left')}${strip('right')}
   const mSize = sideMotif ? Math.min(w, h) * 0.62 : horiz ? h * 0.58 : Math.min(w, h) * 0.4;
   const reserve = mSize * 0.86 + 1.5;
   const padBottom = sideMotif || horiz ? 5 : Math.max(5, reserve);
-  const padL = !sideMotif && horiz && corner === 'left' ? reserve : 6;
-  const padR = !sideMotif && horiz && corner === 'right' ? reserve : 6;
+  const padL = !sideMotif && horiz && corner === 'left' ? reserve : 8.5;
+  const padR = !sideMotif && horiz && corner === 'right' ? reserve : 8.5;
   const centerPad = `padding:4mm ${padR}mm ${padBottom}mm ${padL}mm;`;
   const usableW = (sideMotif ? w * 0.62 : w - padL - padR) * (pr.layout === 'label' ? 0.95 : 1);
   const motifH = sideMotif || isPoem ? 0 : 0;
@@ -272,7 +276,9 @@ ${strip('left')}${strip('right')}
   const HL = ['#FFEB00', '#7EE06A', '#F27FE0', '#FF9500'];
   const hl = HL[hh % HL.length];
   const titleHtml = `<span style="background-image:linear-gradient(transparent 60%,${hl} 60%,${hl} 92%,transparent 92%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 1.2mm">${text}</span>`;
-  const brand = `<div style="position:absolute;bottom:.35mm;inset-inline:0;text-align:center;font-family:'Heebo',sans-serif;font-size:1.7mm;opacity:.5">המדריך למדריך</div>`;
+  const logoPos = `bottom:.7mm;${corner === 'left' ? 'right' : 'left'}:.9mm`;
+  const badge = nitzotzBadge(logoPos);
+  const brand = `<div style="position:absolute;bottom:.35mm;inset-inline:0;text-align:center;font-family:'Heebo',sans-serif;font-size:1.7mm;opacity:.5">המדריך למדריך</div>${badge}`;
   const rule = `<div style="position:relative;height:${Math.max(.9, fs * 0.12)}mm;background:#404040;border-radius:1mm;width:70%;margin:${fs * 0.22}mm auto ${fs * 0.28}mm"></div>`;
 
   const chips = asChips
@@ -322,7 +328,7 @@ ${strip('left')}${strip('right')}
   if (pr.layout === 'ticket') {
     return `<div style="${root}display:flex;align-items:center;padding:2mm 5mm;-webkit-mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;"><div style="${frame}border-style:dashed"></div>${confetti}
 <div style="position:relative;flex:1;padding-inline-end:3mm"><div style="${titleStyle}">${titleHtml}</div>${chips}${handSub}</div>
-<div style="position:relative;flex:none;width:${h * 0.62}mm;height:${h * 0.62}mm">${cluster(8)}</div></div>`;
+<div style="position:relative;flex:none;width:${h * 0.62}mm;height:${h * 0.62}mm">${cluster(8)}</div>${badge}</div>`;
   }
   if (pr.layout === 'seal') {
     return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 5mm;"><div style="${frame}"></div>${confetti}<div style="position:absolute;inset:3.7mm;border:.2mm solid #111;border-radius:2mm;pointer-events:none"></div>
