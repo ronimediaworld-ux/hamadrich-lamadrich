@@ -31,6 +31,7 @@ export const SHAPES: Record<string, { w: number; h: number }> = {
   imagesq: { w: 60, h: 60 },
   imagewide: { w: 92, h: 44 },
   wide: { w: 92, h: 44 },
+  cinema: { w: 92, h: 42 },
 };
 
 function esc(s: string): string {
@@ -124,6 +125,29 @@ export function renderCard(c: Chupar, imgBase = '', name = ''): string {
 
   if (c.designImage && pr.shape.startsWith('image')) {
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;"><img src="${esc(imgBase + c.designImage)}" alt="" style="max-width:100%;max-height:100%;object-fit:contain;display:block;margin:auto"></div>`;
+  }
+
+  if (pr.layout === 'cinema') {
+    const parts = (pr.sub ?? '').split(/\s*·\s*/).map((x) => x.trim()).filter(Boolean);
+    const subtitle = parts[0] ?? '';
+    const bits = parts.slice(1);
+    const cp: Palette = { bg: '#fff', fg: '#111', acc: '#E0353B', acc2: '#FFC93C' };
+    const pop = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif('popcorn', cp)}</svg>`;
+    const strip = (side: string) => `<div style="position:absolute;${side}:0;top:0;bottom:0;width:6.4mm;background:#111"><div style="position:absolute;left:1.6mm;top:1mm;bottom:0;width:3.2mm;background:repeating-linear-gradient(to bottom,#fff 0 2.4mm,transparent 2.4mm 4.4mm);border-radius:.4mm"></div></div>`;
+    const chipC = ['#FFEB00', '#FF9500'];
+    const chipsHtml = bits.map((t, i) => `<span style="background:${chipC[i % 2]};color:#111;font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.4mm;line-height:1;padding:.5mm 1.8mm .8mm">${esc(t)}</span>`).join('');
+    return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;">
+${strip('left')}${strip('right')}
+<div style="position:absolute;left:8mm;right:8mm;top:1.6mm;bottom:1.6mm;border:.35mm solid #111;background:#FFF6DA"></div>
+<div style="position:absolute;left:8mm;top:1.6mm;bottom:1.6mm;width:23mm;background:#E0353B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1mm;border-inline-end:.5mm dashed #fff;box-sizing:border-box">
+<div style="width:13mm;height:13mm">${pop}</div>
+<div style="color:#fff;font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.6mm;line-height:1">כרטיס אחד</div></div>
+<div style="position:absolute;left:31mm;right:9mm;top:2mm;bottom:2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+<div style="font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.4mm;line-height:1;letter-spacing:.06em">★ הקרנה מיוחדת ★</div>
+<div style="font-family:'Secular One','Rubik',sans-serif;font-size:8mm;line-height:1.05;white-space:nowrap">${esc(pr.text)}</div>
+<div style="height:.9mm;background:#404040;border-radius:1mm;width:78%;margin:.7mm 0 1mm"></div>
+<div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:5.4mm;line-height:1.1">${esc(subtitle)}</div>
+<div style="display:flex;gap:1.4mm;margin-top:1.3mm;justify-content:center;flex-wrap:wrap">${chipsHtml}</div></div></div>`;
   }
 
   if (pr.layout === 'pharmacy') {

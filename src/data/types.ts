@@ -63,8 +63,8 @@ export interface Activity {
 }
 
 export interface ChuparPrint {
-  shape: 'card' | 'cert' | 'ticket' | 'label' | 'tag' | 'square' | 'image' | 'imagesq' | 'imagewide' | 'wide';
-  layout: 'center' | 'split' | 'seal' | 'label' | 'poem' | 'ticket' | 'sign' | 'pharmacy';
+  shape: 'card' | 'cert' | 'ticket' | 'label' | 'tag' | 'square' | 'image' | 'imagesq' | 'imagewide' | 'wide' | 'cinema';
+  layout: 'center' | 'split' | 'seal' | 'label' | 'poem' | 'ticket' | 'sign' | 'pharmacy' | 'cinema';
   palette: string;
   motif: string;
   font: 'suez' | 'secular' | 'rubik' | 'amatic' | 'karantina' | 'heebo';

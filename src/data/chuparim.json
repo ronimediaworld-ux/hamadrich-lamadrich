@@ -70,13 +70,13 @@
     "tip": "תנו לחניכים להצביע מראש על הסרט — זה כבר הופך את הערב לצ׳ופר בפני עצמו.",
     "character": "F",
     "print": {
-      "shape": "ticket",
-      "layout": "ticket",
+      "shape": "cinema",
+      "layout": "cinema",
       "palette": "cherry",
       "motif": "popcorn",
       "font": "secular",
-      "text": "כרטיס כניסה לערב סרט",
-      "sub": "פופקורן כלול · כיבוי אורות בשעה היעודה"
+      "text": "כרטיס כניסה",
+      "sub": "לערב סרט · פופקורן כלול · מושב: ____"
     }
   },
   {
