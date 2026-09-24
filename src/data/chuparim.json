@@ -292,7 +292,7 @@
     "designImage": "/chupar-designs/noach-tevah.png",
     "canvaTemplateUrl": "https://canva.link/j2d7ivqop04jxqj",
     "print": {
-      "shape": "image",
+      "shape": "imagesq",
       "layout": "center",
       "palette": "sky",
       "motif": "ark",
@@ -313,7 +313,7 @@
     "designImage": "/chupar-designs/no-bathroom-legend.png",
     "canvaTemplateUrl": "https://canva.link/j2d7ivqop04jxqj",
     "print": {
-      "shape": "image",
+      "shape": "imagesq",
       "layout": "center",
       "palette": "sky",
       "motif": "scroll",
@@ -334,7 +334,7 @@
     "designImage": "/chupar-designs/acamolroni.png",
     "canvaTemplateUrl": "https://canva.link/adng0n2z8idisdl",
     "print": {
-      "shape": "image",
+      "shape": "imagewide",
       "layout": "label",
       "palette": "mint",
       "motif": "pill",
@@ -355,7 +355,7 @@
     "designImage": "/chupar-designs/masa-or-dubi.png",
     "canvaTemplateUrl": "https://canva.link/adng0n2z8idisdl",
     "print": {
-      "shape": "image",
+      "shape": "imagesq",
       "layout": "center",
       "palette": "berry",
       "motif": "bear",

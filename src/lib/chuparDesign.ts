@@ -28,6 +28,8 @@ export const SHAPES: Record<string, { w: number; h: number }> = {
   tag: { w: 44, h: 66 },
   square: { w: 60, h: 60 },
   image: { w: 92, h: 64 },
+  imagesq: { w: 60, h: 60 },
+  imagewide: { w: 92, h: 44 },
 };
 
 function esc(s: string): string {
@@ -119,8 +121,8 @@ export function renderCard(c: Chupar, imgBase = ''): string {
   pr.text = pr.text.replace(/_{9,}/g, '_'.repeat(9));
   if (pr.sub) pr.sub = pr.sub.replace(/_{9,}/g, '_'.repeat(9));
 
-  if (c.designImage && pr.shape === 'image') {
-    return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;"><img src="${esc(imgBase + c.designImage)}" alt="" style="width:100%;height:100%;object-fit:contain;display:block"></div>`;
+  if (c.designImage && pr.shape.startsWith('image')) {
+    return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;"><img src="${esc(imgBase + c.designImage)}" alt="" style="max-width:100%;max-height:100%;object-fit:contain;display:block;margin:auto"></div>`;
   }
 
   const [f1, f2] = FLAT[pr.palette] ?? FLAT.cream;
