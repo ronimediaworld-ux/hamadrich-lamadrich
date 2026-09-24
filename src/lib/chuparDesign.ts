@@ -17,16 +17,7 @@ export const PALETTES: Record<string, Palette> = {
   cream: { bg: '#FFF8E7', fg: '#3B2A14', acc: '#E05D2D', acc2: '#F2B84B' },
 };
 
-const FONTS: Record<string, string> = {
-  suez: "'Suez One', 'Rubik', serif",
-  secular: "'Secular One', 'Rubik', sans-serif",
-  rubik: "'Rubik', sans-serif",
-  amatic: "'Amatic SC', 'Rubik', cursive",
-  karantina: "'Karantina', 'Rubik', sans-serif",
-  heebo: "'Heebo', sans-serif",
-};
-
-export const FONT_IMPORT = "https://fonts.googleapis.com/css2?family=Rubik:wght@500;800&family=Heebo:wght@400;700&family=Suez+One&family=Secular+One&family=Amatic+SC:wght@700&family=Karantina:wght@700&display=swap";
+export const FONT_IMPORT = "https://fonts.googleapis.com/css2?family=Rubik:wght@500;800;900&family=Heebo:wght@400;700&family=Suez+One&family=Secular+One&family=Amatic+SC:wght@700&family=Karantina:wght@700&display=swap";
 
 // גודל כרטיס במ"מ לכל צורה
 export const SHAPES: Record<string, { w: number; h: number }> = {
@@ -99,83 +90,126 @@ function motif(name: string, p: Palette): string {
   return m[name] ?? m.star;
 }
 
-export interface CardOpts { scale?: number }
+// צבעי "מרקר" שטוחים — בהשראת העיצובים המקוריים (רקע לבן, מסגרת שחורה דקה, כיתוב שחור עבה, תוויות צבעוניות)
+const CHIP_COLORS = ['#FFEB00', '#FF9500', '#7EE06A', '#F27FE0', '#C137D6'];
+const FLAT: Record<string, [string, string]> = {
+  sunrise: ['#FF9500', '#FFEB00'], berry: ['#F27FE0', '#C137D6'], ocean: ['#4A5D8F', '#8FB8E8'],
+  forest: ['#7EE06A', '#90A783'], grape: ['#C137D6', '#F27FE0'], night: ['#4A5D8F', '#FFEB00'],
+  sand: ['#C9A27E', '#FFEB00'], cherry: ['#FF4D4D', '#FF9500'], mint: ['#7EE06A', '#8FE3CE'],
+  sky: ['#4A5D8F', '#8FB8E8'], chalk: ['#90A783', '#FFEB00'], cream: ['#FF9500', '#FFEB00'],
+};
+const BLOBS = [
+  'M20 60c-6-24 14-46 40-44 20 2 34-8 44 8 12 20 6 44-10 58-18 16-36 20-56 12C24 88 24 72 20 60z',
+  'M12 44c8-26 40-36 62-26 24 10 32 40 18 62-14 22-48 24-66 8C8 76 6 58 12 44z',
+  'M18 30c14-18 50-20 68-4 16 14 14 44-4 60-20 18-52 12-64-8C8 62 8 42 18 30z',
+];
+
+function hash(id: string): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return h;
+}
 
 // מייצר כרטיס אחד (HTML עם סגנון inline בלבד) — גודל במ"מ לפי הצורה
 export function renderCard(c: Chupar, imgBase = ''): string {
   const pr: ChuparPrint = c.print ?? { shape: 'card', layout: 'center', palette: 'cream', motif: 'star', font: 'rubik', text: c.title };
   const shape = SHAPES[pr.shape] ?? SHAPES.card;
-  const p = PALETTES[pr.palette] ?? PALETTES.cream;
-  const font = FONTS[pr.font] ?? FONTS.rubik;
   const { w, h } = shape;
-  const text = esc(pr.text).replace(/\n/g, '<br>');
-  const sub = pr.sub ? esc(pr.sub).replace(/\n/g, '<br>') : '';
-  const len = pr.text.length;
-  // גודל טקסט לפי אורך ולפי שטח הכרטיס
-  const area = w * h;
-  let fs = len < 24 ? 8 : len < 48 ? 6.4 : len < 90 ? 5 : len < 160 ? 3.9 : 3.1;
-  fs = Math.min(fs, Math.sqrt(area) / 6.2);
-  if (pr.layout === 'poem') fs = Math.min(fs, 3.4);
-  // התאמת הגודל כך שהטקסט (והכיתוב הקטן) ייכנס בכרטיס
-  const usableW = (pr.layout === 'split' ? w * 0.6 : pr.layout === 'ticket' ? w - h - 8 : w - 10) * (pr.layout === 'label' ? 0.55 : 1);
-  const motifH = pr.layout === 'poem' || pr.layout === 'split' || pr.layout === 'ticket' || pr.layout === 'label' ? 0 : h * 0.34;
-  const usableH = h - 11 - motifH;
-  const countLines = (t: string, size: number) => t.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * size * 0.55) / usableW)), 0);
-  const fits = (size: number) => {
-    const subSize = Math.max(size * 0.42, 2.6);
-    const subH = pr.sub ? countLines(pr.sub, subSize * 0.9) * subSize * 1.35 + 1.4 : 0;
-    return countLines(pr.text, size) * size * 1.22 + subH <= usableH;
-  };
-  while (fs > 2.3 && !fits(fs)) fs -= 0.25;
-  const svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif(pr.motif, p)}</svg>`;
-  const base = `width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;font-family:${font};color:${p.fg};background:${p.bg};direction:rtl;text-align:center;`;
-  const dots = `background-image:radial-gradient(${p.acc2} 1.2px, transparent 1.4px);background-size:4mm 4mm;`;
-  const subHtml = sub ? `<div style="font-family:'Heebo',sans-serif;font-weight:700;font-size:${Math.max(fs * 0.42, 2.6)}mm;opacity:.85;margin-top:1.4mm;line-height:1.3">${sub}</div>` : '';
-  const brand = `<div style="position:absolute;bottom:1.2mm;inset-inline:0;font-family:'Heebo',sans-serif;font-size:2mm;opacity:.5;letter-spacing:.05em">המדריך למדריך</div>`;
-  const mot = (size: number, extra = '') => `<div style="width:${size}mm;height:${size}mm;${extra}">${svg}</div>`;
+  const hh = hash(c.id);
+  pr.text = pr.text.replace(/_{9,}/g, '_'.repeat(9));
+  if (pr.sub) pr.sub = pr.sub.replace(/_{9,}/g, '_'.repeat(9));
 
   if (c.designImage && pr.shape === 'image') {
-    return `<div style="${base}background:#fff;"><img src="${esc(imgBase + c.designImage)}" alt="" style="width:100%;height:100%;object-fit:contain;display:block"></div>`;
+    return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;"><img src="${esc(imgBase + c.designImage)}" alt="" style="width:100%;height:100%;object-fit:contain;display:block"></div>`;
   }
 
-  switch (pr.layout) {
-    case 'split': {
-      const side = Math.round(w * 0.36);
-      return `<div style="${base}display:flex;flex-direction:row;">
-<div style="flex:none;width:${side}mm;background:${p.acc};display:flex;align-items:center;justify-content:center;padding:2mm;box-sizing:border-box">${mot(Math.min(side - 4, h - 8))}</div>
-<div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:3mm 3.5mm;box-sizing:border-box;${dots}">
-<div style="font-weight:800;font-size:${fs * 0.92}mm;line-height:1.15">${text}</div>${subHtml}</div>${brand}</div>`;
-    }
-    case 'seal':
-      return `<div style="${base}padding:2mm;box-sizing:border-box">
-<div style="height:100%;border:.7mm solid ${p.acc};outline:.4mm solid ${p.fg};outline-offset:-2mm;border-radius:2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3.5mm;box-sizing:border-box;position:relative">
-<div style="position:absolute;top:1.5mm;inset-inline-start:2mm;width:${Math.min(w, h) * 0.24}mm;height:${Math.min(w, h) * 0.24}mm">${svg}</div>
-<div style="font-weight:800;font-size:${fs * 0.9}mm;line-height:1.2;max-width:88%">${text}</div>${subHtml}</div>${brand}</div>`;
-    case 'label':
-      return `<div style="${base}padding:1.6mm;box-sizing:border-box;background:${p.acc}">
-<div style="height:100%;background:${p.bg};border-radius:3mm;display:flex;align-items:center;gap:2mm;padding:2.5mm 3mm;box-sizing:border-box">
-<div style="flex:none;width:${h * 0.42}mm;height:${h * 0.42}mm">${svg}</div>
-<div style="flex:1"><div style="font-weight:800;font-size:${fs * 0.85}mm;line-height:1.15">${text}</div>${subHtml}</div></div></div>`;
-    case 'poem':
-      return `<div style="${base}padding:3mm 4mm;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;border:.6mm solid ${p.acc};border-radius:2mm;">
-<div style="position:absolute;top:1.5mm;inset-inline-end:1.5mm;width:${Math.min(w, h) * 0.16}mm;height:${Math.min(w, h) * 0.16}mm;opacity:.9">${svg}</div>
-<div style="font-size:${fs}mm;line-height:1.28;font-weight:700">${text}</div>${subHtml}${brand}</div>`;
-    case 'ticket':
-      return `<div style="${base}display:flex;flex-direction:row;align-items:stretch;-webkit-mask:radial-gradient(circle 2.6mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.6mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 2.6mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.6mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;">
-<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:2mm 5mm;box-sizing:border-box;${dots}"><div style="font-weight:800;font-size:${fs * 0.85}mm;line-height:1.15">${text}</div>${subHtml}</div>
-<div style="flex:none;width:${h * 0.95}mm;background:${p.acc};border-inline-start:.5mm dashed ${p.bg};display:flex;align-items:center;justify-content:center;padding:2mm;box-sizing:border-box">${mot(h * 0.6)}</div></div>`;
-    case 'sign':
-      return `<div style="${base}display:flex;flex-direction:column;">
-<div style="flex:none;height:${Math.max(3, h * 0.08)}mm;background:repeating-linear-gradient(-45deg,${p.acc} 0 3mm,${p.fg} 3mm 6mm)"></div>
-<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2mm 4mm;box-sizing:border-box;gap:1.2mm">
-${mot(h * 0.32)}<div style="font-weight:800;font-size:${fs * 0.95}mm;line-height:1.1;text-transform:none">${text}</div>${subHtml}</div>
-<div style="flex:none;height:${Math.max(3, h * 0.08)}mm;background:repeating-linear-gradient(-45deg,${p.acc} 0 3mm,${p.fg} 3mm 6mm)"></div></div>`;
-    default:
-      return `<div style="${base}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3mm 3mm 5mm;box-sizing:border-box;${dots}">
-<div style="position:absolute;inset:1.6mm;border:.5mm dashed ${p.acc};border-radius:2.5mm;pointer-events:none"></div>
-${mot(h * 0.34, 'flex:none;margin-bottom:1.2mm')}
-<div style="font-weight:800;font-size:${fs}mm;line-height:1.15;max-width:92%">${text}</div>${subHtml}${brand}</div>`;
+  const [f1, f2] = FLAT[pr.palette] ?? FLAT.cream;
+  const p: Palette = { bg: '#fff', fg: '#222', acc: f1, acc2: f2 };
+  const titleFont = pr.font === 'amatic' || pr.font === 'karantina' ? "'Secular One', 'Rubik', sans-serif" : pr.font === 'suez' ? "'Secular One', 'Rubik', sans-serif" : "'Rubik', sans-serif";
+  const titleWeight = titleFont.includes('Rubik') && !titleFont.includes('Secular') ? 900 : 400;
+  const hand = "'Amatic SC', 'Heebo', cursive";
+  const text = esc(pr.text).replace(/\n/g, '<br>');
+  const len = pr.text.length;
+  const isPoem = pr.layout === 'poem';
+
+  const subParts = (pr.sub ?? '').split(/\s*·\s*|\n/).map((x) => x.trim()).filter(Boolean);
+  const asChips = !isPoem && subParts.length >= 2 && subParts.every((x) => x.length <= 24 && !/_/.test(x));
+
+  const area = w * h;
+  let fs = len < 24 ? 8.2 : len < 48 ? 6.6 : len < 90 ? 5.2 : len < 160 ? 4 : 3.2;
+  fs = Math.min(fs, Math.sqrt(area) / 6);
+  if (isPoem) fs = Math.min(fs, 3.9);
+  const sideMotif = pr.layout === 'split' || pr.layout === 'ticket';
+  const usableW = (sideMotif ? w * 0.62 : w - 12) * (pr.layout === 'label' ? 0.95 : 1);
+  const motifH = sideMotif || isPoem ? 0 : 0;
+  const chipRows = asChips ? Math.ceil(subParts.length / 2) : 0;
+  const usableH = h - 12 - motifH - chipRows * 7;
+  const countLines = (t: string, size: number) => t.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * size * 0.56) / usableW)), 0);
+  const subText = asChips ? '' : (pr.sub ?? '');
+  const fits = (size: number) => {
+    const subSize = Math.max(size * 0.85, 4.4);
+    const subH = subText ? countLines(subText, subSize * 0.6) * subSize * 1.0 + 1.5 : 0;
+    return countLines(pr.text, size) * size * 1.2 + subH <= usableH;
+  };
+  while (fs > 2.3 && !fits(fs)) fs -= 0.25;
+  let handPoem = 0;
+  if (isPoem) {
+    const subLines = pr.sub ? 1.4 : 0;
+    const pw = w - 14;
+    const ph = h - 13;
+    handPoem = 7.5;
+    const need = (sz: number) => pr.text.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * sz * 0.36) / pw)), 0) * sz * 1.05 + subLines * sz;
+    while (handPoem > 3 && need(handPoem) > ph) handPoem -= 0.2;
   }
+
+  const svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif(pr.motif, p)}</svg>`;
+  const blob = `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%"><path d="${BLOBS[hh % BLOBS.length]}" fill="${f2}" opacity=".42"/></svg>`;
+  const mSize = Math.min(w, h) * (sideMotif ? 0.62 : 0.5);
+  // בחירת פינה שממנה הציור "מציץ" — כמו הדובי בעיצוב המקורי
+  const corner = hh % 2 === 0 ? 'left' : 'right';
+  const peek = `position:absolute;bottom:${-mSize * 0.14}mm;${corner}:${-mSize * 0.14}mm;width:${mSize}mm;height:${mSize}mm;`;
+  const motifPeek = `<div style="${peek}">${blob}<div style="position:absolute;inset:0;transform:rotate(${corner === 'left' ? -8 : 8}deg)">${svg}</div></div>`;
+  const brand = `<div style="position:absolute;bottom:.9mm;inset-inline:0;text-align:center;font-family:'Heebo',sans-serif;font-size:1.9mm;opacity:.45">המדריך למדריך</div>`;
+  const rule = `<div style="height:${Math.max(.9, fs * 0.12)}mm;background:#404040;border-radius:1mm;width:70%;margin:${fs * 0.22}mm auto ${fs * 0.28}mm"></div>`;
+
+  const chips = asChips
+    ? `<div style="display:flex;flex-wrap:wrap;gap:1.4mm;justify-content:center;margin-top:1.4mm">${subParts.map((t, i) => {
+        const col = CHIP_COLORS[(i + hh) % CHIP_COLORS.length];
+        const dark = col === '#C137D6';
+        return `<span style="background:${col};color:${dark ? '#fff' : '#111'};font-family:${hand};font-weight:700;font-size:${Math.max(4.4, fs * 0.8)}mm;line-height:1;padding:.6mm 2mm .8mm">${esc(t)}</span>`;
+      }).join('')}</div>`
+    : '';
+  const handSub = subText
+    ? `<div style="font-family:${hand};font-weight:700;font-size:${Math.max(fs * 0.85, 4.4)}mm;line-height:1;margin-top:1.2mm">${esc(subText).replace(/\n/g, '<br>')}</div>`
+    : '';
+
+  const frame = `position:absolute;inset:1.6mm;border:.35mm solid #111;pointer-events:none;`;
+  const root = `width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;text-align:center;`;
+  const titleStyle = `font-family:${titleFont};font-weight:${titleWeight};font-size:${fs}mm;line-height:1.12;`;
+
+  if (isPoem) {
+    return `<div style="${root}display:flex;align-items:center;justify-content:center;padding:4mm 5mm 5mm;"><div style="${frame}"></div>${motifPeek}
+<div style="position:relative;font-family:${hand};font-weight:700;font-size:${handPoem}mm;line-height:1.05;color:#111">${text}${subText ? `<div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:${Math.max(handPoem * 0.62, 3)}mm;margin-top:1.4mm">${esc(subText)}</div>` : ''}</div>${brand}</div>`;
+  }
+  if (pr.layout === 'split') {
+    const side = mSize * 1.05;
+    return `<div style="${root}display:flex;align-items:center;justify-content:space-between;padding:3mm 5mm;"><div style="${frame}"></div>
+<div style="position:relative;flex:none;width:${side}mm;height:${side}mm">${blob}<div style="position:absolute;inset:0;transform:rotate(-7deg)">${svg}</div></div>
+<div style="position:relative;flex:1;padding-inline-start:3mm"><div style="${titleStyle}">${text}</div>${rule}${chips}${handSub}</div>${brand}</div>`;
+  }
+  if (pr.layout === 'ticket') {
+    return `<div style="${root}display:flex;align-items:center;padding:2mm 5mm;-webkit-mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;"><div style="${frame}border-style:dashed"></div>
+<div style="position:relative;flex:1;padding-inline-end:3mm"><div style="${titleStyle}">${text}</div>${chips}${handSub}</div>
+<div style="position:relative;flex:none;width:${h * 0.62}mm;height:${h * 0.62}mm">${blob}<div style="position:absolute;inset:0;transform:rotate(8deg)">${svg}</div></div></div>`;
+  }
+  if (pr.layout === 'seal') {
+    return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 5mm;"><div style="${frame}"></div><div style="position:absolute;inset:2.6mm;border:.2mm solid #111;pointer-events:none"></div>
+<div style="width:${Math.min(w, h) * 0.2}mm;height:${Math.min(w, h) * 0.2}mm;margin-bottom:1mm;position:relative">${blob}<div style="position:absolute;inset:0">${svg}</div></div>
+<div style="position:relative;${titleStyle}">${text}</div>${rule}${chips}${handSub}${brand}</div>`;
+  }
+  // center / label / sign
+  return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 5mm;"><div style="${frame}"></div>${motifPeek}
+<div style="position:relative;${titleStyle}">${text}</div>${asChips || subText ? rule : ''}${chips}${handSub}${brand}</div>`;
 }
 
 // דף A4 עם עותקים רבים של הכרטיס — לגזירה
