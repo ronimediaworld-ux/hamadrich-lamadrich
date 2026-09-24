@@ -62,6 +62,16 @@ export interface Activity {
   appendices?: Appendix[];
 }
 
+export interface ChuparPrint {
+  shape: 'card' | 'cert' | 'ticket' | 'label' | 'tag' | 'square' | 'image';
+  layout: 'center' | 'split' | 'seal' | 'label' | 'poem' | 'ticket' | 'sign';
+  palette: string;
+  motif: string;
+  font: 'suez' | 'secular' | 'rubik' | 'amatic' | 'karantina' | 'heebo';
+  text: string;
+  sub?: string;
+}
+
 export interface Chupar {
   id: string;
   title: string;
@@ -73,6 +83,7 @@ export interface Chupar {
   tip: string;
   character: Character;
   designImage?: string; // תמונת תצוגה מקדימה של עיצוב מקורי (קנבה וכו'), נתיב תחת public/
+  print?: ChuparPrint; // עיצוב הכרטיס להדפסה (נוצר לפי תוכן הצ׳ופר)
   canvaTemplateUrl?: string; // קישור "שימוש בתבנית" של קנבה — מבקרים יכולים ללחוץ ולקבל עותק עריך משלהם
 }
 

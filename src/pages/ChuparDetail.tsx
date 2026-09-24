@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getChupar } from '../data/chuparim';
 import { TeenAvatar } from '../components/TeenAvatar';
@@ -6,11 +7,15 @@ import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
 import { chuparToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { ChuparDesign } from '../components/ChuparDesign';
+import { buildChuparPrintHtml } from '../lib/chuparDesign';
+import { offerHtml } from '../lib/printFile';
 
 export function ChuparDetail() {
   const { id } = useParams();
   const chupar = getChupar(id ?? '');
   useDocumentTitle(chupar?.title);
+  const [busy, setBusy] = useState(false);
 
   if (!chupar) {
     return (
@@ -43,11 +48,19 @@ export function ChuparDetail() {
           <h1 style={{ fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 800, marginBottom: 12, lineHeight: 1.25 }}>{chupar.title}</h1>
           <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginBottom: 20 }}>{chupar.description}</p>
 
-          {chupar.designImage && (
-            <div className="card" style={{ padding: 0, marginBottom: 20, overflow: 'hidden' }}>
-              <img src={chupar.designImage} alt={`עיצוב: ${chupar.title}`} style={{ width: '100%', display: 'block' }} />
+          <div className="card" style={{ padding: 18, marginBottom: 20 }}>
+            <ChuparDesign chupar={chupar} maxWidth={520} />
+            <div className="no-print" style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', justifyContent: 'center', marginTop: 16 }}>
+              <button
+                type="button"
+                className="btn btn-flame"
+                disabled={busy}
+                onClick={async () => { setBusy(true); await offerHtml(`${chupar.id}.html`, buildChuparPrintHtml(chupar, 1, window.location.origin)); setBusy(false); }}
+              >
+                {busy ? 'רגע...' : 'הורדה להדפסה'}
+              </button>
             </div>
-          )}
+          </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 20px', fontSize: 13.5, color: 'var(--ink-faint)', marginBottom: 24, paddingBottom: 20, borderBottom: '1px solid var(--line)' }}>
             <span><b>תקציב: </b>{chupar.budget}</span>
