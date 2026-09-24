@@ -63,13 +63,14 @@ export interface Activity {
 }
 
 export interface ChuparPrint {
-  shape: 'card' | 'cert' | 'ticket' | 'label' | 'tag' | 'square' | 'image' | 'imagesq' | 'imagewide';
-  layout: 'center' | 'split' | 'seal' | 'label' | 'poem' | 'ticket' | 'sign';
+  shape: 'card' | 'cert' | 'ticket' | 'label' | 'tag' | 'square' | 'image' | 'imagesq' | 'imagewide' | 'wide';
+  layout: 'center' | 'split' | 'seal' | 'label' | 'poem' | 'ticket' | 'sign' | 'pharmacy';
   palette: string;
   motif: string;
   font: 'suez' | 'secular' | 'rubik' | 'amatic' | 'karantina' | 'heebo';
   text: string;
   sub?: string;
+  customName?: { prefix: string; placeholder: string; example: string };
 }
 
 export interface Chupar {

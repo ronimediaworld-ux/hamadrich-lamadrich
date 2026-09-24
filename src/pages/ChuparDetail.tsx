@@ -16,6 +16,7 @@ export function ChuparDetail() {
   const chupar = getChupar(id ?? '');
   useDocumentTitle(chupar?.title);
   const [busy, setBusy] = useState(false);
+  const [name, setName] = useState('');
 
   if (!chupar) {
     return (
@@ -49,18 +50,41 @@ export function ChuparDetail() {
           <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginBottom: 20 }}>{chupar.description}</p>
 
           <div className="card" style={{ padding: 18, marginBottom: 20 }}>
-            <ChuparDesign chupar={chupar} maxWidth={520} />
+            <ChuparDesign chupar={chupar} maxWidth={520} name={name} />
+            {chupar.print?.customName && (
+              <div className="no-print" style={{ marginTop: 16, textAlign: 'center' }}>
+                <label style={{ fontSize: 14, fontWeight: 700 }}>
+                  הוסיפו את השם שלכם:{' '}
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value.slice(0, 14))}
+                    placeholder={chupar.print.customName.placeholder}
+                    style={{ padding: '6px 12px', borderRadius: 8, border: '1px solid var(--line)', fontSize: 15, width: 180 }}
+                  />
+                </label>
+                <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginTop: 6 }}>
+                  השם מתווסף אחרי "{chupar.print.customName.prefix}" — למשל "{chupar.print.customName.example}". אפשר גם להשאיר ריק ולכתוב בעט אחרי ההדפסה.
+                </div>
+              </div>
+            )}
             <div className="no-print" style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', justifyContent: 'center', marginTop: 16 }}>
               <button
                 type="button"
                 className="btn btn-flame"
                 disabled={busy}
-                onClick={async () => { setBusy(true); await offerHtml(`${chupar.id}.html`, buildChuparPrintHtml(chupar, 1, window.location.origin)); setBusy(false); }}
+                onClick={async () => { setBusy(true); await offerHtml(`${chupar.id}.html`, buildChuparPrintHtml(chupar, 1, window.location.origin, name)); setBusy(false); }}
               >
                 {busy ? 'רגע...' : 'הורדה להדפסה'}
               </button>
             </div>
           </div>
+
+          {chupar.print?.customName && chupar.designImage && (
+            <div className="card no-print" style={{ padding: 16, marginBottom: 20, textAlign: 'center' }}>
+              <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 10 }}>דוגמה — כך רוני עשתה את זה: "{chupar.print.customName.example}"</div>
+              <img src={chupar.designImage} alt="דוגמה" style={{ maxWidth: '100%', maxHeight: 220 }} />
+            </div>
+          )}
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 20px', fontSize: 13.5, color: 'var(--ink-faint)', marginBottom: 24, paddingBottom: 20, borderBottom: '1px solid var(--line)' }}>
             <span><b>תקציב: </b>{chupar.budget}</span>

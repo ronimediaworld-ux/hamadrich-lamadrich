@@ -30,6 +30,7 @@ export const SHAPES: Record<string, { w: number; h: number }> = {
   image: { w: 92, h: 64 },
   imagesq: { w: 60, h: 60 },
   imagewide: { w: 92, h: 44 },
+  wide: { w: 92, h: 44 },
 };
 
 function esc(s: string): string {
@@ -113,7 +114,7 @@ function hash(id: string): number {
 }
 
 // מייצר כרטיס אחד (HTML עם סגנון inline בלבד) — גודל במ"מ לפי הצורה
-export function renderCard(c: Chupar, imgBase = ''): string {
+export function renderCard(c: Chupar, imgBase = '', name = ''): string {
   const pr: ChuparPrint = c.print ?? { shape: 'card', layout: 'center', palette: 'cream', motif: 'star', font: 'rubik', text: c.title };
   const shape = SHAPES[pr.shape] ?? SHAPES.card;
   const { w, h } = shape;
@@ -123,6 +124,34 @@ export function renderCard(c: Chupar, imgBase = ''): string {
 
   if (c.designImage && pr.shape.startsWith('image')) {
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;"><img src="${esc(imgBase + c.designImage)}" alt="" style="max-width:100%;max-height:100%;object-fit:contain;display:block;margin:auto"></div>`;
+  }
+
+  if (pr.layout === 'pharmacy') {
+    const prefix = pr.customName?.prefix ?? pr.text;
+    const nm = name.trim();
+    const total = (prefix + nm).length;
+    const tfs = Math.min(11.5, 50 / Math.max(total, 5) / 0.6);
+    const slot = nm
+      ? esc(nm)
+      : `<span style="display:inline-block;min-width:${tfs * 2.6}mm;height:${tfs * 0.8}mm;border-bottom:${Math.max(.7, tfs * 0.09)}mm dotted #404040;vertical-align:baseline"></span>`;
+    const chipCss = (bg: string, fg = '#111') => `background:${bg};color:${fg};font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.6mm;line-height:1;padding:.5mm 1.8mm .8mm;`;
+    return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;">
+<div style="position:absolute;inset:1.8mm;border:.3mm solid #111;pointer-events:none"></div>
+<div style="position:absolute;left:0;top:0;width:36mm;height:${h}mm">
+<svg viewBox="0 0 120 100" style="position:absolute;inset:0;width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M10 34c-2-16 16-26 34-20 14-8 34 0 38 18 14 6 24 22 12 38-8 12-22 12-30 8-4 14-24 22-38 12C8 78 2 60 10 34z" fill="#93A683"/></svg>
+<div style="position:absolute;left:7mm;top:5mm;width:22mm;height:22mm;background:#4A5D8F;transform:rotate(14deg)"></div>
+<div style="position:absolute;left:10mm;top:8mm;width:15mm;height:15mm;background:#404040;color:#fff;font-family:'Secular One','Rubik',sans-serif;text-align:center;font-size:3.3mm;line-height:1.05;padding-top:3.3mm;box-sizing:border-box"><div style="font-size:2.6mm">15</div>קפליות</div>
+<div style="position:absolute;left:17mm;top:19mm;width:12mm;height:12mm;background:#404040;transform:rotate(0deg)"></div>
+<div style="position:absolute;left:14mm;top:22mm;width:16mm;height:16mm;background:#4A5D8F;opacity:.0"></div>
+</div>
+<div style="position:absolute;right:5mm;left:38mm;top:2.5mm;bottom:3mm;display:flex;flex-direction:column;justify-content:center;align-items:stretch">
+<div style="font-family:'Secular One','Rubik',sans-serif;font-size:${tfs}mm;line-height:1.1;text-align:center;white-space:nowrap">${esc(prefix)}${slot}</div>
+<div style="height:1mm;background:#404040;border-radius:1mm;margin:.8mm 1mm 1.4mm"></div>
+<div style="display:flex;flex-wrap:wrap;gap:1.4mm 2mm;align-items:center;justify-content:flex-start">
+<span style="font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:5mm">לקחת כש:</span>
+<span style="${chipCss('#FF9500')}">כואב לי</span><span style="${chipCss('#C137D6', '#fff')}">עייף/ה</span>
+<span style="${chipCss('#FFEB00')}">חם לי</span><span style="${chipCss('#7EE06A')}">קשה לי</span><span style="${chipCss('#F27FE0')}">כיף לי</span>
+</div></div></div>`;
   }
 
   const [f1, f2] = FLAT[pr.palette] ?? FLAT.cream;
@@ -215,13 +244,13 @@ export function renderCard(c: Chupar, imgBase = ''): string {
 }
 
 // דף A4 עם עותקים רבים של הכרטיס — לגזירה
-export function buildChuparPrintHtml(c: Chupar, pages: number, imgBase: string): string {
+export function buildChuparPrintHtml(c: Chupar, pages: number, imgBase: string, name = ''): string {
   const shape = SHAPES[c.print?.shape ?? 'card'] ?? SHAPES.card;
   const gap = 3;
   const cols = Math.max(1, Math.floor((194 + gap) / (shape.w + gap)));
   const rows = Math.max(1, Math.floor((281 + gap) / (shape.h + gap)));
   const perPage = cols * rows;
-  const card = renderCard(c, imgBase);
+  const card = renderCard(c, imgBase, name);
   const cells = (n: number) => Array.from({ length: n }, () => `<div class="cell">${card}</div>`).join('');
   const sheets = Array.from({ length: pages }, () => `<div class="page"><div class="grid">${cells(perPage)}</div><div class="foot">${esc(c.title)} · ${perPage} עותקים בדף · גוזרים לאורך הקווים</div></div>`).join('');
   return `<!doctype html>
