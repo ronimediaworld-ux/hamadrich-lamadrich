@@ -332,7 +332,10 @@ export type PrintOutcome = 'printed' | 'downloaded' | 'declined' | 'unavailable'
 // בתוך תצוגת הדגמה של Claude (window.claude קיים) — משתמשים ב-API של Claude, כי הורדת קובץ ישירה חסומה שם.
 // באתר האמיתי — מורידים ישר קובץ, בלי לעבור דרך חלון print של הדף המקורי.
 export async function offerPrint(filename: string, title: string, bodyText: string): Promise<PrintOutcome> {
-  const html = buildPrintableHtml(title, bodyText);
+  return offerHtml(filename, buildPrintableHtml(title, bodyText));
+}
+
+export async function offerHtml(filename: string, html: string): Promise<PrintOutcome> {
   const claude = (window as unknown as { claude?: ClaudeGlobal }).claude;
   if (claude?.use) {
     try {
