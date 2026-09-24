@@ -161,7 +161,7 @@ export function CategoryPage() {
             ))}
             <span style={{ width: 1, background: 'var(--line)', margin: '0 4px' }} />
             <button className={`chip${ageFilter === null ? ' is-active' : ''}`} onClick={() => setAgeFilter(null)}>כל הגילאים</button>
-            <button className={`chip${ageFilter === 'young' ? ' is-active' : ''}`} onClick={() => setAgeFilter('young')}>גיל צעיר (ד'-ו')</button>
+            <button className={`chip${ageFilter === 'young' ? ' is-active' : ''}`} onClick={() => setAgeFilter('young')}>גיל צעיר (א'-ו')</button>
             <button className={`chip${ageFilter === 'mid' ? ' is-active' : ''}`} onClick={() => setAgeFilter('mid')}>גיל חטיבה (ז'-ט')</button>
             <button className={`chip${ageFilter === 'old' ? ' is-active' : ''}`} onClick={() => setAgeFilter('old')}>גיל תיכון (י'-י"ב)</button>
           </div>
@@ -268,7 +268,7 @@ export function CategoryPage() {
             ))}
             <span style={{ width: 1, background: 'var(--line)', margin: '0 4px' }} />
             <button className={`chip${ageFilter === null ? ' is-active' : ''}`} onClick={() => setAgeFilter(null)}>כל הגילאים</button>
-            <button className={`chip${ageFilter === 'young' ? ' is-active' : ''}`} onClick={() => setAgeFilter('young')}>גיל צעיר (ד'-ו')</button>
+            <button className={`chip${ageFilter === 'young' ? ' is-active' : ''}`} onClick={() => setAgeFilter('young')}>גיל צעיר (א'-ו')</button>
             <button className={`chip${ageFilter === 'mid' ? ' is-active' : ''}`} onClick={() => setAgeFilter('mid')}>גיל חטיבה (ז'-ט')</button>
             <button className={`chip${ageFilter === 'old' ? ' is-active' : ''}`} onClick={() => setAgeFilter('old')}>גיל תיכון (י'-י"ב)</button>
             <button className={`chip${shabbatOnly ? ' is-active' : ''}`} onClick={() => setShabbatOnly((v) => !v)}>מתאים לשבת</button>
