@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getChupar } from '../data/chuparim';
 import { TeenAvatar } from '../components/TeenAvatar';
@@ -8,7 +8,7 @@ import { PrintButton } from '../components/PrintButton';
 import { chuparToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { ChuparDesign } from '../components/ChuparDesign';
-import { buildChuparPrintHtml } from '../lib/chuparDesign';
+import { buildChuparPrintHtml, getFields } from '../lib/chuparDesign';
 import { offerHtml } from '../lib/printFile';
 
 export function ChuparDetail() {
@@ -17,6 +17,8 @@ export function ChuparDetail() {
   useDocumentTitle(chupar?.title);
   const [busy, setBusy] = useState(false);
   const [name, setName] = useState('');
+  const [vals, setVals] = useState<string[]>([]);
+  useEffect(() => { setName(''); setVals([]); }, [id]);
 
   if (!chupar) {
     return (
@@ -50,7 +52,22 @@ export function ChuparDetail() {
           <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginBottom: 20 }}>{chupar.description}</p>
 
           <div className="card" style={{ padding: 18, marginBottom: 20 }}>
-            <ChuparDesign chupar={chupar} maxWidth={520} name={name} />
+            <ChuparDesign chupar={chupar} maxWidth={520} name={name} values={vals} />
+            {getFields(chupar).length > 0 && (
+              <div className="no-print" style={{ marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ width: '100%', textAlign: 'center', fontSize: 13, color: 'var(--ink-faint)' }}>אפשר למלא שמות ופרטים לפני ההורדה (או להשאיר ריק ולכתוב בעט):</div>
+                {getFields(chupar).map((f, i) => (
+                  <label key={i} style={{ fontSize: 13.5, fontWeight: 700 }}>
+                    {f.label}:{' '}
+                    <input
+                      value={vals[i] ?? ''}
+                      onChange={(e) => setVals((prev) => { const next = [...prev]; next[i] = e.target.value.slice(0, 22); return next; })}
+                      style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid var(--line)', fontSize: 14.5, width: 150 }}
+                    />
+                  </label>
+                ))}
+              </div>
+            )}
             {chupar.print?.customName && (
               <div className="no-print" style={{ marginTop: 16, textAlign: 'center' }}>
                 <label style={{ fontSize: 14, fontWeight: 700 }}>
@@ -72,7 +89,7 @@ export function ChuparDetail() {
                 type="button"
                 className="btn btn-flame"
                 disabled={busy}
-                onClick={async () => { setBusy(true); await offerHtml(`${chupar.id}.html`, buildChuparPrintHtml(chupar, 1, window.location.origin, name)); setBusy(false); }}
+                onClick={async () => { setBusy(true); await offerHtml(`${chupar.id}.html`, buildChuparPrintHtml(chupar, 1, window.location.origin, name, vals)); setBusy(false); }}
               >
                 {busy ? 'רגע...' : 'הורדה להדפסה'}
               </button>

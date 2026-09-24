@@ -119,13 +119,43 @@ function hash(id: string): number {
 }
 
 // מייצר כרטיס אחד (HTML עם סגנון inline בלבד) — גודל במ"מ לפי הצורה
-export function renderCard(c: Chupar, imgBase = '', name = ''): string {
-  const pr: ChuparPrint = c.print ?? { shape: 'card', layout: 'center', palette: 'cream', motif: 'star', font: 'rubik', text: c.title };
+export interface ChuparField { label: string }
+
+// שדות דינמיים: כל קו תחתון ארוך (___) בטקסט הכרטיס הוא מקום שאפשר למלא בשם או בפרט
+export function getFields(c: Chupar): ChuparField[] {
+  const pr = c.print;
+  if (!pr) return [];
+  const out: ChuparField[] = [];
+  for (const str of [pr.text, pr.sub ?? '']) {
+    const re = /_{3,}/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(str))) {
+      const lineStart = str.lastIndexOf('\n', m.index) + 1;
+      let before = str.slice(lineStart, m.index);
+      before = before.slice(before.lastIndexOf('·') + 1).replace(/[:\s,]+$/g, '').trim();
+      const words = before.split(/\s+/).filter(Boolean);
+      out.push({ label: words.slice(-3).join(' ') || 'מילוי' });
+    }
+  }
+  return out;
+}
+
+function fillBlanks(strs: [string, string], values: string[]): [string, string] {
+  let k = 0;
+  const f = (str: string) => str.replace(/_{3,}/g, () => {
+    const v = (values[k++] ?? '').trim();
+    return v ? v : '_'.repeat(9);
+  });
+  return [f(strs[0]), f(strs[1])];
+}
+
+export function renderCard(c: Chupar, imgBase = '', name = '', values: string[] = []): string {
+  const base: ChuparPrint = c.print ?? { shape: 'card', layout: 'center', palette: 'cream', motif: 'star', font: 'rubik', text: c.title };
+  const [ft, fsub] = fillBlanks([base.text, base.sub ?? ''], values);
+  const pr: ChuparPrint = { ...base, text: ft, sub: base.sub ? fsub : undefined };
   const shape = SHAPES[pr.shape] ?? SHAPES.card;
   const { w, h } = shape;
   const hh = hash(c.id);
-  pr.text = pr.text.replace(/_{9,}/g, '_'.repeat(9));
-  if (pr.sub) pr.sub = pr.sub.replace(/_{9,}/g, '_'.repeat(9));
 
   if (c.designImage && pr.shape.startsWith('image')) {
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;"><img src="${esc(imgBase + c.designImage)}" alt="" style="max-width:100%;max-height:100%;object-fit:contain;display:block;margin:auto"></div>`;
@@ -305,13 +335,13 @@ ${strip('left')}${strip('right')}
 }
 
 // דף A4 עם עותקים רבים של הכרטיס — לגזירה
-export function buildChuparPrintHtml(c: Chupar, pages: number, imgBase: string, name = ''): string {
+export function buildChuparPrintHtml(c: Chupar, pages: number, imgBase: string, name = '', values: string[] = []): string {
   const shape = SHAPES[c.print?.shape ?? 'card'] ?? SHAPES.card;
   const gap = 3;
   const cols = Math.max(1, Math.floor((194 + gap) / (shape.w + gap)));
   const rows = Math.max(1, Math.floor((281 + gap) / (shape.h + gap)));
   const perPage = cols * rows;
-  const card = renderCard(c, imgBase, name);
+  const card = renderCard(c, imgBase, name, values);
   const cells = (n: number) => Array.from({ length: n }, () => `<div class="cell">${card}</div>`).join('');
   const sheets = Array.from({ length: pages }, () => `<div class="page"><div class="grid">${cells(perPage)}</div><div class="foot">${esc(c.title)} · ${perPage} עותקים בדף · גוזרים לאורך הקווים</div></div>`).join('');
   return `<!doctype html>

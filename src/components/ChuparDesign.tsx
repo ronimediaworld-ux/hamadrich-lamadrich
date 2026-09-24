@@ -4,7 +4,7 @@ import { renderCard, SHAPES } from '../lib/chuparDesign';
 
 const MM = 3.7795;
 
-export function ChuparDesign({ chupar, maxWidth, name }: { chupar: Chupar; maxWidth?: number; name?: string }) {
+export function ChuparDesign({ chupar, maxWidth, name, values }: { chupar: Chupar; maxWidth?: number; name?: string; values?: string[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const [avail, setAvail] = useState(240);
   const shape = SHAPES[chupar.print?.shape ?? 'card'] ?? SHAPES.card;
@@ -28,7 +28,7 @@ export function ChuparDesign({ chupar, maxWidth, name }: { chupar: Chupar; maxWi
       <div style={{ width: natural * scale, height: shape.h * MM * scale, borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,.18)', flex: 'none', direction: 'ltr' }}>
         <div
           style={{ width: natural, height: shape.h * MM, transform: `scale(${scale})`, transformOrigin: 'top left' }}
-          dangerouslySetInnerHTML={{ __html: renderCard(chupar, window.location.origin, name ?? '') }}
+          dangerouslySetInnerHTML={{ __html: renderCard(chupar, window.location.origin, name ?? '', values ?? []) }}
         />
       </div>
     </div>
