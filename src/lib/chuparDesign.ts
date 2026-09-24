@@ -102,6 +102,10 @@ const FLAT: Record<string, [string, string]> = {
   sand: ['#C9A27E', '#FFEB00'], cherry: ['#FF4D4D', '#FF9500'], mint: ['#7EE06A', '#8FE3CE'],
   sky: ['#4A5D8F', '#8FB8E8'], chalk: ['#90A783', '#FFEB00'], cream: ['#FF9500', '#FFEB00'],
 };
+const PASTEL: Record<string, string> = {
+  sunrise: '#FFEFC2', berry: '#FFDDF0', ocean: '#D6ECFF', forest: '#DDF6CF', grape: '#EADBFF', night: '#DDE3FF',
+  sand: '#F9E6C9', cherry: '#FFDCD6', mint: '#D2F5E7', sky: '#DCE7FF', chalk: '#E1EEDD', cream: '#FFF1CC',
+};
 const BLOBS = [
   'M20 60c-6-24 14-46 40-44 20 2 34-8 44 8 12 20 6 44-10 58-18 16-36 20-56 12C24 88 24 72 20 60z',
   'M12 44c8-26 40-36 62-26 24 10 32 40 18 62-14 22-48 24-66 8C8 76 6 58 12 44z',
@@ -238,46 +242,65 @@ ${strip('left')}${strip('right')}
   const HL = ['#FFEB00', '#7EE06A', '#F27FE0', '#FF9500'];
   const hl = HL[hh % HL.length];
   const titleHtml = `<span style="background-image:linear-gradient(transparent 60%,${hl} 60%,${hl} 92%,transparent 92%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 1.2mm">${text}</span>`;
-  const brand = `<div style="position:absolute;bottom:.9mm;inset-inline:0;text-align:center;font-family:'Heebo',sans-serif;font-size:1.9mm;opacity:.45">המדריך למדריך</div>`;
-  const rule = `<div style="height:${Math.max(.9, fs * 0.12)}mm;background:#404040;border-radius:1mm;width:70%;margin:${fs * 0.22}mm auto ${fs * 0.28}mm"></div>`;
+  const brand = `<div style="position:absolute;bottom:.35mm;inset-inline:0;text-align:center;font-family:'Heebo',sans-serif;font-size:1.7mm;opacity:.5">המדריך למדריך</div>`;
+  const rule = `<div style="position:relative;height:${Math.max(.9, fs * 0.12)}mm;background:#404040;border-radius:1mm;width:70%;margin:${fs * 0.22}mm auto ${fs * 0.28}mm"></div>`;
 
   const chips = asChips
-    ? `<div style="display:flex;flex-wrap:wrap;gap:1.4mm;justify-content:center;margin-top:1.4mm">${subParts.map((t, i) => {
+    ? `<div style="position:relative;display:flex;flex-wrap:wrap;gap:1.4mm;justify-content:center;margin-top:1.4mm">${subParts.map((t, i) => {
         const col = CHIP_COLORS[(i + hh) % CHIP_COLORS.length];
         const dark = col === '#C137D6';
-        return `<span style="background:${col};color:${dark ? '#fff' : '#111'};font-family:${hand};font-weight:700;font-size:${Math.max(4.4, fs * 0.8)}mm;line-height:1;padding:.6mm 2mm .8mm">${esc(t)}</span>`;
+        return `<span style="background:${col};color:${dark ? '#fff' : '#111'};font-family:${hand};font-weight:700;font-size:${Math.max(4.4, fs * 0.8)}mm;line-height:1;padding:.6mm 2mm .8mm;border-radius:.9mm;transform:rotate(${i % 2 === 0 ? -2 : 2}deg);display:inline-block">${esc(t)}</span>`;
       }).join('')}</div>`
     : '';
   const handSub = subText
-    ? `<div style="font-family:${hand};font-weight:700;font-size:${Math.max(fs * 0.85, 4.4)}mm;line-height:1;margin-top:1.2mm">${esc(subText).replace(/\n/g, '<br>')}</div>`
+    ? `<div style="position:relative;font-family:${hand};font-weight:700;font-size:${Math.max(fs * 0.85, 4.4)}mm;line-height:1;margin-top:1.2mm">${esc(subText).replace(/\n/g, '<br>')}</div>`
     : '';
 
-  const frame = `position:absolute;inset:1.6mm;border:.35mm solid #111;pointer-events:none;`;
-  const root = `width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;text-align:center;`;
+  const confColors = [...CHIP_COLORS, f1];
+  const confetti = (() => {
+    const items: string[] = [];
+    let seed = hh;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+    const n = Math.round((w + h) / 9);
+    for (let i = 0; i < n; i++) {
+      const edge = i % 4;
+      const along = rnd();
+      const off = 0.6 + rnd() * 0.9;
+      const pos = edge === 0 ? `top:${off}mm;left:${along * (w - 3)}mm` : edge === 1 ? `bottom:${off}mm;left:${along * (w - 3)}mm` : edge === 2 ? `left:${off}mm;top:${along * (h - 3)}mm` : `right:${off}mm;top:${along * (h - 3)}mm`;
+      const col = confColors[Math.floor(rnd() * confColors.length)];
+      const kind = Math.floor(rnd() * 3);
+      const sz = 1.1 + rnd() * 0.8;
+      const shape = kind === 0 ? `border-radius:50%;background:${col}` : kind === 1 ? `background:${col};transform:rotate(${Math.round(rnd() * 80)}deg)` : `border-left:${sz / 2}mm solid transparent;border-right:${sz / 2}mm solid transparent;border-bottom:${sz}mm solid ${col}`;
+      items.push(`<div style="position:absolute;${pos};width:${kind === 2 ? 0 : sz}mm;height:${kind === 2 ? 0 : sz}mm;${shape}"></div>`);
+    }
+    return items.join('');
+  })();
+  const frame = `position:absolute;inset:2.5mm;border:.4mm solid #111;border-radius:3mm;background:#fff;pointer-events:none;`;
+  const root = `width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:${PASTEL[pr.palette] ?? '#FFF1CC'};color:#111;direction:rtl;text-align:center;`;
   const titleStyle = `font-family:${titleFont};font-weight:${titleWeight};font-size:${fs}mm;line-height:1.12;`;
 
   if (isPoem) {
-    return `<div style="${root}display:flex;align-items:center;justify-content:center;${centerPad}"><div style="${frame}"></div>${motifPeek}
+    return `<div style="${root}display:flex;align-items:center;justify-content:center;${centerPad}"><div style="${frame}"></div>${confetti}${motifPeek}
 <div style="position:relative;font-family:${hand};font-weight:700;font-size:${handPoem}mm;line-height:1.05;color:#111">${text}${subText ? `<div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:${Math.max(handPoem * 0.62, 3)}mm;margin-top:1.4mm">${esc(subText)}</div>` : ''}</div>${brand}</div>`;
   }
   if (pr.layout === 'split') {
     const side = mSize * 1.05;
-    return `<div style="${root}display:flex;align-items:center;justify-content:space-between;padding:3mm 5mm;"><div style="${frame}"></div>
+    return `<div style="${root}display:flex;align-items:center;justify-content:space-between;padding:3mm 5mm;"><div style="${frame}"></div>${confetti}
 <div style="position:relative;flex:none;width:${side}mm;height:${side}mm">${cluster(-7)}</div>
 <div style="position:relative;flex:1;padding-inline-start:3mm"><div style="${titleStyle}">${titleHtml}</div>${rule}${chips}${handSub}</div>${brand}</div>`;
   }
   if (pr.layout === 'ticket') {
-    return `<div style="${root}display:flex;align-items:center;padding:2mm 5mm;-webkit-mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;"><div style="${frame}border-style:dashed"></div>
+    return `<div style="${root}display:flex;align-items:center;padding:2mm 5mm;-webkit-mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;"><div style="${frame}border-style:dashed"></div>${confetti}
 <div style="position:relative;flex:1;padding-inline-end:3mm"><div style="${titleStyle}">${titleHtml}</div>${chips}${handSub}</div>
 <div style="position:relative;flex:none;width:${h * 0.62}mm;height:${h * 0.62}mm">${cluster(8)}</div></div>`;
   }
   if (pr.layout === 'seal') {
-    return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 5mm;"><div style="${frame}"></div><div style="position:absolute;inset:2.6mm;border:.2mm solid #111;pointer-events:none"></div>
+    return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 5mm;"><div style="${frame}"></div>${confetti}<div style="position:absolute;inset:3.7mm;border:.2mm solid #111;border-radius:2mm;pointer-events:none"></div>
 <div style="width:${Math.min(w, h) * 0.2}mm;height:${Math.min(w, h) * 0.2}mm;margin-bottom:1mm;position:relative">${blob}<div style="position:absolute;inset:0">${svg}</div></div>
 <div style="position:relative;${titleStyle}">${titleHtml}</div>${rule}${chips}${handSub}${brand}</div>`;
   }
   // center / label / sign
-  return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;${centerPad}"><div style="${frame}"></div>${motifPeek}
+  return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;${centerPad}"><div style="${frame}"></div>${confetti}${motifPeek}
 <div style="position:relative;${titleStyle}">${titleHtml}</div>${asChips || subText ? rule : ''}${chips}${handSub}${brand}</div>`;
 }
 

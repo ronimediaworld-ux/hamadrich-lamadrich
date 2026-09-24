@@ -190,7 +190,7 @@
     "tip": "הכינו דוגמת קליעה פשוטה מראש ותלמדו אותה בקצרה — לא כולם מכירים קליעת צמידים.",
     "character": "C",
     "print": {
-      "shape": "label",
+      "shape": "card",
       "layout": "label",
       "palette": "grape",
       "motif": "heart",
@@ -538,7 +538,7 @@
     "tip": "משחק שהופך תלונות שגרתיות למשחק — עדיף עם מילים קלילות ולא עם דברים שהם באמת צריכים לומר (כמו כאב אמיתי).",
     "character": "F",
     "print": {
-      "shape": "label",
+      "shape": "cert",
       "layout": "sign",
       "palette": "cherry",
       "motif": "speech",
@@ -815,7 +815,7 @@
     "tip": "טוב לימי גיבוש שבטיים או תחרות בין שבטים — מחזק זהות קבוצתית בצורה כיפית.",
     "character": "A",
     "print": {
-      "shape": "label",
+      "shape": "card",
       "layout": "center",
       "palette": "sunrise",
       "motif": "crown",
@@ -1073,7 +1073,7 @@
     "tip": "הכי חזק כשנותנים אותו אישית, ברגע נכון, בלי הרבה מילים סביב זה.",
     "character": "C",
     "print": {
-      "shape": "label",
+      "shape": "card",
       "layout": "label",
       "palette": "berry",
       "motif": "bandaid",
