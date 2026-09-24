@@ -227,9 +227,17 @@ ${strip('left')}${strip('right')}
 
   const svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif(pr.motif, p)}</svg>`;
   const blob = `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%"><path d="${BLOBS[hh % BLOBS.length]}" fill="${f2}" opacity=".42"/></svg>`;
-  // בחירת פינה שממנה הציור "מציץ" — כמו הדובי בעיצוב המקורי
+  // "סטיקר": כתם + ריבועים חופפים + עיגול לבן עם האייקון — בהשראת הקומפוזיציה של העיצובים המקוריים
+  const deep = hh % 3 === 0 ? '#93A683' : '#4A5D8F';
+  const cluster = (rot: number) => `${blob}
+<div style="position:absolute;left:12%;top:8%;width:60%;height:60%;background:${deep};transform:rotate(${rot + 12}deg)"></div>
+<div style="position:absolute;left:38%;top:34%;width:44%;height:44%;background:#404040;transform:rotate(${rot - 8}deg)"></div>
+<div style="position:absolute;left:14%;top:14%;width:66%;height:66%;border-radius:50%;background:#fff;border:.3mm solid #111;box-sizing:border-box;padding:11%;transform:rotate(${rot}deg)">${svg}</div>`;
   const peek = `position:absolute;bottom:${-mSize * 0.14}mm;${corner}:${-mSize * 0.14}mm;width:${mSize}mm;height:${mSize}mm;`;
-  const motifPeek = `<div style="${peek}">${blob}<div style="position:absolute;inset:0;transform:rotate(${corner === 'left' ? -8 : 8}deg)">${svg}</div></div>`;
+  const motifPeek = `<div style="${peek}">${cluster(corner === 'left' ? -8 : 8)}</div>`;
+  const HL = ['#FFEB00', '#7EE06A', '#F27FE0', '#FF9500'];
+  const hl = HL[hh % HL.length];
+  const titleHtml = `<span style="background-image:linear-gradient(transparent 60%,${hl} 60%,${hl} 92%,transparent 92%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 1.2mm">${text}</span>`;
   const brand = `<div style="position:absolute;bottom:.9mm;inset-inline:0;text-align:center;font-family:'Heebo',sans-serif;font-size:1.9mm;opacity:.45">המדריך למדריך</div>`;
   const rule = `<div style="height:${Math.max(.9, fs * 0.12)}mm;background:#404040;border-radius:1mm;width:70%;margin:${fs * 0.22}mm auto ${fs * 0.28}mm"></div>`;
 
@@ -255,22 +263,22 @@ ${strip('left')}${strip('right')}
   if (pr.layout === 'split') {
     const side = mSize * 1.05;
     return `<div style="${root}display:flex;align-items:center;justify-content:space-between;padding:3mm 5mm;"><div style="${frame}"></div>
-<div style="position:relative;flex:none;width:${side}mm;height:${side}mm">${blob}<div style="position:absolute;inset:0;transform:rotate(-7deg)">${svg}</div></div>
-<div style="position:relative;flex:1;padding-inline-start:3mm"><div style="${titleStyle}">${text}</div>${rule}${chips}${handSub}</div>${brand}</div>`;
+<div style="position:relative;flex:none;width:${side}mm;height:${side}mm">${cluster(-7)}</div>
+<div style="position:relative;flex:1;padding-inline-start:3mm"><div style="${titleStyle}">${titleHtml}</div>${rule}${chips}${handSub}</div>${brand}</div>`;
   }
   if (pr.layout === 'ticket') {
     return `<div style="${root}display:flex;align-items:center;padding:2mm 5mm;-webkit-mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;"><div style="${frame}border-style:dashed"></div>
-<div style="position:relative;flex:1;padding-inline-end:3mm"><div style="${titleStyle}">${text}</div>${chips}${handSub}</div>
-<div style="position:relative;flex:none;width:${h * 0.62}mm;height:${h * 0.62}mm">${blob}<div style="position:absolute;inset:0;transform:rotate(8deg)">${svg}</div></div></div>`;
+<div style="position:relative;flex:1;padding-inline-end:3mm"><div style="${titleStyle}">${titleHtml}</div>${chips}${handSub}</div>
+<div style="position:relative;flex:none;width:${h * 0.62}mm;height:${h * 0.62}mm">${cluster(8)}</div></div>`;
   }
   if (pr.layout === 'seal') {
     return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 5mm;"><div style="${frame}"></div><div style="position:absolute;inset:2.6mm;border:.2mm solid #111;pointer-events:none"></div>
 <div style="width:${Math.min(w, h) * 0.2}mm;height:${Math.min(w, h) * 0.2}mm;margin-bottom:1mm;position:relative">${blob}<div style="position:absolute;inset:0">${svg}</div></div>
-<div style="position:relative;${titleStyle}">${text}</div>${rule}${chips}${handSub}${brand}</div>`;
+<div style="position:relative;${titleStyle}">${titleHtml}</div>${rule}${chips}${handSub}${brand}</div>`;
   }
   // center / label / sign
   return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;${centerPad}"><div style="${frame}"></div>${motifPeek}
-<div style="position:relative;${titleStyle}">${text}</div>${asChips || subText ? rule : ''}${chips}${handSub}${brand}</div>`;
+<div style="position:relative;${titleStyle}">${titleHtml}</div>${asChips || subText ? rule : ''}${chips}${handSub}${brand}</div>`;
 }
 
 // דף A4 עם עותקים רבים של הכרטיס — לגזירה
