@@ -51,6 +51,16 @@ export function activityToText(a: Activity): string {
   if (a.sourceLink) L.push(`מקור חיצוני: ${a.sourceLink.title} — ${a.sourceLink.url}`);
   if (a.guideNotes) L.push('', `הערות למדריך: ${a.guideNotes}`);
   if (a.tip) L.push(`טיפ: ${a.tip}`);
+
+  if (a.appendices?.length) {
+    a.appendices.forEach((ap, i) => {
+      // בלי נקודתיים בכותרת עצמה — אחרת הפרסר של printFile.ts (שמחפש ':' ראשון) חותך את התווית לאמצע
+      const safeLabel = ap.label.replace(/:/g, ' –');
+      L.push('', `${i + 1}. נספח — ${safeLabel}`);
+      L.push(ap.content);
+    });
+  }
+
   return clean(L);
 }
 
