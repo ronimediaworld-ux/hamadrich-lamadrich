@@ -183,7 +183,7 @@ export function ActivityDetail() {
 
                 {activity.game && (
                   <Section label="משחק" step={++step}>
-                    <p style={{ margin: 0 }}>{activity.game}</p>
+                    <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{activity.game}</p>
                   </Section>
                 )}
 
