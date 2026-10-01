@@ -188,14 +188,14 @@ export function ActivityDetail() {
                 )}
 
                 <Section label="מתודה" step={++step}>
-                  <p style={{ margin: 0 }}>{activity.method}</p>
+                  <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{activity.method}</p>
                 </Section>
 
                 {activity.reading && (
                   <Section label="קטע קריאה" step={++step}>
                     <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px' }}>
                       <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink-faint)', marginBottom: 6 }}>{activity.reading.label}</div>
-                      <div style={{ fontStyle: 'italic' }}>{activity.reading.text}</div>
+                      <div style={{ fontStyle: 'italic', whiteSpace: 'pre-line' }}>{activity.reading.text}</div>
                     </div>
                   </Section>
                 )}
