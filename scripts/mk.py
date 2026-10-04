@@ -49,3 +49,41 @@ def mk(id, title, ages, duration, subtopics, values, tags, description, goals, o
     if appendices:
         a['appendices'] = [{'label': l, 'content': c} for l, c in appendices]
     return a
+
+
+def enrich(id, opening, steps, discussion, summary, guideNotes=None, tip=None, game=None, reading=None, questions=None, appendices=None,
+           goals=None, equipment=None, description=None, shabbatNote=None, duration=None, sourceLink=None):
+    """Patch for an existing activity: deeper timed flow + synced legacy fields (anything not passed stays as it is)."""
+    flow = [{'label': f'פתיחה ({opening[1]} דק׳)', 'body': opening[0]}]
+    legacy = []
+    if game:
+        flow.append({'label': f'משחק ({game[1]} דק׳)', 'body': game[0]})
+    for st in steps:
+        label, body, mins = st[0], st[1], st[2]
+        step = {'label': f'{label} ({mins} דק׳)', 'body': body}
+        if len(st) > 3 and st[3]:
+            step['items'] = st[3]
+        if len(st) > 4 and st[4]:
+            step['note'] = st[4]
+        flow.append(step)
+        legacy.append(body)
+    if reading:
+        flow.append({'label': f'{reading[0]} ({reading[2]} דק׳)', 'body': reading[1]})
+    flow.append({'label': 'דיון', 'items': discussion})
+    if questions:
+        flow.append({'label': 'שאלות נוספות (אם נשאר זמן)', 'items': questions})
+    flow.append({'label': 'סיכום', 'body': summary})
+    p = {'flow': flow, 'opening': opening[0], 'method': '\n\n'.join(legacy), 'discussion': discussion, 'summary': summary}
+    if game: p['game'] = game[0]
+    if reading: p['reading'] = {'label': reading[0], 'text': reading[1]}
+    if guideNotes: p['guideNotes'] = guideNotes
+    if tip: p['tip'] = tip
+    if questions: p['questions'] = questions
+    if appendices: p['appendices'] = [{'label': l, 'content': c} for l, c in appendices]
+    if goals: p['goals'] = goals
+    if equipment is not None: p['equipment'] = equipment
+    if description: p['description'] = description
+    if shabbatNote: p['shabbatNote'] = shabbatNote
+    if duration: p['duration'] = duration
+    if sourceLink: p['sourceLink'] = {'title': sourceLink[0], 'url': sourceLink[1]}
+    return p
