@@ -75,6 +75,15 @@ export function StaffStudyDetail() {
             <p style={{ margin: 0 }}>{study.content}</p>
           </Section>
 
+          {study.explanation && (
+            <details style={{ marginBottom: 26, background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 12, padding: '14px 18px' }}>
+              <summary style={{ cursor: 'pointer', fontWeight: 800, fontSize: 15.5 }}>
+                הסבר מעמיק לקטע <span style={{ fontWeight: 500, fontSize: 13, color: 'var(--ink-faint)' }}>(אופציונלי — למי שרוצה להעמיק)</span>
+              </summary>
+              <div style={{ marginTop: 12, fontSize: 15, lineHeight: 1.85, color: 'var(--ink-soft)', whiteSpace: 'pre-line' }}>{study.explanation}</div>
+            </details>
+          )}
+
           {study.discussion?.length > 0 && (
             <Section label="שאלות לדיון">
               <ul style={{ margin: 0, paddingInlineStart: 18 }}>

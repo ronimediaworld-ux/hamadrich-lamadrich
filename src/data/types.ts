@@ -135,6 +135,7 @@ export interface StaffStudy {
   content: string;
   discussion: string[];
   takeaway: string;
+  explanation?: string; // הסבר מעמיק לקטע המקור — אופציונלי, למי שרוצה להעמיק
   sourceLink?: SourceLink;
 }
 

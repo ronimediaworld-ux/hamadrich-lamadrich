@@ -120,6 +120,7 @@ export function staffStudyToText(s: StaffStudy): string {
     L.push('');
   }
   L.push(`פתיחה: ${s.opening}`, '', s.content, '');
+  if (s.explanation) L.push('הסבר מעמיק:', '(אופציונלי — למי שרוצה להעמיק)', s.explanation, '');
   if (s.discussion?.length) {
     L.push('שאלות לדיון:');
     s.discussion.forEach((q) => L.push(`   - ${q}`));
