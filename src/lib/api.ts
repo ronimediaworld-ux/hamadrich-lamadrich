@@ -82,3 +82,15 @@ export function fileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file);
   });
 }
+
+// כל הספירות (נטען פעם אחת לכל טעינת עמוד) — להצגה בכרטיסי פעולות.
+let allViewsPromise: Promise<Record<string, number>> | null = null;
+export function getAllViews(): Promise<Record<string, number>> {
+  if (!allViewsPromise) {
+    allViewsPromise = fetch('/api/views-all')
+      .then((r) => (r.ok ? r.json() : { views: {} }))
+      .then((d: { views?: Record<string, number> }) => d.views ?? {})
+      .catch(() => ({}));
+  }
+  return allViewsPromise;
+}

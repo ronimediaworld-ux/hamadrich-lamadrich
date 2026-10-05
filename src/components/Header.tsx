@@ -3,66 +3,52 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { MascotIcon } from './TeenAvatar';
 import { SearchIcon, HeartIcon, MenuIcon, CloseIcon, ChevronDownIcon } from './Icons';
 
-interface MenuItem { to: string; label: string; desc?: string }
-interface MenuGroup { id: string; label: string; items: MenuItem[] }
+interface NavItem { to: string; label: string; flame?: boolean }
 
-// תפריט מסודר לכל האתר — מקובץ לפי מה שמחפשים: תכנים, כלים למדריכים, ועוד.
-const MENU: MenuGroup[] = [
-  {
-    id: 'bank',
-    label: 'מאגר תכנים',
-    items: [
-      { to: '/category/activities', label: 'פעולות ומערכים', desc: 'ערכים, אמונה, פרשת שבוע וכללי' },
-      { to: '/category/activities?domain=פרשת שבוע', label: 'פעולות לפרשת השבוע', desc: 'פעולה לכל פרשה' },
-      { to: '/category/games', label: 'רשימת משחקים', desc: 'קרחונים, אמון וגיבוש' },
-      { to: '/category/social-nights', label: 'ערבי גיבוש וכיף', desc: 'ערבי נושא, משימות ולילות מיוחדים' },
-      { to: '/category/methods', label: 'מתודות', desc: 'כלים לשילוב בכל פעולה' },
-      { to: '/category/readings', label: 'קטעי קריאה', desc: 'סיפורים, משלים ושירה' },
-      { to: '/chuparim', label: 'רעיונות לצ׳ופרים', desc: 'מוכנים להדפסה, עם השם שלכם' },
-    ],
-  },
-  {
-    id: 'guides',
-    label: 'למדריכים',
-    items: [
-      { to: '/category/staff-study', label: 'לימוד צוות', desc: 'להתפתח כצוות' },
-      { to: '/category/tools', label: 'סיטואציות בהדרכה', desc: 'מה עושים כש...' },
-      { to: '/how-to-build?guide=peula', label: 'נדבר ת׳כלס — איך בונים פעולה', desc: 'השלד, שלב אחרי שלב' },
-      { to: '/how-to-build?guide=personal-talks', label: 'נדבר ת׳כלס — שיחות אישיות', desc: 'עם כרטיסיות להדפסה' },
-      { to: '/how-to-build?guide=canva', label: 'נדבר ת׳כלס — עיצוב בקנבה', desc: 'צ׳ופרים, כרזות וכרטיסים' },
-    ],
-  },
-  {
-    id: 'more',
-    label: 'עוד',
-    items: [
-      { to: '/favorites', label: 'הקלסר שלי', desc: 'כל מה ששמרתם, לפי קטגוריות' },
-      { to: '/submit', label: 'שליחת פעולה', desc: 'שתפו פעולה משלכם' },
-      { to: '/about', label: 'אודות', desc: 'מי עומדת מאחורי האתר' },
-      { to: '/reviews', label: 'דירוג והמלצות' },
-    ],
-  },
+// הדברים החשובים — תמיד בסרגל העליון.
+const MAIN_LINKS: NavItem[] = [
+  { to: '/category/activities', label: 'פעולות ומערכים' },
+  { to: '/category/activities?domain=פרשת שבוע', label: 'פרשת השבוע' },
+  { to: '/category/social-nights', label: 'ערבי גיבוש' },
+  { to: '/category/readings', label: 'קטעי קריאה' },
+  { to: '/chuparim', label: 'צ׳ופרים' },
+  { to: '/ai', label: 'עוזר AI', flame: true },
+];
+
+// כל השאר — בתוך תפריט "עוד".
+const MORE_LINKS: NavItem[] = [
+  { to: '/category/games', label: 'רשימת משחקים' },
+  { to: '/category/methods', label: 'מתודות' },
+  { to: '/category/staff-study', label: 'לימוד צוות' },
+  { to: '/category/tools', label: 'סיטואציות בהדרכה' },
+  { to: '/how-to-build', label: 'נדבר ת׳כלס' },
+  { to: '/how-to-build?guide=personal-talks', label: 'שיחות אישיות עם חניכים' },
+  { to: '/how-to-build?guide=canva', label: 'עיצוב בקנבה' },
+  { to: '/favorites', label: 'הקלסר שלי' },
+  { to: '/submit', label: 'שליחת פעולה' },
+  { to: '/about', label: 'אודות' },
+  { to: '/reviews', label: 'דירוג והמלצות' },
 ];
 
 export function Header() {
   const [q, setQ] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
-  const [openGroup, setOpenGroup] = useState<string | null>(null);
-  const navRef = useRef<HTMLElement>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     setMenuOpen(false);
-    setOpenGroup(null);
+    setMoreOpen(false);
   }, [location.pathname, location.search]);
 
   useEffect(() => {
     function onDown(e: MouseEvent) {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) setOpenGroup(null);
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpenGroup(null);
+      if (e.key === 'Escape') setMoreOpen(false);
     }
     document.addEventListener('mousedown', onDown);
     document.addEventListener('keydown', onKey);
@@ -80,7 +66,7 @@ export function Header() {
     }
   }
 
-  const searchForm = (extraStyle?: React.CSSProperties, className?: string) => (
+  const searchForm = (className?: string, extraStyle?: React.CSSProperties) => (
     <form onSubmit={onSearch} className={className} style={{ background: 'var(--bg)', border: '2px solid var(--ink)', borderRadius: 999, padding: '6px 6px 6px 14px', ...extraStyle }}>
       <SearchIcon size={16} color="var(--ink-soft)" />
       <input
@@ -96,41 +82,31 @@ export function Header() {
 
   return (
     <div className="no-print site-header" style={{ position: 'sticky', top: 0, zIndex: 60, background: 'var(--paper)', borderBottom: '2px solid var(--ink)' }}>
-      <div className="wrap" style={{ height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
+      <div className="wrap" style={{ height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 18 }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 18, flex: 'none' }}>
           <MascotIcon size={30} />
           המדריך למדריך
         </Link>
 
-        <nav ref={navRef} className="header-nav" aria-label="תפריט ראשי" style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--ink-soft)' }}>
-          {MENU.map((g) => (
-            <div key={g.id} className="nav-dd">
-              <button
-                type="button"
-                className={`nav-dd-btn${openGroup === g.id ? ' is-open' : ''}`}
-                aria-expanded={openGroup === g.id}
-                aria-haspopup="true"
-                onClick={() => setOpenGroup(openGroup === g.id ? null : g.id)}
-              >
-                {g.label}
-                <ChevronDownIcon size={14} />
-              </button>
-              {openGroup === g.id && (
-                <div className="nav-dd-panel" role="menu">
-                  {g.items.map((it) => (
-                    <Link key={it.to} to={it.to} role="menuitem" className="nav-dd-item">
-                      <span className="nav-dd-title">{it.label}</span>
-                      {it.desc && <span className="nav-dd-desc">{it.desc}</span>}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+        <nav className="header-nav" aria-label="תפריט ראשי" style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--ink-soft)' }}>
+          {MAIN_LINKS.map((l) => (
+            <Link key={l.to} to={l.to} style={l.flame ? { color: 'var(--flame-ink)' } : undefined}>{l.label}</Link>
           ))}
-          <Link to="/ai" className="nav-ai">עוזר AI</Link>
+          <div ref={moreRef} className="nav-more">
+            <button type="button" className={`nav-more-btn${moreOpen ? ' is-open' : ''}`} aria-expanded={moreOpen} aria-haspopup="true" onClick={() => setMoreOpen((v) => !v)}>
+              עוד <ChevronDownIcon size={14} />
+            </button>
+            {moreOpen && (
+              <div className="nav-more-panel" role="menu">
+                {MORE_LINKS.map((l) => (
+                  <Link key={l.to} to={l.to} role="menuitem">{l.label}</Link>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
 
-        {searchForm(undefined, 'header-search-wrap')}
+        {searchForm('header-search-wrap')}
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 'none' }}>
           <Link to="/favorites" aria-label="הקלסר שלי" title="הקלסר שלי" style={{ flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: '50%', border: '1px solid var(--line)' }}>
@@ -148,18 +124,13 @@ export function Header() {
       </div>
 
       <div className={`header-mobile-panel${menuOpen ? ' is-open' : ''}`} style={{ flexDirection: 'column', gap: 4, borderTop: '1px solid var(--line)', padding: '14px 18px 20px', maxHeight: 'calc(100vh - 70px)', overflowY: 'auto' }}>
-        {searchForm({ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 })}
-        {MENU.map((g) => (
-          <div key={g.id} style={{ marginBottom: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 0.4, color: 'var(--ink-faint)', padding: '8px 4px 4px' }}>{g.label}</div>
-            {g.items.map((it) => (
-              <Link key={it.to} to={it.to} style={{ display: 'block', padding: '10px 4px', fontSize: 15.5, fontWeight: 700, borderBottom: '1px solid var(--line)', color: 'var(--ink)' }}>
-                {it.label}
-              </Link>
-            ))}
-          </div>
+        {searchForm(undefined, { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 })}
+        {MAIN_LINKS.map((l) => (
+          <Link key={l.to} to={l.to} style={{ padding: '11px 4px', fontSize: 15.5, fontWeight: 700, borderBottom: '1px solid var(--line)', color: l.flame ? 'var(--flame-ink)' : 'var(--ink)' }}>{l.label}</Link>
         ))}
-        <Link to="/ai" style={{ padding: '12px 4px', fontSize: 16, fontWeight: 800, color: 'var(--flame-ink)' }}>עוזר AI — ניצוץ</Link>
+        {MORE_LINKS.map((l) => (
+          <Link key={l.to} to={l.to} style={{ padding: '10px 4px', fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>{l.label}</Link>
+        ))}
       </div>
     </div>
   );

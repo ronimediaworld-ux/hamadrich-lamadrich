@@ -25,16 +25,6 @@ const TABS: Tab[] = [
 
 interface Item { tab: string; key: string; kind: FavKind; id: string; title: string; sub: string; url: string }
 
-function BinderRings() {
-  return (
-    <div aria-hidden="true" className="binder-rings">
-      {[0, 1, 2, 3].map((i) => (
-        <svg key={i} width="34" height="22" viewBox="0 0 34 22"><rect x="1.5" y="3" width="31" height="16" rx="8" fill="none" stroke="#241C11" strokeWidth="3" /><rect x="12" y="8" width="22" height="6" rx="3" fill="#CBBE9E" /></svg>
-      ))}
-    </div>
-  );
-}
-
 export function Favorites() {
   useDocumentTitle('הקלסר שלי');
   const [keys, setKeys] = useState<string[]>([]);
@@ -100,9 +90,8 @@ export function Favorites() {
           <Link to="/category/activities" className="btn btn-flame">למאגר הפעולות</Link>
         </div>
       ) : (
-        <div className="binder">
-          <BinderRings />
-          <div className="binder-body">
+        <div>
+          <div>
             <div className="binder-tabs" role="tablist" aria-label="מחיצות הקלסר">
               <button role="tab" aria-selected={active === 'all'} className={`binder-tab${active === 'all' ? ' is-active' : ''}`} style={{ ['--tab' as string]: '#241C11' }} onClick={() => setActive('all')}>
                 הכל <span>{items.length}</span>
@@ -114,7 +103,7 @@ export function Favorites() {
               ))}
             </div>
 
-            <div className="binder-page">
+            <div>
               {shown.map((t) => {
                 const its = items.filter((i) => i.tab === t.id);
                 return (

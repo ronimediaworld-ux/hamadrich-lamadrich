@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Activity } from '../data/types';
 import { TeenAvatar } from './TeenAvatar';
-import { ClockIcon, UsersIcon, StarIcon } from './Icons';
+import { ClockIcon, UsersIcon, StarIcon, EyeIcon } from './Icons';
+import { getAllViews } from '../lib/api';
 import { getCategory, getActivityDomain } from '../data/categories';
 
 const colorMap: Record<string, { bg: string; fg: string }> = {
@@ -20,6 +22,12 @@ const domainColor: Record<string, { bg: string; fg: string }> = {
 };
 
 export function ActivityCard({ activity, rotate = 0 }: { activity: Activity; rotate?: number }) {
+  const [views, setViews] = useState<number | null>(null);
+  useEffect(() => {
+    let alive = true;
+    getAllViews().then((v) => { if (alive) setViews(v[`activity:${activity.id}`] ?? 0); });
+    return () => { alive = false; };
+  }, [activity.id]);
   const cat = getCategory(activity.categorySlug);
   const isGeneralActivities = activity.categorySlug === 'activities';
   const domain = isGeneralActivities ? getActivityDomain(activity.tags) : null;
@@ -29,12 +37,12 @@ export function ActivityCard({ activity, rotate = 0 }: { activity: Activity; rot
   return (
     <Link
       to={`/activity/${activity.id}`}
-      className="card tilt"
+      className="card"
       style={{
         display: 'block',
         flex: '0 0 270px',
         padding: 20,
-        transform: `perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotate(${rotate}deg)`,
+        transform: `rotate(${rotate}deg)`,
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
@@ -54,6 +62,9 @@ export function ActivityCard({ activity, rotate = 0 }: { activity: Activity; rot
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 14px', fontSize: 13, color: 'var(--ink-soft)', marginBottom: 12 }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><UsersIcon size={14} />{activity.ageLabel}</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><ClockIcon size={14} />{activity.duration} דק׳</span>
+        {views !== null && views > 0 && (
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }} title="כמה פעמים נצפתה הפעולה"><EyeIcon size={14} />{views.toLocaleString('he-IL')}</span>
+        )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13.5, fontWeight: 700 }}>

@@ -7,7 +7,6 @@ import { SearchIcon, ChevronDownIcon } from '../components/Icons';
 import { categories } from '../data/categories';
 import { activities } from '../data/activities';
 import { getCurrentParsha, getCurrentParshaNames } from '../lib/parsha';
-import { SparkTrail } from '../components/SparkTrail';
 import { CountUp } from '../components/CountUp';
 import { readings } from '../data/readings';
 import { chuparim } from '../data/chuparim';
@@ -69,11 +68,6 @@ export function Home() {
   return (
     <div>
       {/* HERO */}
-      <div className="hero-wrap">
-      <span className="hero-blob" aria-hidden="true" style={{ width: 220, height: 220, top: -50, insetInlineStart: -60, background: 'var(--flame-tint)' }} />
-      <span className="hero-blob" aria-hidden="true" style={{ width: 160, height: 160, top: 120, insetInlineEnd: -40, background: 'var(--magenta-tint)', animationDelay: '-3s' }} />
-      <span className="hero-blob" aria-hidden="true" style={{ width: 120, height: 120, bottom: 20, insetInlineStart: '18%', background: 'var(--yellow-tint)', animationDelay: '-6s' }} />
-      <SparkTrail>
       <div className="wrap" style={{ paddingTop: 56, paddingBottom: 60, textAlign: 'center' }}>
         <Reveal>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
@@ -86,7 +80,7 @@ export function Home() {
 
         <Reveal delay={60}>
           <h1 style={{ fontSize: 'clamp(38px, 6vw, 66px)', fontWeight: 900, lineHeight: 1.06, marginBottom: 18 }}>
-            מה אתם צריכים<br />להעביר <span className="marker">היום?</span>
+            מה אתם צריכים<br />להעביר היום?
           </h1>
         </Reveal>
 
@@ -138,8 +132,6 @@ export function Home() {
           <ChevronDownIcon size={18} />
         </div>
       </div>
-      </SparkTrail>
-      </div>
 
       {/* STATS */}
       <div className="wrap" style={{ paddingBottom: 44 }}>
@@ -152,8 +144,8 @@ export function Home() {
               ['סיטואציות בהדרכה', situations.length],
               ['מפגשי לימוד צוות', staffStudy.length],
             ].map(([label, n]) => (
-              <div key={String(label)} style={{ textAlign: 'center', padding: '14px 8px', borderRadius: 16, background: 'var(--paper)', border: '2px solid var(--ink)' }}>
-                <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 30, color: 'var(--flame-ink)', lineHeight: 1.1 }}><CountUp to={Number(n)} /></div>
+              <div key={String(label)} className="card" style={{ textAlign: 'center', padding: '16px 8px' }}>
+                <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--flame-ink)', lineHeight: 1.1 }}><CountUp to={Number(n)} /></div>
                 <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 4 }}>{label}</div>
               </div>
             ))}
@@ -174,7 +166,7 @@ export function Home() {
               <Link
                 key={c.slug}
                 to={`/category/${c.slug}`}
-                className="tile tilt"
+                className="tile"
                 style={{
                   background: catColorBg[c.color],
                   color: c.color === 'yellow' ? '#4A3A0A' : '#FFF8EE',
@@ -317,7 +309,7 @@ export function Home() {
       <div className="wrap" style={{ paddingBottom: 40 }}>
         <Reveal>
           <Link to="/about" className="card" style={{ display: 'flex', alignItems: 'center', gap: 18, padding: '18px 24px', flexWrap: 'wrap' }}>
-            <div style={{ flex: 'none', width: 56, height: 56, borderRadius: '50%', background: 'var(--flame-tint)', border: '2px solid var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ flex: 'none', width: 56, height: 56, borderRadius: '50%', background: 'var(--flame-tint)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <MascotIcon size={38} />
             </div>
             <div style={{ flex: '1 1 260px' }}>

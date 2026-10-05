@@ -27,7 +27,7 @@ const features = [
 
 function Step({ children, tone }: { children: React.ReactNode; tone?: 'gold' }) {
   return (
-    <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 'clamp(22px, 3.4vw, 30px)', lineHeight: 1.3, color: tone === 'gold' ? 'var(--flame-ink)' : 'var(--ink)' }}>
+    <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 'clamp(20px, 3vw, 26px)', lineHeight: 1.3, color: tone === 'gold' ? 'var(--flame-ink)' : 'var(--ink)' }}>
       {children}
     </div>
   );
@@ -40,7 +40,7 @@ export function About() {
       <Reveal>
         <div style={{ textAlign: 'center', marginBottom: 34 }}>
           <MascotIcon size={56} />
-          <h1 style={{ fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 900, lineHeight: 1.12, margin: '14px 0 10px' }}>
+          <h1 style={{ fontSize: 'clamp(28px, 4.4vw, 40px)', fontWeight: 800, lineHeight: 1.15, margin: '14px 0 10px' }}>
             נבנה על ידי מדריכה,<br />בשביל מדריכים
           </h1>
           <p style={{ fontSize: 16.5, color: 'var(--ink-soft)', maxWidth: '46ch', margin: '0 auto' }}>
@@ -51,22 +51,22 @@ export function About() {
 
       {/* כרטיס המנהלת */}
       <Reveal delay={40}>
-        <div className="card" style={{ padding: '26px 28px', display: 'flex', gap: 22, alignItems: 'center', flexWrap: 'wrap', marginBottom: 34, background: 'var(--flame-tint)', border: '2px solid var(--ink)' }}>
-          <div style={{ flex: 'none', width: 84, height: 84, borderRadius: '50%', background: 'var(--paper)', border: '2px solid var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ padding: '24px 28px', display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap', marginBottom: 34, background: 'var(--flame-tint)', borderRadius: 18 }}>
+          <div style={{ flex: 'none', width: 76, height: 76, borderRadius: '50%', background: 'var(--paper)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <MascotIcon size={56} />
           </div>
           <div style={{ flex: '1 1 260px' }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--flame-ink)', marginBottom: 2 }}>מנהלת האתר</div>
             <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 30, lineHeight: 1.1, marginBottom: 8 }}>רוני גרוס</div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <span style={{ padding: '4px 12px', borderRadius: 999, background: 'var(--paper)', border: '1.5px solid var(--ink)', fontSize: 13, fontWeight: 700 }}>שמיניסטית</span>
-              <span style={{ padding: '4px 12px', borderRadius: 999, background: 'var(--paper)', border: '1.5px solid var(--ink)', fontSize: 13, fontWeight: 700 }}>הדרכתי שנתיים שכבת גדולות</span>
+              <span style={{ padding: '4px 12px', borderRadius: 999, background: 'var(--paper)', fontSize: 12.5, fontWeight: 700 }}>שמיניסטית</span>
+              <span style={{ padding: '4px 12px', borderRadius: 999, background: 'var(--paper)', fontSize: 12.5, fontWeight: 700 }}>הדרכתי שנתיים שכבת גדולות</span>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 'none' }} aria-label="שנתיים של הדרכה: כיתה ח׳ וכיתה ט׳">
-            <span style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 28, background: 'var(--paper)', border: '2px solid var(--ink)', borderRadius: 14, padding: '2px 14px' }}>ח׳</span>
-            <span aria-hidden="true" style={{ fontWeight: 900, color: 'var(--flame)', fontSize: 26 }}>←</span>
-            <span style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 28, background: 'var(--paper)', border: '2px solid var(--ink)', borderRadius: 14, padding: '2px 14px' }}>ט׳</span>
+            <span style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 24, background: 'var(--paper)', borderRadius: 12, padding: '2px 14px' }}>ח׳</span>
+            <span aria-hidden="true" style={{ fontWeight: 800, color: 'var(--flame)', fontSize: 22 }}>←</span>
+            <span style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 24, background: 'var(--paper)', borderRadius: 12, padding: '2px 14px' }}>ט׳</span>
           </div>
         </div>
       </Reveal>
@@ -82,7 +82,7 @@ export function About() {
           <Step tone="gold">והיה חסר לי מקום אחד שייתן…</Step>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {['פעולות איכותיות', 'רעיונות', 'כלים'].map((t) => (
-              <span key={t} style={{ padding: '8px 18px', borderRadius: 14, background: 'var(--paper)', border: '2px dashed var(--ink)', fontWeight: 800, fontFamily: 'Rubik, sans-serif', fontSize: 15.5 }}>{t}</span>
+              <span key={t} style={{ padding: '7px 16px', borderRadius: 999, background: 'var(--flame-tint)', color: 'var(--flame-ink)', fontWeight: 700, fontFamily: 'Rubik, sans-serif', fontSize: 14.5 }}>{t}</span>
             ))}
           </div>
           <p style={{ fontSize: 16.5, lineHeight: 1.95, color: 'var(--ink-soft)', margin: 0 }}>
@@ -118,14 +118,14 @@ export function About() {
       </Reveal>
 
       <Reveal delay={140}>
-        <div style={{ background: 'var(--ink)', color: '#F3ECDD', borderRadius: 22, padding: '28px 32px' }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 10 }}>יש לך פעולה טובה, קטע קריאה, או רעיון לצ׳ופר?</h2>
-          <p style={{ fontSize: 14.5, color: '#CBBFA6', marginBottom: 18 }}>
+        <div style={{ background: 'var(--flame-tint)', borderRadius: 18, padding: '26px 30px' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 10 }}>יש לך פעולה טובה, קטע קריאה, או רעיון לצ׳ופר?</h2>
+          <p style={{ fontSize: 14, color: 'var(--ink-soft)', marginBottom: 18 }}>
             אשמח לקבל תוכן ממדריכים — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.
           </p>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             <Link to="/submit" className="btn btn-flame">שליחת פעולה</Link>
-            <Link to="/reviews" className="btn" style={{ background: '#F3ECDD', color: 'var(--ink)' }}>דירוג והמלצות</Link>
+            <Link to="/reviews" className="btn btn-outline">דירוג והמלצות</Link>
           </div>
         </div>
       </Reveal>

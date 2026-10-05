@@ -57,6 +57,19 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
     }
   });
 
+  // כל הספירות בבת אחת (להצגה על כרטיסי פעולות ברשימות). מידע ציבורי — רק מספרים.
+  app.get('/api/views-all', async (_req, res) => {
+    try {
+      const all = await store.hgetall('views');
+      const out = {};
+      for (const [k, v] of Object.entries(all)) out[k] = Number(v);
+      res.setHeader('Cache-Control', 'no-store');
+      return res.json({ views: out });
+    } catch {
+      return res.status(500).json({ error: 'store_failed' });
+    }
+  });
+
   app.get('/api/views/:kind/:id', async (req, res) => {
     const { kind, id } = req.params;
     if (!KINDS.has(kind) || !ID_RE.test(id)) return res.status(400).json({ error: 'bad_request' });
