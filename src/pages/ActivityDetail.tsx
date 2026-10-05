@@ -10,6 +10,10 @@ import { activityToText } from '../lib/contentText';
 import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
 import { buildActivityPrintHtml } from '../lib/activityPrint';
+import { ChuparDesign } from '../components/ChuparDesign';
+import { getChupar } from '../data/chuparim';
+import { buildChuparPrintHtml, copiesPerPage, getFields } from '../lib/chuparDesign';
+import { offerHtml } from '../lib/printFile';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 function Section({ label, step, children }: { label: string; step?: number; children: React.ReactNode }) {
@@ -37,10 +41,13 @@ export function ActivityDetail() {
   const { id } = useParams();
   const activity = getActivity(id ?? '');
   const [saved, setSaved] = useState(false);
+  const [chuparVals, setChuparVals] = useState<string[]>([]);
+  const [chuparBusy, setChuparBusy] = useState(false);
   useDocumentTitle(activity?.title);
 
   useEffect(() => {
     if (id) setSaved(isFavorite(id));
+    setChuparVals([]);
   }, [id]);
 
   function handleSave() {
@@ -58,6 +65,7 @@ export function ActivityDetail() {
   }
 
   const category = getCategory(activity.categorySlug);
+  const chupar = activity.chuparId ? getChupar(activity.chuparId) : undefined;
   const badgeLabel = activity.categorySlug === 'activities' ? getActivityDomain(activity.tags) : category?.label;
 
   return (
@@ -104,7 +112,7 @@ export function ActivityDetail() {
               <b>ציוד: </b>{activity.equipment.length ? activity.equipment.join(', ') : 'ללא ציוד מיוחד'}
             </div>
             <div className="no-print" style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-              <PrintButton filename={`${activity.id}.html`} title={activity.title} buildHtml={() => buildActivityPrintHtml(activity, category?.label ?? 'פעולות', [badgeLabel, activity.tags.find((t) => t !== badgeLabel)].filter(Boolean).join(' · '))} style={{ flex: 1 }} />
+              <PrintButton filename={`${activity.id}.html`} title={activity.title} buildHtml={() => buildActivityPrintHtml(activity, category?.label ?? 'פעולות', [badgeLabel, activity.tags.find((t) => t !== badgeLabel)].filter(Boolean).join(' · '), chupar ? { chupar, vals: chuparVals } : undefined)} style={{ flex: 1 }} />
               <button
                 className="btn btn-outline"
                 onClick={handleSave}
@@ -240,8 +248,45 @@ export function ActivityDetail() {
             );
           })()}
 
+          {chupar && (
+            <div style={{ marginBottom: 26 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                <span style={{ width: 8, height: 8, borderRadius: 999, background: 'var(--flame)' }} />
+                <h3 style={{ fontSize: 15.5, fontWeight: 800 }}>צ׳ופר לסיום — כרטיס להדפסה</h3>
+              </div>
+              <div className="card" style={{ padding: 18 }}>
+                <ChuparDesign chupar={chupar} maxWidth={520} values={chuparVals} />
+                {getFields(chupar).length > 0 && (
+                  <div className="no-print" style={{ marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
+                    <div style={{ width: '100%', textAlign: 'center', fontSize: 13, color: 'var(--ink-faint)' }}>כתבו כאן את השם שלכם — לא לכולם קוראים רוני (או השאירו ריק וכתבו בעט):</div>
+                    {getFields(chupar).map((f, i) => (
+                      <label key={i} style={{ fontSize: 13.5, fontWeight: 700 }}>
+                        {f.label}:{' '}
+                        <input
+                          value={chuparVals[i] ?? ''}
+                          onChange={(e) => setChuparVals((prev) => { const next = [...prev]; next[i] = e.target.value.slice(0, 22); return next; })}
+                          style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid var(--line)', fontSize: 14.5, width: 150 }}
+                        />
+                      </label>
+                    ))}
+                  </div>
+                )}
+                <div className="no-print" style={{ display: 'flex', justifyContent: 'center', marginTop: 14 }}>
+                  <button
+                    type="button"
+                    className="btn btn-flame"
+                    disabled={chuparBusy}
+                    onClick={async () => { setChuparBusy(true); await offerHtml(`${chupar.id}.html`, buildChuparPrintHtml(chupar, 1, window.location.origin, '', chuparVals)); setChuparBusy(false); }}
+                  >
+                    {chuparBusy ? 'רגע...' : `הורדת הכרטיסים להדפסה (${copiesPerPage(chupar)} בעמוד)`}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <Section label="הסבר למדריך">
-            <p style={{ margin: 0 }}>{activity.guideNotes}</p>
+            <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{activity.guideNotes}</p>
           </Section>
 
           {activity.appendices && activity.appendices.length > 0 && (
@@ -254,7 +299,7 @@ export function ActivityDetail() {
                 {activity.appendices.map((a, i) => (
                   <div key={i} className="card" style={{ padding: '16px 20px' }}>
                     <div style={{ fontSize: 12.5, fontWeight: 800, color: 'var(--flame-ink)', marginBottom: 8 }}>
-                      נספח {i + 1}: {a.label}
+                      {/^נספח/.test(a.label) ? a.label : `נספח ${i + 1}: ${a.label}`}
                     </div>
                     <div style={{ fontSize: 14.5, lineHeight: 1.75, whiteSpace: 'pre-line' }}>{a.content}</div>
                   </div>

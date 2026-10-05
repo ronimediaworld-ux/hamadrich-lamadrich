@@ -1,7 +1,9 @@
 // קובץ הדפסה לפעולה מלאה — בעיצוב "דף פעולה מודפס" של האתר: כותרת עם לוגו, כרטיס פרטים, שלבים ממוספרים בצבע,
 // ציטוטי "המדריך אומר", הסבר למדריך, טיפ, ונספחים בעמודים נפרדים (קטע להקראה, כרטיסי משפטים לגזירה, מגנים).
 import type { Activity, FlowStep } from '../data/types';
+import type { Chupar } from '../data/types';
 import { escapeHtml, mascotSvg } from './printFile';
+import { FONT_IMPORT, SHAPES, renderCard } from './chuparDesign';
 
 const PALETTE = ['#C85B2A', '#A64D79', '#356E9A', '#5E7B2F', '#2F7D6A', '#6B5AA6', '#8A4D2A', '#B17824'];
 
@@ -139,6 +141,7 @@ function renderAppendix(ap: { label: string; content: string }): string {
 
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Heebo:wght@400;500;700&display=swap');
+  @import url('${FONT_IMPORT}');
   :root { --paper:#FBF9F2; --ink:#241C11; --soft:#4B4030; --faint:#8C7F6B; --line:#E4DBC8; --flame:#D96A2B; --flame-ink:#7A3712; --tint:#FBE4D2; }
   * { box-sizing: border-box; }
   html { background-color: var(--paper); background-image: radial-gradient(#E9E1CF 1px, transparent 1.2px); background-size: 18px 18px;
@@ -203,7 +206,17 @@ const CSS = `
   @media print { .doc { max-width: none; padding: 0; } .crumbs { margin-top: 0; } }
 `;
 
-export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge: string): string {
+function renderChuparPage(c: Chupar, vals: string[]): string {
+  const shape = SHAPES[c.print?.shape ?? 'card'] ?? SHAPES.card;
+  const gap = 3;
+  const cols = Math.max(1, Math.floor((176 + gap) / (shape.w + gap)));
+  const rows = Math.max(1, Math.floor((215 + gap) / (shape.h + gap)));
+  const card = renderCard(c, '', '', vals);
+  const cells = Array.from({ length: cols * rows }, () => `<div class="ccell">${card}</div>`).join('');
+  return `<section class="app page"><h2 class="app-h"><span class="bar"></span>צ׳ופר לסיום — כרטיסים לגזירה</h2><p class="app-intro">מדפיסים על נייר עבה וגוזרים לאורך הקווים המקווקווים.</p><div class="cgrid" style="grid-template-columns:repeat(${cols},${shape.w}mm);grid-auto-rows:${shape.h}mm;gap:${gap}mm">${cells}</div></section>`;
+}
+
+export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge: string, extra?: { chupar: Chupar; vals: string[] }): string {
   const steps = stepsOf(a);
   const place = a.place === 'שניהם' ? 'פנים וחוץ' : a.place;
   const shabbat = a.shabbat === 'שניהם' ? 'מתאים לשניהם' : `מתאים ל${a.shabbat} בלבד`;
@@ -215,7 +228,7 @@ export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge
   const rest = aps.filter((x) => !isInfo(x.label));
   const firstText = rest.findIndex((x) => !/המגן שלי/.test(x.label) && !renderCards(x.content));
   rest.splice(firstText >= 0 ? firstText + 1 : rest.length, 0, ...info);
-  const appendices = rest.map(renderAppendix).join('\n');
+  const appendices = rest.map(renderAppendix).join('\n') + (extra ? renderChuparPage(extra.chupar, extra.vals) : '');
 
   return `<!doctype html>
 <html lang="he" dir="rtl">
@@ -223,7 +236,9 @@ export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(a.title)}</title>
-<style>${CSS}</style>
+<style>${CSS}
+  .cgrid { display: grid; justify-content: center; }
+  .ccell { outline: .25mm dashed #888; outline-offset: 1.5mm; direction: ltr; }</style>
 </head>
 <body>
 <table class="wrap"><thead><tr><td><div class="run"><div class="brand">${mascotSvg('ga')}<span>המדריך למדריך</span></div><small>${escapeHtml(a.title)} · מאגר פעולות</small></div></td></tr></thead><tbody><tr><td>
