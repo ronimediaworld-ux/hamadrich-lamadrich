@@ -10,6 +10,7 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { ChuparDesign } from '../components/ChuparDesign';
 import { buildChuparPrintHtml, getFields } from '../lib/chuparDesign';
 import { offerHtml } from '../lib/printFile';
+import { ViewCount } from '../components/ViewCount';
 
 export function ChuparDetail() {
   const { id } = useParams();
@@ -49,7 +50,8 @@ export function ChuparDetail() {
           </div>
 
           <h1 style={{ fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 800, marginBottom: 12, lineHeight: 1.25 }}>{chupar.title}</h1>
-          <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginBottom: 20 }}>{chupar.description}</p>
+          <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginBottom: 10 }}>{chupar.description}</p>
+          <div style={{ marginBottom: 14 }}><ViewCount kind="chupar" id={chupar.id} /></div>
 
           <div className="card" style={{ padding: 18, marginBottom: 20 }}>
             <ChuparDesign chupar={chupar} maxWidth={520} name={name} values={vals} />

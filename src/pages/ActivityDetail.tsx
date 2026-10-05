@@ -9,6 +9,8 @@ import { isFavorite, toggleFavorite } from '../lib/favorites';
 import { activityToText } from '../lib/contentText';
 import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
+import { ViewCount } from '../components/ViewCount';
+import { Comments } from '../components/Comments';
 import { buildActivityPrintHtml } from '../lib/activityPrint';
 import { ChuparDesign } from '../components/ChuparDesign';
 import { getChupar } from '../data/chuparim';
@@ -96,7 +98,8 @@ export function ActivityDetail() {
               </div>
             )}
             <h1 style={{ fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 800, marginBottom: 12, lineHeight: 1.2 }}>{activity.title}</h1>
-            <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', maxWidth: '58ch' }}>{activity.description}</p>
+            <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', maxWidth: '58ch', marginBottom: 10 }}>{activity.description}</p>
+            <ViewCount kind="activity" id={activity.id} />
           </div>
 
           <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12, height: 'fit-content' }}>
@@ -316,6 +319,7 @@ export function ActivityDetail() {
           <div style={{ background: 'var(--yellow-tint)', border: '1px solid var(--yellow)', borderRadius: 12, padding: '16px 20px', fontSize: 14.5, marginTop: 8 }}>
             <b>טיפ למדריך: </b>{activity.tip}
           </div>
+          <Comments kind="activity" targetId={activity.id} />
         </div>
       </Reveal>
     </div>

@@ -5,6 +5,7 @@ import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
 import { readingToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { ViewCount } from '../components/ViewCount';
 
 const domainColor: Record<string, { bg: string; fg: string }> = {
   'אמוני': { bg: 'var(--sky-tint)', fg: 'var(--sky-ink)' },
@@ -43,7 +44,8 @@ export function ReadingDetail() {
           </span>
           <h1 style={{ fontSize: 'clamp(26px, 4vw, 36px)', fontWeight: 800, marginBottom: 10, lineHeight: 1.25 }}>{reading.title}</h1>
           <p style={{ fontSize: 15, color: 'var(--ink-soft)', marginBottom: 8 }}>{reading.description}</p>
-          <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 28 }}>{reading.ageLabel} · מקור: {reading.source}</div>
+          <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 10 }}>{reading.ageLabel} · מקור: {reading.source}</div>
+          <div style={{ marginBottom: 24 }}><ViewCount kind="reading" id={reading.id} /></div>
 
           <div className="card" style={{ padding: '28px 32px', marginBottom: reading.sourceLink ? 14 : 24, fontSize: 16.5, lineHeight: 1.95, whiteSpace: 'pre-line' }}>
             {reading.text}

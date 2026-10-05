@@ -2,13 +2,17 @@ import 'dotenv/config';
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { registerAdminRoutes } from './admin.js';
+import { registerAdminRoutes, requireAdmin } from './admin.js';
+import { createStore } from './store.js';
+import { registerFeatureRoutes } from './features.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json({ limit: '5mb' }));
 
 registerAdminRoutes(app, path.join(__dirname, '..'));
+app.set('trust proxy', true);
+registerFeatureRoutes(app, { store: createStore(path.join(__dirname, '..')), requireAdmin });
 
 const PORT = process.env.PORT || 3001;
 

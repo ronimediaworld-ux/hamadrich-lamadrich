@@ -18,6 +18,7 @@ import { Reviews } from './pages/Reviews';
 import { HowToBuild } from './pages/HowToBuild';
 import { SubmitActivity } from './pages/SubmitActivity';
 import { Admin } from './pages/Admin';
+import { trackVisit } from './lib/api';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -31,6 +32,10 @@ export default function App() {
   const location = useLocation();
   const isChat = location.pathname.startsWith('/ai');
   const isAdmin = location.pathname.startsWith('/admin');
+
+  useEffect(() => {
+    if (!isAdmin) trackVisit();
+  }, [isAdmin]);
 
   if (isAdmin) {
     return (

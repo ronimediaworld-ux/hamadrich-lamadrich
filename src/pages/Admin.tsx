@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { JsonForm } from '../components/JsonForm';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { AdminInbox } from './AdminInbox';
 
 type Item = Record<string, unknown> & { id: string };
 
@@ -165,7 +166,7 @@ function AdminDashboard() {
   });
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div style={{ display: 'flex', minHeight: 'calc(100vh - 56px)' }}>
       <div style={{ width: 220, borderInlineEnd: '1px solid var(--line)', padding: '20px 14px', flexShrink: 0 }}>
         <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16 }}>ניהול תוכן</div>
         {types.map((t) => (
@@ -270,6 +271,21 @@ function AdminDashboard() {
   );
 }
 
+function AdminShell() {
+  const [view, setView] = useState<'content' | 'inbox'>('content');
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', borderBottom: '2px solid var(--ink)', background: 'var(--paper)' }}>
+        <span style={{ fontWeight: 800, marginInlineEnd: 12 }}>ניהול האתר</span>
+        <button className={`chip${view === 'content' ? ' is-active' : ''}`} onClick={() => setView('content')}>עריכת תוכן</button>
+        <button className={`chip${view === 'inbox' ? ' is-active' : ''}`} onClick={() => setView('inbox')}>סטטיסטיקה, הצעות ותגובות</button>
+        <a href="/" style={{ marginInlineStart: 'auto', fontSize: 13, color: 'var(--ink-faint)' }}>לאתר ←</a>
+      </div>
+      {view === 'content' ? <AdminDashboard /> : <AdminInbox />}
+    </div>
+  );
+}
+
 export function Admin() {
   useDocumentTitle('ניהול תוכן');
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
@@ -282,5 +298,5 @@ export function Admin() {
 
   if (loggedIn === null) return null;
   if (!loggedIn) return <AdminLogin onLoggedIn={() => setLoggedIn(true)} />;
-  return <AdminDashboard />;
+  return <AdminShell />;
 }

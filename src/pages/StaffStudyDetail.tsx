@@ -5,6 +5,7 @@ import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
 import { staffStudyToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { ViewCount } from '../components/ViewCount';
 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -52,7 +53,8 @@ export function StaffStudyDetail() {
           )}
           <h1 style={{ fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 800, marginBottom: 10, lineHeight: 1.25 }}>{study.title}</h1>
           <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginBottom: 10 }}>{study.description}</p>
-          <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 22 }}>{study.duration} דקות · {study.forWhom}</div>
+          <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 10 }}>{study.duration} דקות · {study.forWhom}</div>
+          <div style={{ marginBottom: 20 }}><ViewCount kind="staff-study" id={study.id} /></div>
 
           <div className="no-print" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 22 }}>
             <PrintButton filename={`${study.id}.html`} title={study.title} text={staffStudyToText(study)} />

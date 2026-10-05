@@ -35,7 +35,7 @@ function parseCookies(req) {
   );
 }
 
-function requireAdmin(req, res, next) {
+export function requireAdmin(req, res, next) {
   const cookies = parseCookies(req);
   const token = cookies['hlm_admin'];
   if (token && sessions.has(token)) return next();
