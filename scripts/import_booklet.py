@@ -186,14 +186,14 @@ def to_record(n, idx):
         'subtopics': ['ערבי גיבוש', topic], 'ageLabel': age_label(4, 9), 'ageMin': 4, 'ageMax': 9,
         'duration': DURATION.get(canon, 75), 'groupSize': '15-40 חניכים', 'equipment': equipment,
         'shabbat': 'חול', 'place': PLACE.get(canon, 'פנים'), 'energy': 'גבוהה' if canon in HIGH else ('נמוכה' if canon in LOW else 'בינונית'),
-        'depth': 'קליל', 'values': ['גיבוש', 'כיף', 'עבודת צוות'], 'tags': ['ערבי גיבוש', 'משחקים', 'חוברת ערבים', topic],
+        'depth': 'קליל', 'values': ['גיבוש', 'כיף', 'עבודת צוות'], 'tags': ['ערבי גיבוש', 'משחקים', topic],
         'rating': 4.5, 'character': 'ABCDEF'[idx % 6],
-        'description': f'ערב בנושא "{topic}" מתוך חוברת הערבים: {nitems} רעיונות למשחקים ולמשימות, בעיקר תחרויות בין קבוצות — בוחרים לפי הקבוצה והזמן שיש.',
+        'description': f'ערב בנושא "{topic}": {nitems} רעיונות למשחקים ולמשימות, בעיקר תחרויות בין קבוצות — בוחרים לפי הקבוצה והזמן שיש.',
         'goals': [f'ערב כיף וגיבוש סביב הנושא "{topic}"', 'כל חניך משתתף במשחקים ובמשימות, בקבוצות מעורבות'],
         'opening': 'מכריזים על נושא הערב ומחלקים את הקבוצה לשתי קבוצות או יותר. בוחרים מהרשימה את המשחקים והמשימות המתאימים לקבוצה ולזמן.',
         'method': 'מריצים את המשחקים והמשימות לפי הרשימה, עם ניקוד קבוצתי בין המשחקים.',
         'discussion': [], 'flow': flow,
-        'guideNotes': SAFETY + '\n' + SOURCE,
+        'guideNotes': SAFETY,
         'summary': SUMMARY.get(canon, DEFAULT_SUMMARY),
         'tip': 'שימו ניקוד קבוצתי לכל משחק, ובחרו מראש 2–3 משחקים "גדולים" ועוד כמה קצרים למילוי זמן.',
     }
@@ -218,7 +218,7 @@ if __name__ == '__main__':
                 lines += [f'• {x}' for x in st.get('items', [])]
                 if st.get('body'):
                     lines.append(st['body'])
-            ap = {'label': f'עוד רעיונות מחוברת הערבים — {n["canon"]}', 'content': '\n'.join(lines)}
+            ap = {'label': f'עוד רעיונות — {n["canon"]}', 'content': '\n'.join(lines)}
             ex.setdefault('appendices', [])
             if not any(a['label'] == ap['label'] for a in ex['appendices']):
                 ex['appendices'].append(ap)
