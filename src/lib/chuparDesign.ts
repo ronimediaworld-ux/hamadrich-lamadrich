@@ -17,7 +17,7 @@ export const PALETTES: Record<string, Palette> = {
   cream: { bg: '#FFF8E7', fg: '#3B2A14', acc: '#E05D2D', acc2: '#F2B84B' },
 };
 
-export const FONT_IMPORT = "https://fonts.googleapis.com/css2?family=Rubik:wght@500;800;900&family=Heebo:wght@400;700&family=Suez+One&family=Secular+One&family=Amatic+SC:wght@700&family=Karantina:wght@700&display=swap";
+export const FONT_IMPORT = "https://fonts.googleapis.com/css2?family=Rubik:wght@500;800;900&family=Heebo:wght@400;700&family=Suez+One&family=Secular+One&family=Amatic+SC:wght@400;700&family=Karantina:wght@700&display=swap";
 
 // גודל כרטיס במ"מ לכל צורה
 export const SHAPES: Record<string, { w: number; h: number }> = {
@@ -32,6 +32,7 @@ export const SHAPES: Record<string, { w: number; h: number }> = {
   imagewide: { w: 92, h: 44 },
   wide: { w: 92, h: 44 },
   cinema: { w: 92, h: 42 },
+  note: { w: 62, h: 60 },
 };
 
 function esc(s: string): string {
@@ -163,6 +164,20 @@ export function renderCard(c: Chupar, imgBase = '', name = '', values: string[] 
 
   if (c.designImage && pr.shape.startsWith('image')) {
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;"><img src="${esc(imgBase + c.designImage)}" alt="" style="max-width:100%;max-height:100%;object-fit:contain;display:block;margin:auto"></div>`;
+  }
+
+  // כרטיס "פתק" פשוט: מסגרת שחורה עבה, כתב יד כחול — כמו הכרטיס המקורי של רוני בפעולת 7.10
+  if (pr.layout === 'plain') {
+    const blue = '#0B4EA2';
+    const lines = (pr.sub ?? '').split('\n').map((x) => x.trim()).filter(Boolean);
+    const sender = lines.length > 1 ? lines[lines.length - 1] : '';
+    const body = (sender ? lines.slice(0, -1) : lines).join(' ');
+    return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;direction:rtl;padding:1.4mm">
+<div style="width:100%;height:100%;box-sizing:border-box;border:.75mm solid #000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.2mm 2.4mm;color:${blue}">
+<div style="font-family:'Amatic SC','Heebo',cursive;font-weight:400;font-size:8.8mm;line-height:1.08">${esc(pr.text).replace(/\n/g, '<br>')}</div>
+<div style="font-family:'Heebo',sans-serif;font-size:3.1mm;line-height:1.25;margin-top:1.4mm">${esc(body)}</div>
+${sender ? `<div style="font-family:'Heebo',sans-serif;font-weight:500;font-size:3.9mm;line-height:1.25;margin-top:.8mm">${esc(sender)}</div>` : ''}
+</div></div>`;
   }
 
   if (pr.layout === 'cinema') {
