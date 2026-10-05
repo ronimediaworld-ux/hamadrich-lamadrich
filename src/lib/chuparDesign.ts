@@ -166,17 +166,19 @@ export function renderCard(c: Chupar, imgBase = '', name = '', values: string[] 
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;"><img src="${esc(imgBase + c.designImage)}" alt="" style="max-width:100%;max-height:100%;object-fit:contain;display:block;margin:auto"></div>`;
   }
 
-  // כרטיס "פתק" פשוט: מסגרת שחורה עבה, כתב יד כחול — כמו הכרטיס המקורי של רוני בפעולת 7.10
+  // כרטיס "פתק" נקי: ריבוע, מסגרת דקה, כתב שחור על לבן, דגל ישראל קטן — בלי קישוטים
   if (pr.layout === 'plain') {
-    const blue = '#0B4EA2';
     const lines = (pr.sub ?? '').split('\n').map((x) => x.trim()).filter(Boolean);
     const sender = lines.length > 1 ? lines[lines.length - 1] : '';
     const body = (sender ? lines.slice(0, -1) : lines).join(' ');
-    return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;direction:rtl;padding:1.4mm">
-<div style="width:100%;height:100%;box-sizing:border-box;border:.75mm solid #000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.2mm 2.4mm;color:${blue}">
-<div style="font-family:'Amatic SC','Heebo',cursive;font-weight:400;font-size:8.8mm;line-height:1.08">${esc(pr.text).replace(/\n/g, '<br>')}</div>
-<div style="font-family:'Heebo',sans-serif;font-size:3.1mm;line-height:1.25;margin-top:1.4mm">${esc(body)}</div>
-${sender ? `<div style="font-family:'Heebo',sans-serif;font-weight:500;font-size:3.9mm;line-height:1.25;margin-top:.8mm">${esc(sender)}</div>` : ''}
+    const flag = `<svg viewBox="0 0 22 16" style="width:9.5mm;height:6.9mm;display:block;margin-bottom:2.6mm" xmlns="http://www.w3.org/2000/svg"><rect x=".4" y=".4" width="21.2" height="15.2" fill="#fff" stroke="#111" stroke-width=".5"/><rect x="0.4" y="2.1" width="21.2" height="1.7" fill="#0038B8"/><rect x="0.4" y="12.2" width="21.2" height="1.7" fill="#0038B8"/><g fill="none" stroke="#0038B8" stroke-width=".55"><path d="M11 4.9 L14 10.1 L8 10.1 Z"/><path d="M11 11.1 L14 5.9 L8 5.9 Z"/></g></svg>`;
+    return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;direction:rtl;padding:1.6mm">
+<div style="width:100%;height:100%;box-sizing:border-box;border:.35mm solid #111;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2mm 4mm;color:#111">
+${flag}
+<div style="font-family:'Rubik','Heebo',sans-serif;font-weight:700;font-size:4.5mm;line-height:1.3">${esc(pr.text).replace(/\n/g, '<br>')}</div>
+<div style="width:9mm;border-top:.3mm solid #111;margin:2.2mm 0"></div>
+<div style="font-family:'Heebo',sans-serif;font-size:2.9mm;line-height:1.35">${esc(body)}</div>
+${sender ? `<div style="font-family:'Heebo',sans-serif;font-weight:500;font-size:3.1mm;line-height:1.3;margin-top:1.4mm">${esc(sender)}</div>` : ''}
 </div></div>`;
   }
 
