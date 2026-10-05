@@ -213,10 +213,10 @@ function renderChuparPage(c: Chupar, vals: string[]): string {
   const rows = Math.max(1, Math.floor((215 + gap) / (shape.h + gap)));
   const card = renderCard(c, '', '', vals);
   const cells = Array.from({ length: cols * rows }, () => `<div class="ccell">${card}</div>`).join('');
-  return `<section class="app page"><h2 class="app-h"><span class="bar"></span>צ׳ופר לסיום — כרטיסים לגזירה</h2><p class="app-intro">מדפיסים על נייר עבה וגוזרים לאורך הקווים המקווקווים.</p><div class="cgrid" style="grid-template-columns:repeat(${cols},${shape.w}mm);grid-auto-rows:${shape.h}mm;gap:${gap}mm">${cells}</div></section>`;
+  return `<section class="app page"><h2 class="app-h"><span class="bar"></span>צ׳ופר לסיום — ${/\(לבנים\)/.test(c.title) ? 'גרסה גברית' : 'גרסה נשית'} (לגזירה)</h2><p class="app-intro">מדפיסים על נייר עבה וגוזרים לאורך הקווים המקווקווים.</p><div class="cgrid" style="grid-template-columns:repeat(${cols},${shape.w}mm);grid-auto-rows:${shape.h}mm;gap:${gap}mm">${cells}</div></section>`;
 }
 
-export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge: string, extra?: { chupar: Chupar; vals: string[] }): string {
+export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge: string, extra?: { chuparim: Chupar[]; vals: string[] }): string {
   const steps = stepsOf(a);
   const place = a.place === 'שניהם' ? 'פנים וחוץ' : a.place;
   const shabbat = a.shabbat === 'שניהם' ? 'מתאים לשניהם' : `מתאים ל${a.shabbat} בלבד`;
@@ -228,7 +228,7 @@ export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge
   const rest = aps.filter((x) => !isInfo(x.label));
   const firstText = rest.findIndex((x) => !/המגן שלי/.test(x.label) && !renderCards(x.content));
   rest.splice(firstText >= 0 ? firstText + 1 : rest.length, 0, ...info);
-  const appendices = rest.map(renderAppendix).join('\n') + (extra ? renderChuparPage(extra.chupar, extra.vals) : '');
+  const appendices = rest.map(renderAppendix).join('\n') + (extra ? extra.chuparim.map((ch) => renderChuparPage(ch, extra.vals)).join('') : '');
 
   return `<!doctype html>
 <html lang="he" dir="rtl">

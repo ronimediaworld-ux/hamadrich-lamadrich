@@ -60,7 +60,7 @@ export interface Activity {
   tip: string;
   shabbatNote?: string;
   appendices?: Appendix[];
-  chuparId?: string; // צ׳ופר מוטבע בפעולה (עם אפשרות להוסיף שם/פרטים)
+  chuparIds?: string[]; // צ׳ופרים מוטבעים בפעולה (עם אפשרות להוסיף שם/פרטים)
 }
 
 export interface ChuparPrint {

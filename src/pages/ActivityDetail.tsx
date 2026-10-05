@@ -65,7 +65,7 @@ export function ActivityDetail() {
   }
 
   const category = getCategory(activity.categorySlug);
-  const chupar = activity.chuparId ? getChupar(activity.chuparId) : undefined;
+  const chuparim = (activity.chuparIds ?? []).map((cid) => getChupar(cid)).filter((c): c is NonNullable<typeof c> => !!c);
   const badgeLabel = activity.categorySlug === 'activities' ? getActivityDomain(activity.tags) : category?.label;
 
   return (
@@ -112,7 +112,7 @@ export function ActivityDetail() {
               <b>ציוד: </b>{activity.equipment.length ? activity.equipment.join(', ') : 'ללא ציוד מיוחד'}
             </div>
             <div className="no-print" style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-              <PrintButton filename={`${activity.id}.html`} title={activity.title} buildHtml={() => buildActivityPrintHtml(activity, category?.label ?? 'פעולות', [badgeLabel, activity.tags.find((t) => t !== badgeLabel)].filter(Boolean).join(' · '), chupar ? { chupar, vals: chuparVals } : undefined)} style={{ flex: 1 }} />
+              <PrintButton filename={`${activity.id}.html`} title={activity.title} buildHtml={() => buildActivityPrintHtml(activity, category?.label ?? 'פעולות', [badgeLabel, activity.tags.find((t) => t !== badgeLabel)].filter(Boolean).join(' · '), chuparim.length ? { chuparim, vals: chuparVals } : undefined)} style={{ flex: 1 }} />
               <button
                 className="btn btn-outline"
                 onClick={handleSave}
@@ -248,20 +248,19 @@ export function ActivityDetail() {
             );
           })()}
 
-          {chupar && (
+          {chuparim.length > 0 && (
             <div style={{ marginBottom: 26 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                 <span style={{ width: 8, height: 8, borderRadius: 999, background: 'var(--flame)' }} />
-                <h3 style={{ fontSize: 15.5, fontWeight: 800 }}>צ׳ופר לסיום — כרטיס להדפסה</h3>
+                <h3 style={{ fontSize: 15.5, fontWeight: 800 }}>צ׳ופר לסיום — כרטיסים להדפסה</h3>
               </div>
               <div className="card" style={{ padding: 18 }}>
-                <ChuparDesign chupar={chupar} maxWidth={520} values={chuparVals} />
-                {getFields(chupar).length > 0 && (
-                  <div className="no-print" style={{ marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
+                {getFields(chuparim[0]).length > 0 && (
+                  <div className="no-print" style={{ marginBottom: 16, display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
                     <div style={{ width: '100%', textAlign: 'center', fontSize: 13, color: 'var(--ink-faint)' }}>כתבו כאן את השם שלכם — לא לכולם קוראים רוני (או השאירו ריק וכתבו בעט):</div>
-                    {getFields(chupar).map((f, i) => (
+                    {getFields(chuparim[0]).map((_f, i) => (
                       <label key={i} style={{ fontSize: 13.5, fontWeight: 700 }}>
-                        {f.label}:{' '}
+                        השם שלכם:{' '}
                         <input
                           value={chuparVals[i] ?? ''}
                           onChange={(e) => setChuparVals((prev) => { const next = [...prev]; next[i] = e.target.value.slice(0, 22); return next; })}
@@ -271,15 +270,21 @@ export function ActivityDetail() {
                     ))}
                   </div>
                 )}
-                <div className="no-print" style={{ display: 'flex', justifyContent: 'center', marginTop: 14 }}>
-                  <button
-                    type="button"
-                    className="btn btn-flame"
-                    disabled={chuparBusy}
-                    onClick={async () => { setChuparBusy(true); await offerHtml(`${chupar.id}.html`, buildChuparPrintHtml(chupar, 1, window.location.origin, '', chuparVals)); setChuparBusy(false); }}
-                  >
-                    {chuparBusy ? 'רגע...' : `הורדת הכרטיסים להדפסה (${copiesPerPage(chupar)} בעמוד)`}
-                  </button>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
+                  {chuparim.map((ch) => (
+                    <div key={ch.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                      <div style={{ fontSize: 13.5, fontWeight: 800 }}>{/\(לבנים\)/.test(ch.title) ? 'גרסה גברית (לבנים)' : 'גרסה נשית (לבנות)'}</div>
+                      <ChuparDesign chupar={ch} maxWidth={260} values={chuparVals} />
+                      <button
+                        type="button"
+                        className="btn btn-flame no-print"
+                        disabled={chuparBusy}
+                        onClick={async () => { setChuparBusy(true); await offerHtml(`${ch.id}.html`, buildChuparPrintHtml(ch, 1, window.location.origin, '', chuparVals)); setChuparBusy(false); }}
+                      >
+                        {chuparBusy ? 'רגע...' : `הורדה להדפסה (${copiesPerPage(ch)} בעמוד)`}
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
