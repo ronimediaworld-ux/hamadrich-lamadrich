@@ -6,7 +6,7 @@
 // עיצוב: כל שלב במהלך הפעולה (פתיחה/משחק/דיון/...) מקבל כותרת עם פס צבע קבוע לפי סוג השלב.
 // קטעי קריאה, קטעים חזקים, וצ'ופרים "יוצאים" מתוך הזרימה הראשית והופכים לעמוד נספח מעוצב בסוף הקובץ.
 
-function escapeHtml(s: string): string {
+export function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
@@ -177,7 +177,7 @@ function renderPointer(section: Section, num: string, pageNote: string): string 
 }
 
 // --- SVG הלוגו — אותו מסקוט מהאתר, משוכפל כי הקובץ המודפס עומד בפני עצמו ---
-function mascotSvg(gradId: string): string {
+export function mascotSvg(gradId: string): string {
   return `<svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true">
   <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0%" stop-color="#F2C85B"/><stop offset="100%" stop-color="#D96A2B"/>

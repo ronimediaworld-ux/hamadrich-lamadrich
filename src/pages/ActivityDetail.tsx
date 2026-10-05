@@ -9,6 +9,7 @@ import { isFavorite, toggleFavorite } from '../lib/favorites';
 import { activityToText } from '../lib/contentText';
 import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
+import { buildActivityPrintHtml } from '../lib/activityPrint';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 function Section({ label, step, children }: { label: string; step?: number; children: React.ReactNode }) {
@@ -103,7 +104,7 @@ export function ActivityDetail() {
               <b>ציוד: </b>{activity.equipment.length ? activity.equipment.join(', ') : 'ללא ציוד מיוחד'}
             </div>
             <div className="no-print" style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-              <PrintButton filename={`${activity.id}.html`} title={activity.title} text={activityToText(activity)} style={{ flex: 1 }} />
+              <PrintButton filename={`${activity.id}.html`} title={activity.title} buildHtml={() => buildActivityPrintHtml(activity, category?.label ?? 'פעולות', [badgeLabel, activity.tags.find((t) => t !== badgeLabel)].filter(Boolean).join(' · '))} style={{ flex: 1 }} />
               <button
                 className="btn btn-outline"
                 onClick={handleSave}

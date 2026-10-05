@@ -1,22 +1,23 @@
 import { useState } from 'react';
 import { DownloadIcon } from './Icons';
-import { offerPrint } from '../lib/printFile';
+import { offerPrint, offerHtml } from '../lib/printFile';
 
 interface Props {
   filename: string;
   title: string;
-  text: string;
+  text?: string;
+  buildHtml?: () => string;
   label?: string;
   style?: React.CSSProperties;
 }
 
-export function PrintButton({ filename, title, text, label = 'הורדה להדפסה', style }: Props) {
+export function PrintButton({ filename, title, text, buildHtml, label = 'הורדה להדפסה', style }: Props) {
   const [status, setStatus] = useState<'idle' | 'working' | 'downloaded' | 'declined'>('idle');
 
   async function handleClick() {
     if (status === 'working') return;
     setStatus('working');
-    const result = await offerPrint(filename, title, text);
+    const result = buildHtml ? await offerHtml(filename, buildHtml()) : await offerPrint(filename, title, text ?? '');
     if (result === 'downloaded') {
       setStatus('downloaded');
       window.setTimeout(() => setStatus('idle'), 5000);
