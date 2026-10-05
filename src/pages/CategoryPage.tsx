@@ -15,6 +15,7 @@ import { situationToText, methodToText, staffStudyToText, quickGameToText } from
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { PageSearch } from '../components/PageSearch';
 import { matchesQuery } from '../lib/textFilter';
+import { PARSHIOT_BY_BOOK } from '../lib/parsha';
 
 const colorBg: Record<string, string> = {
   flame: 'var(--flame)',
@@ -40,6 +41,7 @@ export function CategoryPage() {
   const [openMethod, setOpenMethod] = useState<string | null>(null);
   const [quickKind, setQuickKind] = useState<QuickGameKind | 'הכל'>('הכל');
   const [pq, setPq] = useState(searchParams.get('q') ?? '');
+  const [parshaFilter, setParshaFilter] = useState<string | null>(null);
 
   const items = useMemo(() => activitiesByCategory(slug ?? ''), [slug]);
 
@@ -50,6 +52,7 @@ export function CategoryPage() {
       if (ageFilter === 'mid' && (a.ageMax < 7 || a.ageMin > 9)) return false;
       if (ageFilter === 'old' && a.ageMax < 9) return false;
       if (slug === 'activities' && domainFilter !== 'הכל' && getActivityDomain(a.tags) !== domainFilter) return false;
+      if (slug === 'activities' && domainFilter === 'פרשת שבוע' && parshaFilter && !a.tags.includes(parshaFilter)) return false;
       if (!matchesQuery([a.title, a.description, a.tags, a.subtopics, a.values], pq)) return false;
       return true;
     })
@@ -277,7 +280,7 @@ export function CategoryPage() {
         <>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 26 }}>
             {slug === 'activities' && activityDomains.map((d) => (
-              <button key={d} className={`chip${domainFilter === d ? ' is-active' : ''}`} onClick={() => setDomainFilter(d)}>{d}</button>
+              <button key={d} className={`chip${domainFilter === d ? ' is-active' : ''}`} onClick={() => { setDomainFilter(d); setParshaFilter(null); }}>{d}</button>
             ))}
             <span style={{ width: 1, background: 'var(--line)', margin: '0 4px' }} />
             <button className={`chip${ageFilter === null ? ' is-active' : ''}`} onClick={() => setAgeFilter(null)}>כל הגילאים</button>
@@ -286,6 +289,26 @@ export function CategoryPage() {
             <button className={`chip${ageFilter === 'old' ? ' is-active' : ''}`} onClick={() => setAgeFilter('old')}>גיל תיכון (י'-י"ב)</button>
             <button className={`chip${shabbatOnly ? ' is-active' : ''}`} onClick={() => setShabbatOnly((v) => !v)}>מתאים לשבת</button>
           </div>
+
+          {slug === 'activities' && domainFilter === 'פרשת שבוע' && (
+            <div className="card" style={{ padding: '18px 20px', marginBottom: 24, background: 'var(--magenta-tint)', border: '1px solid var(--magenta)' }}>
+              <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 12 }}>פעולות לכל פרשה — בחרו פרשה:</div>
+              {PARSHIOT_BY_BOOK.map((b) => (
+                <div key={b.book} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <span style={{ fontSize: 12.5, fontWeight: 800, color: 'var(--magenta-ink)', width: 56 }}>{b.book}</span>
+                  {b.names.map((n) => {
+                    const count = items.filter((a) => a.tags.includes(n)).length;
+                    return (
+                      <button key={n} type="button" className={`chip${parshaFilter === n ? ' is-active' : ''}`} style={{ padding: '5px 11px', fontSize: 12.5, opacity: count ? 1 : 0.45 }} onClick={() => setParshaFilter(parshaFilter === n ? null : n)}>
+                        {n}{count > 0 && <span style={{ fontWeight: 600, opacity: 0.7 }}>{count}</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+              {parshaFilter && <button type="button" className="chip" style={{ marginTop: 6 }} onClick={() => setParshaFilter(null)}>הצגת כל הפרשיות</button>}
+            </div>
+          )}
 
           {filtered.length === 0 ? (
             <p style={{ color: 'var(--ink-faint)' }}>אין כרגע פעולות שמתאימות לסינון הזה — נסו להסיר פילטר אחד.</p>
