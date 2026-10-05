@@ -97,9 +97,9 @@ teen = enrich(
     ],
 
 )
-teen['title'] = 'פעולה על ה-7 באוקטובר: מכאב לתקומה'
+teen['title'] = 'פעולה 7.10: מכאב לתקומה'
 teen['reading'] = {'label': 'עדות לוחם (נספח א׳)', 'text': TESTIMONY}
-teen['ageLabel'] = "כיתה ט'-י\"ב"; teen['ageMin'] = 9; teen['ageMax'] = 12
+teen['ageLabel'] = "כיתה ו'-י\"ב"; teen['ageMin'] = 6; teen['ageMax'] = 12
 for step in teen['flow']:
     if step['label'].startswith('הקרנת'):
         step['link'] = {'title': 'הקליפ "עם אחד" — אריאל', 'url': 'https://www.youtube.com/watch?v=H_c2MZkpCag'}
