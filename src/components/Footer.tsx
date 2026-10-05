@@ -11,7 +11,7 @@ export function Footer() {
             המדריך למדריך
           </div>
           <div style={{ fontSize: 12, color: 'var(--ink-faint)' }}>
-            © {new Date().getFullYear()} רוני גרוס · כל הזכויות שמורות
+            © {new Date().getFullYear()} רוני גרוס, מנהלת האתר · כל הזכויות שמורות
           </div>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, fontSize: 13.5, color: 'var(--ink-soft)' }}>

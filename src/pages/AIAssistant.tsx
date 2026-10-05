@@ -7,6 +7,7 @@ import { searchActivities } from '../lib/search';
 import { sendChatMessage, type ChatMessage } from '../lib/aiChat';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { getActivity } from '../data/activities';
+import { FAQ, findFaq } from '../data/faq';
 import {
   listConversations,
   getConversation,
@@ -24,6 +25,7 @@ interface ChatEntry {
   content: string;
   matches?: Activity[];
   isError?: boolean;
+  faqId?: string;
 }
 
 const suggestions = ['פעולה על חברות לכיתה ז׳', 'איך מתמודדים עם חניך שמפריע?', 'רעיון לצ׳ופר זול וטוב', 'משהו בלי ציוד ל-20 דקות'];
@@ -34,6 +36,7 @@ function toStored(entries: ChatEntry[]): StoredEntry[] {
     content: e.content,
     isError: e.isError,
     matchIds: e.matches?.map((m) => m.id),
+    faqId: e.faqId,
   }));
 }
 
@@ -42,6 +45,7 @@ function fromStored(entries: StoredEntry[]): ChatEntry[] {
     role: e.role,
     content: e.content,
     isError: e.isError,
+    faqId: e.faqId,
     matches: e.matchIds?.map((id) => getActivity(id)).filter((a): a is Activity => Boolean(a)),
   }));
 }
@@ -94,10 +98,21 @@ export function AIAssistant() {
     if (id === convId) startNewChat();
   }
 
-  async function handleSend(e: React.FormEvent) {
+  async function handleSend(e: React.FormEvent, forceAi = false, override?: string) {
     e.preventDefault();
-    const text = input.trim();
+    const text = (override ?? input).trim();
     if (!text || sendingRef.current) return;
+
+    // שאלה נפוצה — עונים מיד מהמאגר, בלי AI. רק שאלה אחרת (או "שאלו את ה-AI") עוברת ל-AI.
+    const faq = forceAi ? null : findFaq(text);
+    if (faq) {
+      const done: ChatEntry[] = [...entries, { role: 'user', content: text }, { role: 'assistant', content: faq.answer(), faqId: faq.id }];
+      setEntries(done);
+      setInput('');
+      persist(done);
+      return;
+    }
+
     sendingRef.current = true;
 
     const userEntry: ChatEntry = { role: 'user', content: text };
@@ -196,6 +211,12 @@ export function AIAssistant() {
                 <button key={s} className="chip" onClick={() => setInput(s)}>{s}</button>
               ))}
             </div>
+            <p style={{ margin: '26px 0 12px', fontSize: 14 }}>שאלות נפוצות — עונה מיד:</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 9 }}>
+              {FAQ.slice(0, 10).map((f) => (
+                <button key={f.id} className="chip" style={{ background: 'var(--lime-tint)' }} onClick={(ev) => handleSend(ev as unknown as React.FormEvent, false, f.question)}>{f.question}</button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -216,7 +237,22 @@ export function AIAssistant() {
             >
               {en.content}
             </div>
-            {en.role === 'assistant' && !en.isError && en.content && (
+            {en.faqId && (() => {
+              const faq = FAQ.find((f) => f.id === en.faqId);
+              const prevUser = [...entries.slice(0, i)].reverse().find((x) => x.role === 'user');
+              return (
+                <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--lime-ink)', background: 'var(--lime-tint)', borderRadius: 999, padding: '2px 10px' }}>תשובה מוכנה</span>
+                  {faq?.links?.map((l) => <Link key={l.to} to={l.to} className="chip" style={{ fontSize: 12.5, padding: '5px 12px' }}>{l.label} ←</Link>)}
+                  {prevUser && (
+                    <button type="button" className="chip" style={{ fontSize: 12.5, padding: '5px 12px' }} onClick={(ev) => handleSend(ev as unknown as React.FormEvent, true, prevUser.content)}>
+                      רוצה יותר פירוט? שאלו את ה-AI
+                    </button>
+                  )}
+                </div>
+              );
+            })()}
+            {en.role === 'assistant' && !en.isError && en.content && !en.faqId && (
               <div style={{ marginTop: 6 }}>
                 <CopyButton variant="mini" text={en.content} label="העתקה" />
               </div>

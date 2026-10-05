@@ -50,10 +50,13 @@ function scoreActivity(a: Activity, q: ParsedQuery): number {
   const strongHaystack = [a.title, ...a.tags, ...a.values].join(' ');
   const weakHaystack = [a.description, ...a.subtopics, a.ageLabel].join(' ');
 
+  let matched = 0;
   for (const word of q.topicWords) {
-    if (wordMatches(strongHaystack, word)) score += 3;
-    else if (wordMatches(weakHaystack, word)) score += 1;
+    if (wordMatches(strongHaystack, word)) { score += 3; matched += 1; }
+    else if (wordMatches(weakHaystack, word)) { score += 1; matched += 1; }
   }
+  // שאילתה עם כמה מילות נושא: לפחות שתיים מהן צריכות להופיע — אחרת כל פעולה שמזכירה מילה אחת נכנסת לתוצאות.
+  if (q.topicWords.length >= 2 && matched < 2) return 0;
 
   if (q.wantsShabbat && (a.shabbat === 'שבת' || a.shabbat === 'שניהם')) score += 3;
   if (q.wantsChol && (a.shabbat === 'חול' || a.shabbat === 'שניהם')) score += 3;

@@ -3,6 +3,7 @@ import { getStaffStudy } from '../data/staffStudy';
 import { Reveal } from '../components/Reveal';
 import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
+import { FavoriteButton } from '../components/FavoriteButton';
 import { staffStudyToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { ViewCount } from '../components/ViewCount';
@@ -58,6 +59,7 @@ export function StaffStudyDetail() {
 
           <div className="no-print" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 22 }}>
             <PrintButton filename={`${study.id}.html`} title={study.title} text={staffStudyToText(study)} />
+            <FavoriteButton kind="staff-study" id={study.id} />
             <CopyButton text={staffStudyToText(study)} label="העתקת המפגש כטקסט" copiedLabel="✓ הועתק" />
           </div>
 

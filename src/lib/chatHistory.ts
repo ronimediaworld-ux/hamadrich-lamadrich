@@ -6,6 +6,7 @@ export interface StoredEntry {
   content: string;
   matchIds?: string[];
   isError?: boolean;
+  faqId?: string;
 }
 
 export interface Conversation {

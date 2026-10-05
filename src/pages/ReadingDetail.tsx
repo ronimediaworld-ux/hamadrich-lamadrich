@@ -3,6 +3,7 @@ import { getReading } from '../data/readings';
 import { Reveal } from '../components/Reveal';
 import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
+import { FavoriteButton } from '../components/FavoriteButton';
 import { readingToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { ViewCount } from '../components/ViewCount';
@@ -83,6 +84,7 @@ export function ReadingDetail() {
 
           <div className="no-print" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             <PrintButton filename={`${reading.id}.html`} title={reading.title} text={readingToText(reading)} />
+            <FavoriteButton kind="reading" id={reading.id} />
             <CopyButton text={readingToText(reading)} label="העתקת הקטע כטקסט" copiedLabel="✓ הועתק" />
           </div>
         </div>

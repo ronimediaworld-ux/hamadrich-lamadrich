@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Reveal } from '../components/Reveal';
 import { ActivityCard } from '../components/ActivityCard';
@@ -6,7 +6,13 @@ import { MascotIcon } from '../components/TeenAvatar';
 import { SearchIcon, ChevronDownIcon } from '../components/Icons';
 import { categories } from '../data/categories';
 import { activities } from '../data/activities';
-import { getCurrentParsha } from '../lib/parsha';
+import { getCurrentParsha, getCurrentParshaNames } from '../lib/parsha';
+import { SparkTrail } from '../components/SparkTrail';
+import { CountUp } from '../components/CountUp';
+import { readings } from '../data/readings';
+import { chuparim } from '../data/chuparim';
+import { staffStudy } from '../data/staffStudy';
+import { situations } from '../data/situations';
 
 const shortcuts = ['אני צריך פעולה', 'משחק מהיר', 'פרשת השבוע', 'פעולה לשבת', 'משהו בלי ציוד', 'פעולה אמונית', '20 דקות פנויות'];
 
@@ -22,13 +28,38 @@ const catColorBg: Record<string, string> = {
 
 export function Home() {
   const [q, setQ] = useState('');
+  const [rolling, setRolling] = useState<string | null>(null);
+  const rollRef = useRef<number | null>(null);
   const navigate = useNavigate();
   const recommended = recommendedIds.map((id) => activities.find((a) => a.id === id)!).filter(Boolean);
 
   const currentParsha = getCurrentParsha();
-  const parshaActivities = currentParsha
-    ? activities.filter((a) => a.categorySlug === 'activities' && a.tags.includes(currentParsha)).slice(0, 6)
+  const parshaNames = getCurrentParshaNames();
+  const parshaActivities = parshaNames.length
+    ? activities.filter((a) => a.categorySlug === 'activities' && a.tags.some((t) => parshaNames.includes(t))).slice(0, 6)
     : [];
+
+  // "הפתיעו אותי": גלגל כותרות קצר ואז נפתחת פעולה אקראית.
+  function surprise() {
+    if (rollRef.current) return;
+    const pool = activities.filter((a) => a.categorySlug === 'activities');
+    const target = pool[Math.floor(Math.random() * pool.length)];
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      navigate(`/activity/${target.id}`);
+      return;
+    }
+    let ticks = 0;
+    rollRef.current = window.setInterval(() => {
+      ticks += 1;
+      setRolling(pool[Math.floor(Math.random() * pool.length)].title);
+      if (ticks >= 12) {
+        if (rollRef.current) window.clearInterval(rollRef.current);
+        rollRef.current = null;
+        setRolling(target.title);
+        window.setTimeout(() => { setRolling(null); navigate(`/activity/${target.id}`); }, 650);
+      }
+    }, 90);
+  }
 
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -38,6 +69,11 @@ export function Home() {
   return (
     <div>
       {/* HERO */}
+      <div className="hero-wrap">
+      <span className="hero-blob" aria-hidden="true" style={{ width: 220, height: 220, top: -50, insetInlineStart: -60, background: 'var(--flame-tint)' }} />
+      <span className="hero-blob" aria-hidden="true" style={{ width: 160, height: 160, top: 120, insetInlineEnd: -40, background: 'var(--magenta-tint)', animationDelay: '-3s' }} />
+      <span className="hero-blob" aria-hidden="true" style={{ width: 120, height: 120, bottom: 20, insetInlineStart: '18%', background: 'var(--yellow-tint)', animationDelay: '-6s' }} />
+      <SparkTrail>
       <div className="wrap" style={{ paddingTop: 56, paddingBottom: 60, textAlign: 'center' }}>
         <Reveal>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
@@ -50,13 +86,13 @@ export function Home() {
 
         <Reveal delay={60}>
           <h1 style={{ fontSize: 'clamp(38px, 6vw, 66px)', fontWeight: 900, lineHeight: 1.06, marginBottom: 18 }}>
-            מה אתם צריכים<br />להעביר היום?
+            מה אתם צריכים<br />להעביר <span className="marker">היום?</span>
           </h1>
         </Reveal>
 
         <Reveal delay={100}>
           <p style={{ maxWidth: 560, margin: '0 auto 30px', fontSize: 17.5, color: 'var(--ink-soft)' }}>
-            מאגר פעולות אמיתי, עוזר AI שמחפש קודם במאגר, ורעיונות לצ׳ופרים — הכל במקום אחד.
+            מאגר פעולות איכותי, בנוי שלב־שלב ומוכן להעברה. בוחרים, מדפיסים — ועולים לפעולה בביטחון.
           </p>
         </Reveal>
 
@@ -66,7 +102,7 @@ export function Home() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="לדוגמה: פעולה אמונית לכיתה ח' לשבת"
+              placeholder="חיפוש בכל האתר — לדוגמה: פעולה אמונית לכיתה ח' לשבת"
               style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontFamily: 'Heebo, sans-serif', fontSize: 15.5 }}
             />
             <button type="submit" className="btn btn-flame">חיפוש</button>
@@ -91,6 +127,9 @@ export function Home() {
             {shortcuts.map((s) => (
               <button key={s} className="chip" onClick={() => navigate(`/search?q=${encodeURIComponent(s)}`)}>{s}</button>
             ))}
+            <button className="chip" style={{ background: 'var(--yellow-tint)' }} onClick={surprise} aria-live="polite">
+              {rolling ? <span key={rolling} className="roll-title">{rolling}</span> : 'הפתיעו אותי'}
+            </button>
           </div>
         </Reveal>
 
@@ -98,6 +137,28 @@ export function Home() {
           גללו
           <ChevronDownIcon size={18} />
         </div>
+      </div>
+      </SparkTrail>
+      </div>
+
+      {/* STATS */}
+      <div className="wrap" style={{ paddingBottom: 44 }}>
+        <Reveal>
+          <div className="stat-strip">
+            {[
+              ['פעולות ומערכים', activities.length],
+              ['קטעי קריאה', readings.length],
+              ['רעיונות לצ׳ופרים', chuparim.length],
+              ['סיטואציות בהדרכה', situations.length],
+              ['מפגשי לימוד צוות', staffStudy.length],
+            ].map(([label, n]) => (
+              <div key={String(label)} style={{ textAlign: 'center', padding: '14px 8px', borderRadius: 16, background: 'var(--paper)', border: '2px solid var(--ink)' }}>
+                <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 30, color: 'var(--flame-ink)', lineHeight: 1.1 }}><CountUp to={Number(n)} /></div>
+                <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 4 }}>{label}</div>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
 
       {/* CATEGORIES */}
@@ -113,7 +174,7 @@ export function Home() {
               <Link
                 key={c.slug}
                 to={`/category/${c.slug}`}
-                className="tile"
+                className="tile tilt"
                 style={{
                   background: catColorBg[c.color],
                   color: c.color === 'yellow' ? '#4A3A0A' : '#FFF8EE',
@@ -250,6 +311,22 @@ export function Home() {
             </div>
           </Reveal>
         </div>
+      </div>
+
+      {/* THE MANAGER */}
+      <div className="wrap" style={{ paddingBottom: 40 }}>
+        <Reveal>
+          <Link to="/about" className="card" style={{ display: 'flex', alignItems: 'center', gap: 18, padding: '18px 24px', flexWrap: 'wrap' }}>
+            <div style={{ flex: 'none', width: 56, height: 56, borderRadius: '50%', background: 'var(--flame-tint)', border: '2px solid var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <MascotIcon size={38} />
+            </div>
+            <div style={{ flex: '1 1 260px' }}>
+              <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 18 }}>רוני גרוס, מנהלת האתר</div>
+              <div style={{ fontSize: 14, color: 'var(--ink-soft)' }}>שמיניסטית, הדרכתי שנתיים שכבת גדולות — ובניתי את המקום שהיה חסר לי.</div>
+            </div>
+            <span style={{ fontWeight: 800, color: 'var(--flame-ink)' }}>הסיפור שלי ←</span>
+          </Link>
+        </Reveal>
       </div>
 
       {/* CTA */}

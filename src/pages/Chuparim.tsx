@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { chuparim } from '../data/chuparim';
 import { TeenAvatar } from '../components/TeenAvatar';
@@ -6,6 +7,8 @@ import { ChuparDesign } from '../components/ChuparDesign';
 import { buildChuparPrintHtml } from '../lib/chuparDesign';
 import { offerHtml } from '../lib/printFile';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { PageSearch } from '../components/PageSearch';
+import { matchesQuery } from '../lib/textFilter';
 
 const budgetColor: Record<string, string> = {
   'חינם': 'var(--lime-ink)',
@@ -16,6 +19,8 @@ const budgetColor: Record<string, string> = {
 
 export function Chuparim() {
   useDocumentTitle('רעיונות לצ׳ופרים');
+  const [pq, setPq] = useState('');
+  const shown = chuparim.filter((c) => matchesQuery([c.title, c.description, c.kind, c.forWhom, c.tip], pq));
   return (
     <div className="wrap" style={{ paddingTop: 30, paddingBottom: 70 }}>
       <Reveal>
@@ -23,8 +28,10 @@ export function Chuparim() {
         <p style={{ color: 'var(--ink-faint)', fontSize: 14.5, marginBottom: 28 }}>{chuparim.length} רעיונות במאגר — ממתנה של דקה ועד חוויה שנשארת שנה שלמה</p>
       </Reveal>
 
+      <PageSearch value={pq} onChange={setPq} placeholder="חיפוש בצ׳ופרים..." />
+      {shown.length === 0 && <p style={{ color: 'var(--ink-faint)' }}>לא נמצא צ׳ופר שמתאים — נסו מילה אחרת.</p>}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 18 }}>
-        {chuparim.map((c, i) => (
+        {shown.map((c, i) => (
           <Reveal key={c.id} delay={(i % 6) * 40}>
             <Link to={`/chupar/${c.id}`} className="card" style={{ display: 'block', padding: 20 }}>
               <div style={{ marginBottom: 14 }}>

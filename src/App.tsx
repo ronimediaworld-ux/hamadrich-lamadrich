@@ -19,6 +19,8 @@ import { HowToBuild } from './pages/HowToBuild';
 import { SubmitActivity } from './pages/SubmitActivity';
 import { Admin } from './pages/Admin';
 import { trackVisit } from './lib/api';
+import { ScrollProgress } from './components/ScrollProgress';
+import { TiltEffect } from './components/TiltEffect';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -51,6 +53,8 @@ export default function App() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <ScrollToTop />
+      <ScrollProgress />
+      <TiltEffect />
       <Header />
       <div style={{ flex: 1 }}>
         <Routes>

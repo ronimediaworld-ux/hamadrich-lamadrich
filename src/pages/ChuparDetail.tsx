@@ -5,6 +5,7 @@ import { TeenAvatar } from '../components/TeenAvatar';
 import { Reveal } from '../components/Reveal';
 import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
+import { FavoriteButton } from '../components/FavoriteButton';
 import { chuparToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { ChuparDesign } from '../components/ChuparDesign';
@@ -128,6 +129,7 @@ export function ChuparDetail() {
               </a>
             )}
             <PrintButton filename={`${chupar.id}.html`} title={chupar.title} text={chuparToText(chupar)} />
+            <FavoriteButton kind="chupar" id={chupar.id} />
             <CopyButton text={chuparToText(chupar)} label="העתקת הצ׳ופר כטקסט" copiedLabel="✓ הועתק" />
           </div>
         </div>

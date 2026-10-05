@@ -6,6 +6,7 @@ import { TeenAvatar } from '../components/TeenAvatar';
 import { ClockIcon, UsersIcon, StarIcon, MapPinIcon, HeartIcon } from '../components/Icons';
 import { Reveal } from '../components/Reveal';
 import { isFavorite, toggleFavorite } from '../lib/favorites';
+import { burst } from '../lib/effects';
 import { activityToText } from '../lib/contentText';
 import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
@@ -52,9 +53,11 @@ export function ActivityDetail() {
     setChuparVals([]);
   }, [id]);
 
-  function handleSave() {
+  function handleSave(e: React.MouseEvent<HTMLButtonElement>) {
     if (!id) return;
-    setSaved(toggleFavorite(id));
+    const now = toggleFavorite(id);
+    setSaved(now);
+    if (now) burst(e.currentTarget);
   }
 
   if (!activity) {
@@ -122,7 +125,7 @@ export function ActivityDetail() {
                 style={{ flex: 1, justifyContent: 'center', background: saved ? 'var(--flame-tint)' : undefined, borderColor: saved ? 'var(--flame)' : undefined }}
               >
                 <HeartIcon size={15} color={saved ? 'var(--flame)' : 'currentColor'} />
-                {saved ? 'נשמר במועדפים' : 'שמירה למועדפים'}
+                {saved ? 'נשמר בקלסר שלי' : 'שמירה בקלסר שלי'}
               </button>
             </div>
             <CopyButton

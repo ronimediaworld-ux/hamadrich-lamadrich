@@ -13,6 +13,8 @@ import { CopyButton } from '../components/CopyButton';
 import { iconForName } from '../components/Icons';
 import { situationToText, methodToText, staffStudyToText, quickGameToText } from '../lib/contentText';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { PageSearch } from '../components/PageSearch';
+import { matchesQuery } from '../lib/textFilter';
 
 const colorBg: Record<string, string> = {
   flame: 'var(--flame)',
@@ -37,6 +39,7 @@ export function CategoryPage() {
   const [readingDomainFilter, setReadingDomainFilter] = useState('הכל');
   const [openMethod, setOpenMethod] = useState<string | null>(null);
   const [quickKind, setQuickKind] = useState<QuickGameKind | 'הכל'>('הכל');
+  const [pq, setPq] = useState(searchParams.get('q') ?? '');
 
   const items = useMemo(() => activitiesByCategory(slug ?? ''), [slug]);
 
@@ -47,17 +50,24 @@ export function CategoryPage() {
       if (ageFilter === 'mid' && (a.ageMax < 7 || a.ageMin > 9)) return false;
       if (ageFilter === 'old' && a.ageMax < 9) return false;
       if (slug === 'activities' && domainFilter !== 'הכל' && getActivityDomain(a.tags) !== domainFilter) return false;
+      if (!matchesQuery([a.title, a.description, a.tags, a.subtopics, a.values], pq)) return false;
       return true;
     })
     .sort((a, b) => (a.series?.title ?? '').localeCompare(b.series?.title ?? '') || (a.series?.part ?? 0) - (b.series?.part ?? 0));
 
   const filteredReadings = readings.filter((r) => {
     if (readingDomainFilter !== 'הכל' && r.domain !== readingDomainFilter) return false;
+    if (!matchesQuery([r.title, r.description, r.tags, r.source], pq)) return false;
     if (ageFilter === 'young' && r.ageMin > 6) return false;
     if (ageFilter === 'mid' && (r.ageMax < 7 || r.ageMin > 9)) return false;
     if (ageFilter === 'old' && r.ageMax < 9) return false;
     return true;
   });
+
+  const filteredMethods = methods.filter((m) => matchesQuery([m.title, m.suitableFor, m.description, m.tags], pq));
+  const filteredSituations = situations.filter((x) => matchesQuery([x.title, x.scenario, x.approach], pq));
+  const filteredStaff = staffStudy.filter((x) => matchesQuery([x.title, x.topic, x.description], pq));
+  const filteredQuick = quickGames.filter((g) => matchesQuery([g.name, g.kind, g.description], pq));
 
   if (!category) {
     return (
@@ -93,9 +103,11 @@ export function CategoryPage() {
         </div>
       </div>
 
+      <PageSearch value={pq} onChange={setPq} placeholder={`חיפוש ב${category.label}...`} />
+
       {slug === 'tools' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {situations.map((s) => (
+          {filteredSituations.map((s) => (
             <Reveal key={s.id}>
               <div className="card" style={{ padding: 26 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
@@ -128,7 +140,7 @@ export function CategoryPage() {
 
       {slug === 'methods' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {methods.map((m) => {
+          {filteredMethods.map((m) => {
             const open = openMethod === m.id;
             return (
               <Reveal key={m.id}>
@@ -189,11 +201,12 @@ export function CategoryPage() {
 
       {slug === 'staff-study' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 18 }}>
-          {[...staffStudy]
+          {[...filteredStaff]
             .sort((a, b) => (a.series?.title ?? '').localeCompare(b.series?.title ?? '') || (a.series?.part ?? 0) - (b.series?.part ?? 0))
             .map((s) => (
             <Reveal key={s.id}>
-              <Link to={`/staff-study/${s.id}`} className="card" style={{ padding: 22, display: 'block' }}>
+              <div className="card" style={{ padding: 22, display: 'block' }}>
+              <Link to={`/staff-study/${s.id}`} style={{ display: 'block' }}>
                 <span style={{ display: 'inline-block', padding: '4px 11px', borderRadius: 999, background: 'var(--magenta-tint)', color: 'var(--magenta-ink)', fontSize: 11.5, fontWeight: 700, marginBottom: 10 }}>
                   {s.topic}
                 </span>
@@ -208,18 +221,18 @@ export function CategoryPage() {
                 </div>
                 <p style={{ fontSize: 13.5, color: 'var(--ink-soft)', marginBottom: 12 }}>{s.description}</p>
                 <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginBottom: 4 }}>{s.duration} דק׳ · {s.forWhom}</div>
+              </Link>
                 {s.sourceLink && (
                   <a
                     href={s.sourceLink.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
                     style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: 'var(--flame-ink)', fontWeight: 700 }}
                   >
                     מקור: {s.sourceLink.title} ↗
                   </a>
                 )}
-              </Link>
+              </div>
             </Reveal>
           ))}
         </div>
@@ -237,7 +250,7 @@ export function CategoryPage() {
             ))}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
-            {quickGames
+            {filteredQuick
               .filter((g) => quickKind === 'הכל' || g.kind === quickKind)
               .map((g) => (
                 <Reveal key={g.id}>

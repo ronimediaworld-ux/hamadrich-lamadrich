@@ -29,12 +29,12 @@ export function ActivityCard({ activity, rotate = 0 }: { activity: Activity; rot
   return (
     <Link
       to={`/activity/${activity.id}`}
-      className="card"
+      className="card tilt"
       style={{
         display: 'block',
         flex: '0 0 270px',
         padding: 20,
-        transform: `rotate(${rotate}deg)`,
+        transform: `perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotate(${rotate}deg)`,
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
