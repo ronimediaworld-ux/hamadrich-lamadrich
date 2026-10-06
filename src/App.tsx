@@ -22,6 +22,7 @@ import { PresentMode } from './pages/PresentMode';
 import { PlanBuilder } from './pages/PlanBuilder';
 import { ShabbatPack } from './pages/ShabbatPack';
 import { WhatsNew } from './pages/WhatsNew';
+import { Privacy, Terms, Accessibility } from './pages/Legal';
 import { trackVisit } from './lib/api';
 import { ScrollProgress } from './components/ScrollProgress';
 
@@ -65,8 +66,9 @@ export default function App() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <ScrollToTop />
       <ScrollProgress />
+      <a href="#main" className="skip-link">דלג לתוכן הראשי</a>
       <Header />
-      <div style={{ flex: 1 }}>
+      <main id="main" tabIndex={-1} style={{ flex: 1, outline: 'none' }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/category/:slug" element={<CategoryPage />} />
@@ -86,10 +88,13 @@ export default function App() {
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/contact" element={<Reviews />} />
           <Route path="/submit" element={<SubmitActivity />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/accessibility" element={<Accessibility />} />
           {/* כל כתובת לא מוכרת (וגם פתיחה של האתר בתוך תצוגה מוטמעת) נוחתת על מסך הבית */}
           <Route path="*" element={<Home />} />
         </Routes>
-      </div>
+      </main>
       {!isChat && <Footer />}
       <Mascot />
     </div>

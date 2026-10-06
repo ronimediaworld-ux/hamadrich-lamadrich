@@ -3,7 +3,7 @@ import { MascotIcon } from './TeenAvatar';
 
 export function Footer() {
   return (
-    <div className="no-print" style={{ borderTop: '2px solid var(--ink)', padding: '32px 0 44px', marginTop: 60 }}>
+    <footer className="no-print" style={{ borderTop: '2px solid var(--ink)', padding: '32px 0 44px', marginTop: 60 }}>
       <div className="wrap" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 15 }}>
@@ -27,6 +27,11 @@ export function Footer() {
           <Link to="/reviews">דירוג והמלצות</Link>
         </div>
       </div>
-    </div>
+      <nav className="wrap" aria-label="מסמכים משפטיים" style={{ display: 'flex', flexWrap: 'wrap', gap: 18, marginTop: 18, fontSize: 12.5, color: 'var(--ink-faint)' }}>
+        <Link to="/privacy">מדיניות פרטיות</Link>
+        <Link to="/terms">תנאי שימוש</Link>
+        <Link to="/accessibility">הצהרת נגישות</Link>
+      </nav>
+    </footer>
   );
 }

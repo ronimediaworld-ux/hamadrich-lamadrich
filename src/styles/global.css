@@ -253,7 +253,7 @@ button {
 .nav-more-panel a { display: flex; flex-direction: column; gap: 1px; padding: 9px 12px; border-radius: 10px; color: var(--ink); }
 .nav-more-title { font-weight: 700; font-size: 14.5px; }
 .nav-more-desc { font-weight: 500; font-size: 12px; color: var(--ink-faint); }
-.nav-more-panel a:hover, .nav-more-panel a:focus-visible { background: var(--flame-tint); outline: none; }
+.nav-more-panel a:hover, .nav-more-panel a:focus-visible { background: var(--flame-tint); }
 .nav-more-panel a:hover .nav-more-title { color: var(--flame-ink); }
 .nav-more::after { content: ''; position: absolute; top: 100%; inset-inline: 0; height: 16px; }
 
@@ -278,3 +278,15 @@ button {
 
 @keyframes rollFlash { 0% { opacity: .25; transform: translateY(8px); } 100% { opacity: 1; transform: none; } }
 .roll-title { animation: rollFlash .12s ease-out; }
+
+/* ---- נגישות: קישור דילוג וסימון פוקוס ברור ---- */
+.skip-link {
+  position: absolute; inset-inline-start: 12px; top: -64px; z-index: 1000;
+  background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 8px;
+  font-weight: 700; text-decoration: none; transition: top .15s;
+}
+.skip-link:focus { top: 10px; }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--flame-ink, #b9501b) !important;
+  outline-offset: 2px;
+}
