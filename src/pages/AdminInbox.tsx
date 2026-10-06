@@ -30,6 +30,37 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
   );
 }
 
+interface Health { storage: string; githubConnected: boolean; mailConfigured: boolean; notifyConfigured: boolean; aiConfigured: boolean; siteUrl: string; production: boolean }
+
+function HealthPanel() {
+  const [h, setH] = useState<Health | null>(null);
+  useEffect(() => { fetch('/api/admin/health').then((r) => r.json()).then(setH).catch(() => setH(null)); }, []);
+  if (!h) return null;
+  const rows: [string, boolean, string][] = [
+    ['שמירת נתונים קבועה (Upstash)', h.storage === 'upstash', 'בלי זה צפיות, תגובות והצעות נמחקים בכל פריסה. הגדירו UPSTASH_REDIS_REST_URL ו-UPSTASH_REDIS_REST_TOKEN.'],
+    ['עריכת תוכן מהדשבורד נשמרת באתר (GitHub)', h.githubConnected, 'בלי GITHUB_TOKEN שינויים בתוכן נשמרים רק מקומית ולא יעלו לאתר החי.'],
+    ['התראת מייל על הצעות', h.notifyConfigured && h.mailConfigured, 'הגדירו RESEND_API_KEY ו-NOTIFY_EMAIL.'],
+    ['שליחת מיילים לנרשמים', h.mailConfigured, 'דורש RESEND_API_KEY, ולאימות דומיין ב-Resend כדי לשלוח לאחרים.'],
+    ['עוזר AI (ניצוץ)', h.aiConfigured, 'הגדירו GEMINI_API_KEY.'],
+    ['כתובת האתר לגוגל (SITE_URL)', !h.siteUrl.includes('localhost') && h.production, 'הגדירו SITE_URL לכתובת האמיתית כדי שה-sitemap וה-canonical יהיו נכונים.'],
+  ];
+  return (
+    <Panel title="מצב המערכת">
+      <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8, fontSize: 14 }}>
+        {rows.map(([label, ok, hint]) => (
+          <li key={label} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <span style={{ flex: 'none', width: 20, height: 20, borderRadius: '50%', background: ok ? 'var(--lime)' : 'var(--yellow)', color: '#fff', fontWeight: 800, fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{ok ? '✓' : '!'}</span>
+            <span><b>{label}</b>{!ok && <span style={{ display: 'block', fontSize: 12.5, color: 'var(--ink-faint)' }}>{hint}</span>}</span>
+          </li>
+        ))}
+      </ul>
+      <p style={{ fontSize: 13, color: 'var(--ink-soft)', margin: '12px 0 0' }}>
+        לגוגל: אחרי שהאתר עולה, הוסיפי אותו ב-<a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>Google Search Console</a> ושלחי את <code>{h.siteUrl}/sitemap.xml</code>.
+      </p>
+    </Panel>
+  );
+}
+
 function StatsView() {
   const [s, setS] = useState<Stats | null>(null);
   const [err, setErr] = useState('');
@@ -41,6 +72,7 @@ function StatsView() {
   const max = Math.max(1, ...s.last14.map((d) => d.count));
   return (
     <div>
+      <HealthPanel />
       {s.storage === 'file' && (
         <div style={{ background: 'var(--yellow-tint)', border: '1px solid var(--yellow)', borderRadius: 12, padding: '12px 16px', fontSize: 13.5, marginBottom: 18, lineHeight: 1.7 }}>
           <b>שימו לב:</b> הנתונים נשמרים כרגע בקובץ מקומי בשרת. בשירות החינמי של Render הקובץ נמחק בכל פריסה או הרדמה של האתר.

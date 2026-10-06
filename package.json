@@ -7,8 +7,7 @@
     "dev": "vite",
     "server": "PORT=3001 node server/index.js",
     "dev:full": "concurrently -n vite,api -c blue,magenta \"npm:dev\" \"npm:server\"",
-    "sitemap": "node scripts/generate-sitemap.mjs",
-    "build": "npm run sitemap && tsc -b && vite build",
+    "build": "tsc -b && vite build",
     "start": "NODE_ENV=production node server/index.js",
     "lint": "oxlint",
     "preview": "vite preview"

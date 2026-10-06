@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://hamadrich-lamadrich.onrender.com/sitemap.xml

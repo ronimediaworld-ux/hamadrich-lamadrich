@@ -354,6 +354,19 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
     }
   });
 
+  // מצב המערכת: מה מוגדר ומה עוד חסר (להצגה בדשבורד)
+  app.get('/api/admin/health', requireAdmin, (req, res) => {
+    res.json({
+      storage: store.kind,
+      githubConnected: !!process.env.GITHUB_TOKEN,
+      mailConfigured: !!RESEND_API_KEY,
+      notifyConfigured: !!NOTIFY_EMAIL,
+      aiConfigured: !!(process.env.GEMINI_API_KEY || process.env.ANTHROPIC_API_KEY),
+      siteUrl: process.env.SITE_URL || `${req.protocol}://${req.get('host')}`,
+      production: process.env.NODE_ENV === 'production',
+    });
+  });
+
   // ---------- סטטיסטיקה (רק למנהלת) ----------
   app.get('/api/admin/stats', requireAdmin, async (_req, res) => {
     try {

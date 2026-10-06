@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { registerAdminRoutes, requireAdmin } from './admin.js';
 import { createStore } from './store.js';
 import { registerFeatureRoutes } from './features.js';
+import { registerSeoRoutes } from './seo.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -249,11 +250,8 @@ app.post('/api/chat', async (req, res) => {
 
 if (process.env.NODE_ENV === 'production') {
   const distPath = path.join(__dirname, '..', 'dist');
-  app.use(express.static(distPath));
-  app.use((req, res, next) => {
-    if (req.method !== 'GET' || req.path.startsWith('/api/')) return next();
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
+  app.use(express.static(distPath, { index: false }));
+  registerSeoRoutes(app, path.join(__dirname, '..'), distPath, process.env.SITE_URL);
 }
 
 app.listen(PORT, () => {
