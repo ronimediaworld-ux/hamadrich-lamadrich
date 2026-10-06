@@ -26,4 +26,4 @@ dist-ssr
 *.sw?
 
 # local data store (views, comments, submissions)
-data/
+/data/
