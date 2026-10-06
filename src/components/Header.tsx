@@ -3,53 +3,56 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { MascotIcon } from './TeenAvatar';
 import { SearchIcon, HeartIcon, MenuIcon, CloseIcon, ChevronDownIcon } from './Icons';
 
-interface NavItem { to: string; label: string; flame?: boolean }
+interface NavItem { to: string; label: string; flame?: boolean; desc?: string }
+type NavEntry = { kind: 'link'; item: NavItem } | { kind: 'menu'; id: string; label: string; items: NavItem[] };
 
-// הדברים החשובים — תמיד בסרגל העליון.
-const MAIN_LINKS: NavItem[] = [
-  { to: '/category/activities', label: 'פעולות ומערכים' },
-  { to: '/category/activities?domain=פרשת שבוע', label: 'פרשת השבוע' },
-  { to: '/builder', label: 'בונה פעולה' },
-  { to: '/category/social-nights', label: 'ערבי גיבוש' },
-  { to: '/category/readings', label: 'קטעי קריאה' },
-  { to: '/chuparim', label: 'צ׳ופרים' },
-  { to: '/ai', label: 'עוזר AI', flame: true },
-];
-
-// כל השאר — בתוך תפריט "עוד".
-const MORE_LINKS: NavItem[] = [
-  { to: '/category/games', label: 'רשימת משחקים' },
-  { to: '/category/methods', label: 'מתודות' },
-  { to: '/category/staff-study', label: 'לימוד צוות' },
-  { to: '/category/tools', label: 'סיטואציות בהדרכה' },
-  { to: '/how-to-build', label: 'נדבר ת׳כלס' },
-  { to: '/how-to-build?guide=personal-talks', label: 'שיחות אישיות עם חניכים' },
-  { to: '/how-to-build?guide=canva', label: 'עיצוב בקנבה' },
-  { to: '/favorites', label: 'הקלסר שלי' },
-  { to: '/submit', label: 'שליחת פעולה' },
-  { to: '/about', label: 'אודות' },
-  { to: '/reviews', label: 'דירוג והמלצות' },
+// הסדר הקבוע של התפריט: הדברים הבולטים בסרגל, ותפריטי משנה ל"תוכן נלווה" ול"אודות".
+const NAV: NavEntry[] = [
+  { kind: 'link', item: { to: '/category/activities', label: 'פעולות ומערכים' } },
+  { kind: 'link', item: { to: '/category/social-nights', label: 'ערבי גיבוש' } },
+  { kind: 'link', item: { to: '/ai', label: 'עוזר AI', flame: true } },
+  { kind: 'link', item: { to: '/category/staff-study', label: 'לימוד צוות' } },
+  { kind: 'link', item: { to: '/category/tools', label: 'סיטואציות בהדרכה' } },
+  { kind: 'link', item: { to: '/how-to-build', label: 'נדבר ת׳כלס' } },
+  {
+    kind: 'menu', id: 'extra', label: 'תוכן נלווה',
+    items: [
+      { to: '/category/readings', label: 'קטעי קריאה', desc: 'סיפורים, משלים ושירה' },
+      { to: '/chuparim', label: 'צ׳ופרים', desc: 'מוכנים להדפסה, עם השם שלכם' },
+      { to: '/category/games', label: 'משחקים', desc: 'קרחונים, אמון וגיבוש' },
+      { to: '/category/methods', label: 'מתודות', desc: 'כלים לשילוב בכל פעולה' },
+    ],
+  },
+  {
+    kind: 'menu', id: 'about', label: 'אודות',
+    items: [
+      { to: '/about', label: 'אודות', desc: 'מי עומדת מאחורי האתר' },
+      { to: '/reviews', label: 'דירוג והמלצות', desc: 'מה אומרים המדריכים' },
+      { to: '/whats-new', label: 'מה חדש באתר', desc: 'התכנים האחרונים שנוספו' },
+    ],
+  },
+  { kind: 'link', item: { to: '/submit', label: 'שליחת פעולה' } },
 ];
 
 export function Header() {
   const [q, setQ] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
-  const moreRef = useRef<HTMLDivElement>(null);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     setMenuOpen(false);
-    setMoreOpen(false);
+    setOpenMenu(null);
   }, [location.pathname, location.search]);
 
   useEffect(() => {
     function onDown(e: MouseEvent) {
-      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+      if (navRef.current && !navRef.current.contains(e.target as Node)) setOpenMenu(null);
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setMoreOpen(false);
+      if (e.key === 'Escape') setOpenMenu(null);
     }
     document.addEventListener('mousedown', onDown);
     document.addEventListener('keydown', onKey);
@@ -89,22 +92,28 @@ export function Header() {
           המדריך למדריך
         </Link>
 
-        <nav className="header-nav" aria-label="תפריט ראשי" style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--ink-soft)' }}>
-          {MAIN_LINKS.map((l) => (
-            <Link key={l.to} to={l.to} style={l.flame ? { color: 'var(--flame-ink)' } : undefined}>{l.label}</Link>
-          ))}
-          <div ref={moreRef} className="nav-more">
-            <button type="button" className={`nav-more-btn${moreOpen ? ' is-open' : ''}`} aria-expanded={moreOpen} aria-haspopup="true" onClick={() => setMoreOpen((v) => !v)}>
-              עוד <ChevronDownIcon size={14} />
-            </button>
-            {moreOpen && (
-              <div className="nav-more-panel" role="menu">
-                {MORE_LINKS.map((l) => (
-                  <Link key={l.to} to={l.to} role="menuitem">{l.label}</Link>
-                ))}
+        <nav ref={navRef} className="header-nav" aria-label="תפריט ראשי" style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink)' }}>
+          {NAV.map((e) =>
+            e.kind === 'link' ? (
+              <Link key={e.item.to} to={e.item.to} style={e.item.flame ? { color: 'var(--flame-ink)' } : undefined}>{e.item.label}</Link>
+            ) : (
+              <div key={e.id} className="nav-more" onMouseEnter={() => { if (window.matchMedia('(hover: hover)').matches) setOpenMenu(e.id); }} onMouseLeave={() => { if (window.matchMedia('(hover: hover)').matches) setOpenMenu((cur) => (cur === e.id ? null : cur)); }}>
+                <button type="button" className={`nav-more-btn${openMenu === e.id ? ' is-open' : ''}`} aria-expanded={openMenu === e.id} aria-haspopup="true" onClick={() => setOpenMenu(openMenu === e.id ? null : e.id)}>
+                  {e.label} <ChevronDownIcon size={14} />
+                </button>
+                {openMenu === e.id && (
+                  <div className="nav-more-panel" role="menu">
+                    {e.items.map((l) => (
+                      <Link key={l.to} to={l.to} role="menuitem">
+                        <span className="nav-more-title">{l.label}</span>
+                        {l.desc && <span className="nav-more-desc">{l.desc}</span>}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            ),
+          )}
         </nav>
 
         {searchForm('header-search-wrap')}
@@ -126,12 +135,16 @@ export function Header() {
 
       <div className={`header-mobile-panel${menuOpen ? ' is-open' : ''}`} style={{ flexDirection: 'column', gap: 4, borderTop: '1px solid var(--line)', padding: '14px 18px 20px', maxHeight: 'calc(100vh - 70px)', overflowY: 'auto' }}>
         {searchForm(undefined, { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 })}
-        {MAIN_LINKS.map((l) => (
-          <Link key={l.to} to={l.to} style={{ padding: '11px 4px', fontSize: 15.5, fontWeight: 700, borderBottom: '1px solid var(--line)', color: l.flame ? 'var(--flame-ink)' : 'var(--ink)' }}>{l.label}</Link>
-        ))}
-        {MORE_LINKS.map((l) => (
-          <Link key={l.to} to={l.to} style={{ padding: '10px 4px', fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>{l.label}</Link>
-        ))}
+        {NAV.map((e) =>
+          e.kind === 'link' ? (
+            <Link key={e.item.to} to={e.item.to} style={{ padding: '11px 4px', fontSize: 15.5, fontWeight: 700, borderBottom: '1px solid var(--line)', color: e.item.flame ? 'var(--flame-ink)' : 'var(--ink)' }}>{e.item.label}</Link>
+          ) : (
+            <div key={e.id} style={{ borderBottom: '1px solid var(--line)', padding: '8px 0' }}>
+              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 0.4, color: 'var(--ink-faint)', padding: '4px 4px' }}>{e.label}</div>
+              {e.items.map((l) => <Link key={l.to} to={l.to} style={{ display: 'block', padding: '8px 14px', fontSize: 14.5, fontWeight: 600, color: 'var(--ink-soft)' }}>{l.label}</Link>)}
+            </div>
+          ),
+        )}
       </div>
     </div>
   );

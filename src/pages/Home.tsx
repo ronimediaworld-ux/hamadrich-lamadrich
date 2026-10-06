@@ -154,6 +154,19 @@ export function Home() {
         </Reveal>
       </div>
 
+      {/* QUICK TOOLS */}
+      <div className="wrap" style={{ paddingBottom: 36 }}>
+        <Reveal>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
+            <span style={{ fontWeight: 800, fontSize: 14, color: 'var(--ink-soft)' }}>כלים מהירים:</span>
+            <Link to="/builder" className="chip">בונה פעולה</Link>
+            <Link to="/shabbat-pack" className="chip">חבילת שבת להדפסה</Link>
+            <Link to="/category/activities?domain=פרשת שבוע" className="chip">פעולות לפרשת השבוע</Link>
+            <Link to="/favorites" className="chip">הקלסר שלי</Link>
+          </div>
+        </Reveal>
+      </div>
+
       {/* CATEGORIES */}
       <div className="wrap" style={{ paddingBottom: 50 }}>
         <Reveal>

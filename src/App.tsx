@@ -20,6 +20,8 @@ import { SubmitActivity } from './pages/SubmitActivity';
 import { Admin } from './pages/Admin';
 import { PresentMode } from './pages/PresentMode';
 import { PlanBuilder } from './pages/PlanBuilder';
+import { ShabbatPack } from './pages/ShabbatPack';
+import { WhatsNew } from './pages/WhatsNew';
 import { trackVisit } from './lib/api';
 import { ScrollProgress } from './components/ScrollProgress';
 
@@ -79,6 +81,8 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/how-to-build" element={<HowToBuild />} />
           <Route path="/builder" element={<PlanBuilder />} />
+          <Route path="/shabbat-pack" element={<ShabbatPack />} />
+          <Route path="/whats-new" element={<WhatsNew />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/contact" element={<Reviews />} />
           <Route path="/submit" element={<SubmitActivity />} />

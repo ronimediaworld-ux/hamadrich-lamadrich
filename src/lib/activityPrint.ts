@@ -216,7 +216,7 @@ function renderChuparPage(c: Chupar, vals: string[]): string {
   return `<section class="app page"><h2 class="app-h"><span class="bar"></span>צ׳ופר לסיום — ${/\(לבנים\)/.test(c.title) ? 'גרסה גברית' : 'גרסה נשית'} (לגזירה)</h2><p class="app-intro">מדפיסים על נייר עבה וגוזרים לאורך הקווים המקווקווים.</p><div class="cgrid" style="grid-template-columns:repeat(${cols},${shape.w}mm);grid-auto-rows:${shape.h}mm;gap:${gap}mm">${cells}</div></section>`;
 }
 
-export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge: string, extra?: { chuparim: Chupar[]; vals: string[] }): string {
+export function renderActivityMain(a: Activity, categoryLabel: string, badge: string, extra?: { chuparim: Chupar[]; vals: string[] }): string {
   const steps = stepsOf(a);
   const place = a.place === 'שניהם' ? 'פנים וחוץ' : a.place;
   const shabbat = a.shabbat === 'שניהם' ? 'מתאים לשניהם' : `מתאים ל${a.shabbat} בלבד`;
@@ -230,19 +230,7 @@ export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge
   rest.splice(firstText >= 0 ? firstText + 1 : rest.length, 0, ...info);
   const appendices = rest.map(renderAppendix).join('\n') + (extra ? extra.chuparim.map((ch) => renderChuparPage(ch, extra.vals)).join('') : '');
 
-  return `<!doctype html>
-<html lang="he" dir="rtl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapeHtml(a.title)}</title>
-<style>${CSS}
-  .cgrid { display: grid; justify-content: center; }
-  .ccell { outline: .25mm dashed #888; outline-offset: 1.5mm; direction: ltr; }</style>
-</head>
-<body>
-<table class="wrap"><thead><tr><td><div class="run"><div class="brand">${mascotSvg('ga')}<span>המדריך למדריך</span></div><small>${escapeHtml(a.title)} · מאגר פעולות</small></div></td></tr></thead><tbody><tr><td>
-<main class="doc">
+  return `<main class="doc">
   <div class="crumbs">בית › ${escapeHtml(categoryLabel)} › <b>${escapeHtml(a.title)}</b></div>
   <div class="hero">
     <div>
@@ -268,9 +256,63 @@ export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge
   ${guideItems.length ? `<h2 class="sec" style="margin-top:20px">הסבר למדריך</h2><ul class="guide">${guideItems.map((g) => `<li>${inline(g)}</li>`).join('')}</ul>` : ''}
   ${a.tip ? `<div class="tipbox"><b>טיפ למדריך:</b> ${escapeHtml(a.tip)}</div>` : ''}
   ${appendices}
-</main>
+</main>`;
+}
+
+export function buildActivityPrintHtml(a: Activity, categoryLabel: string, badge: string, extra?: { chuparim: Chupar[]; vals: string[] }): string {
+  return wrapDoc(a.title, `${a.title} · מאגר פעולות`, renderActivityMain(a, categoryLabel, badge, extra));
+}
+
+export const PRINT_CSS_EXTRA = `${CSS}
+  .cgrid { display: grid; justify-content: center; }
+  .ccell { outline: .25mm dashed #888; outline-offset: 1.5mm; direction: ltr; }
+  .cover { min-height: 230mm; display: flex; flex-direction: column; justify-content: center; }
+  .cover h1 { font-size: 44px; margin-bottom: 6px; }
+  .toc { margin: 18px 0 0; padding: 0; list-style: none; columns: 1; }
+  .toc li { padding: 5px 0; border-bottom: 1px dotted var(--line); display: flex; justify-content: space-between; gap: 12px; }
+  .toc .t-sec { font-family: 'Rubik', sans-serif; font-weight: 800; color: var(--flame-ink); border-bottom: none; padding-top: 14px; }
+  .item-generic .textcard { margin-top: 12px; }
+`;
+
+export function wrapDoc(title: string, runningTitle: string, inner: string): string {
+  return `<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escapeHtml(title)}</title>
+<style>${PRINT_CSS_EXTRA}</style>
+</head>
+<body>
+<table class="wrap"><thead><tr><td><div class="run"><div class="brand">${mascotSvg('ga')}<span>המדריך למדריך</span></div><small>${escapeHtml(runningTitle)}</small></div></td></tr></thead><tbody><tr><td>
+${inner}
 </td></tr></tbody></table>
 <script>window.addEventListener('load', function () { setTimeout(function () { window.print(); }, 500); });</script>
 </body>
 </html>`;
+}
+
+// ---------- מסמך אחד מכמה תכנים (הקלסר שלי / חבילת שבת) ----------
+export interface BinderEntry {
+  section: string;
+  title: string;
+  activity?: Activity;
+  categoryLabel?: string;
+  badge?: string;
+  generic?: { sub: string; text: string; link?: string };
+}
+
+export function buildCombinedPrintHtml(docTitle: string, intro: string, entries: BinderEntry[]): string {
+  const bySection: Record<string, BinderEntry[]> = {};
+  entries.forEach((e) => (bySection[e.section] ??= []).push(e));
+  const toc = Object.entries(bySection)
+    .map(([sec, list]) => `<li class="t-sec">${escapeHtml(sec)}</li>${list.map((e) => `<li><span>${escapeHtml(e.title)}</span><span style="color:var(--faint);font-size:12px">${e.activity ? `${e.activity.ageLabel} · ${e.activity.duration} דק׳` : escapeHtml(e.generic?.sub ?? '')}</span></li>`).join('')}`)
+    .join('');
+  const cover = `<main class="doc cover"><h1>${escapeHtml(docTitle)}</h1><p class="desc">${escapeHtml(intro)}</p><ul class="toc">${toc}</ul></main>`;
+  const items = entries.map((e) => {
+    if (e.activity) return `<div class="page">${renderActivityMain(e.activity, e.categoryLabel ?? e.section, e.badge ?? e.section)}</div>`;
+    const g = e.generic!;
+    return `<main class="doc item-generic page"><div class="crumbs">${escapeHtml(e.section)}</div><h1>${escapeHtml(e.title)}</h1><p class="desc">${escapeHtml(g.sub)}</p><div class="textcard">${renderBody(g.text)}</div>${g.link ? `<p class="src"><span dir="ltr">${escapeHtml(g.link)}</span></p>` : ''}</main>`;
+  }).join('\n');
+  return wrapDoc(docTitle, docTitle, cover + items);
 }

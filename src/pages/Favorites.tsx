@@ -10,6 +10,9 @@ import { readings } from '../data/readings';
 import { staffStudy } from '../data/staffStudy';
 import { chuparim } from '../data/chuparim';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { buildCombinedPrintHtml } from '../lib/activityPrint';
+import { entriesForKeys } from '../lib/binderPrint';
+import { offerHtml } from '../lib/printFile';
 
 interface Tab { id: string; label: string; color: string; tint: string }
 
@@ -77,7 +80,12 @@ export function Favorites() {
               {items.length > 0 ? `${items.length} תכנים שמורים, מסודרים לפי קטגוריות — נשמר רק בדפדפן הזה` : 'כמו קלסר הדרכה: כל מה ששומרים מסודר כאן לפי קטגוריות'}
             </p>
           </div>
-          {items.length > 0 && <CopyButton text={listText} label="העתקת רשימת הקלסר" copiedLabel="✓ הועתק" />}
+          {items.length > 0 && (
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <button type="button" className="btn btn-flame" onClick={() => void offerHtml('my-binder.html', buildCombinedPrintHtml('הקלסר שלי', 'כל מה ששמרתי, מסודר לפי קטגוריות — לשימוש בהדרכה', entriesForKeys(keys)))}>הדפסת כל הקלסר כקובץ אחד</button>
+              <CopyButton text={listText} label="העתקת רשימת הקלסר" copiedLabel="✓ הועתק" />
+            </div>
+          )}
         </div>
       </Reveal>
 
