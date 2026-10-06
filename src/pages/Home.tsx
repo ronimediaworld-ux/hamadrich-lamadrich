@@ -9,6 +9,7 @@ import { activities } from '../data/activities';
 import { getCurrentParsha, getCurrentParshaNames } from '../lib/parsha';
 import { CountUp } from '../components/CountUp';
 import { SubscribeBox } from '../components/SubscribeBox';
+import { WhatsNewHome } from '../components/WhatsNewHome';
 import { readings } from '../data/readings';
 import { chuparim } from '../data/chuparim';
 import { staffStudy } from '../data/staffStudy';
@@ -153,6 +154,9 @@ export function Home() {
           </div>
         </Reveal>
       </div>
+
+      {/* WHAT'S NEW */}
+      <Reveal><WhatsNewHome /></Reveal>
 
       {/* QUICK TOOLS */}
       <div className="wrap" style={{ paddingBottom: 36 }}>

@@ -28,7 +28,6 @@ const NAV: NavEntry[] = [
     items: [
       { to: '/about', label: 'אודות', desc: 'מי עומדת מאחורי האתר' },
       { to: '/reviews', label: 'דירוג והמלצות', desc: 'מה אומרים המדריכים' },
-      { to: '/whats-new', label: 'מה חדש באתר', desc: 'התכנים האחרונים שנוספו' },
     ],
   },
   { kind: 'link', item: { to: '/submit', label: 'שליחת פעולה' } },

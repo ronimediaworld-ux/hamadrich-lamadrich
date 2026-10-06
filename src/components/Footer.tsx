@@ -23,7 +23,6 @@ export function Footer() {
           <Link to="/builder">בונה פעולה</Link>
           <Link to="/shabbat-pack">חבילת שבת</Link>
           <Link to="/favorites">הקלסר שלי</Link>
-          <Link to="/whats-new">מה חדש</Link>
           <Link to="/about">אודות</Link>
           <Link to="/reviews">דירוג והמלצות</Link>
         </div>
