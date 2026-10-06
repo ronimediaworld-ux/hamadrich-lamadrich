@@ -18,6 +18,8 @@ import { Reviews } from './pages/Reviews';
 import { HowToBuild } from './pages/HowToBuild';
 import { SubmitActivity } from './pages/SubmitActivity';
 import { Admin } from './pages/Admin';
+import { PresentMode } from './pages/PresentMode';
+import { PlanBuilder } from './pages/PlanBuilder';
 import { trackVisit } from './lib/api';
 import { ScrollProgress } from './components/ScrollProgress';
 
@@ -37,6 +39,14 @@ export default function App() {
   useEffect(() => {
     if (!isAdmin) trackVisit();
   }, [isAdmin]);
+
+  if (location.pathname.startsWith('/present/')) {
+    return (
+      <Routes>
+        <Route path="/present/:id" element={<PresentMode />} />
+      </Routes>
+    );
+  }
 
   if (isAdmin) {
     return (
@@ -68,6 +78,7 @@ export default function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/about" element={<About />} />
           <Route path="/how-to-build" element={<HowToBuild />} />
+          <Route path="/builder" element={<PlanBuilder />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/contact" element={<Reviews />} />
           <Route path="/submit" element={<SubmitActivity />} />

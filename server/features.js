@@ -15,6 +15,22 @@ const ALLOWED_FILE_TYPES = new Set([
   'text/plain',
 ]);
 
+// שליחת מייל דרך Resend (אופציונלי). מוגדר ב-RESEND_API_KEY; ברירת מחדל לשולח: onboarding@resend.dev (שולח רק לבעלת החשבון).
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const MAIL_FROM = process.env.MAIL_FROM || 'המדריך למדריך <onboarding@resend.dev>';
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL;
+
+async function sendMail({ to, subject, text, html, attachments, bcc }) {
+  if (!RESEND_API_KEY) return { sent: false, reason: 'no_api_key' };
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ from: MAIL_FROM, to, bcc, subject, text, html, attachments }),
+  });
+  if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
+  return { sent: true };
+}
+
 function israelDate(d = new Date()) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem' }).format(d);
 }
@@ -189,6 +205,15 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
     try {
       const sid = crypto.randomBytes(8).toString('hex');
       await store.hset('submissions', sid, JSON.stringify({ id: sid, ...clean, createdAt: Date.now(), attachment }));
+      // התראה למייל של המנהלת (אם הוגדר) — לא חוסמת את התשובה למשתמש
+      if (NOTIFY_EMAIL) {
+        sendMail({
+          to: NOTIFY_EMAIL,
+          subject: `הצעת פעולה חדשה: ${clean.title || 'ללא שם'}`,
+          text: `שם: ${clean.name || '—'}\nליצירת קשר: ${clean.contact}\nשם הפעולה: ${clean.title || '—'}\n\n${clean.body}\n\nאפשר לראות את ההצעה בדשבורד הניהול של האתר.`,
+          attachments: attachment ? [{ filename: attachment.name, content: attachment.data }] : undefined,
+        }).catch((err) => console.error('notify mail failed', err?.message));
+      }
       return res.json({ ok: true });
     } catch (err) {
       console.error('submission failed', err?.message);
@@ -231,12 +256,113 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
     }
   });
 
+  // ---------- דירוג "איך הלך?" ----------
+  app.post('/api/rate', async (req, res) => {
+    const { kind, id, stars } = req.body ?? {};
+    const n = Number(stars);
+    if (!KINDS.has(kind) || typeof id !== 'string' || !ID_RE.test(id) || !Number.isInteger(n) || n < 1 || n > 5) return res.status(400).json({ error: 'bad_request' });
+    try {
+      if (rateLimited(`rate|${clientIp(req)}|${kind}:${id}`, 1, 24 * 60 * 60 * 1000)) return res.status(429).json({ error: 'already', message: 'כבר דירגתם את הפעולה הזאת היום.' });
+      const key = `${kind}:${id}`;
+      const [sum, count] = await Promise.all([store.hincr('rate-sum', key, n), store.hincr('rate-count', key, 1)]);
+      return res.json({ avg: sum / count, count });
+    } catch {
+      return res.status(500).json({ error: 'store_failed' });
+    }
+  });
+
+  app.get('/api/ratings/:kind/:id', async (req, res) => {
+    const { kind, id } = req.params;
+    if (!KINDS.has(kind) || !ID_RE.test(id)) return res.status(400).json({ error: 'bad_request' });
+    try {
+      const key = `${kind}:${id}`;
+      const [sum, count] = await Promise.all([store.hget('rate-sum', key), store.hget('rate-count', key)]);
+      const c = Number(count ?? 0);
+      return res.json({ avg: c ? Number(sum) / c : 0, count: c });
+    } catch {
+      return res.status(500).json({ error: 'store_failed' });
+    }
+  });
+
+  // ---------- הרשמה לעדכון שבועי ----------
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  app.post('/api/subscribe', async (req, res) => {
+    const { email, name, website } = req.body ?? {};
+    if (website) return res.json({ ok: true });
+    const clean = cleanText(email, 120).toLowerCase();
+    if (!EMAIL_RE.test(clean)) return res.status(400).json({ error: 'bad_email', message: 'כתובת המייל לא נראית תקינה.' });
+    if (rateLimited(`sub|${clientIp(req)}`, 5, 60 * 60 * 1000)) return res.status(429).json({ error: 'slow_down', message: 'נסו שוב מאוחר יותר.' });
+    try {
+      await store.hset('subscribers', clean, JSON.stringify({ email: clean, name: cleanText(name, 60), createdAt: Date.now() }));
+      return res.json({ ok: true });
+    } catch {
+      return res.status(500).json({ error: 'store_failed', message: 'לא הצלחנו לשמור — נסו שוב.' });
+    }
+  });
+
+  app.get('/api/admin/subscribers', requireAdmin, async (_req, res) => {
+    try {
+      const all = await store.hgetall('subscribers');
+      const list = Object.values(all).map((v) => { try { return JSON.parse(v); } catch { return null; } }).filter(Boolean).sort((a, b) => b.createdAt - a.createdAt);
+      return res.json({ subscribers: list, mailConfigured: !!RESEND_API_KEY, notifyConfigured: !!NOTIFY_EMAIL });
+    } catch {
+      return res.status(500).json({ error: 'store_failed' });
+    }
+  });
+
+  app.get('/api/admin/subscribers.csv', requireAdmin, async (_req, res) => {
+    try {
+      const all = await store.hgetall('subscribers');
+      const rows = Object.values(all).map((v) => { try { return JSON.parse(v); } catch { return null; } }).filter(Boolean);
+      const csv = '\uFEFFemail,name,date\n' + rows.map((r) => `${r.email},"${(r.name || '').replace(/"/g, '""')}",${new Date(r.createdAt).toISOString().slice(0, 10)}`).join('\n');
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="subscribers.csv"');
+      return res.send(csv);
+    } catch {
+      return res.status(500).end();
+    }
+  });
+
+  app.delete('/api/admin/subscribers/:email', requireAdmin, async (req, res) => {
+    try {
+      await store.hdel('subscribers', decodeURIComponent(req.params.email).toLowerCase());
+      return res.json({ ok: true });
+    } catch {
+      return res.status(500).json({ error: 'store_failed' });
+    }
+  });
+
+  // שליחת המייל השבועי לכל הנרשמים (התוכן מורכב באתר, בדשבורד). דורש RESEND_API_KEY ודומיין מאומת ב-Resend.
+  app.post('/api/admin/send-weekly', requireAdmin, async (req, res) => {
+    const { subject, text, html } = req.body ?? {};
+    if (!subject || !text) return res.status(400).json({ error: 'bad_request', message: 'חסר נושא או תוכן.' });
+    if (!RESEND_API_KEY) return res.status(503).json({ error: 'no_mail', message: 'שליחת מיילים לא הוגדרה בשרת (RESEND_API_KEY).' });
+    try {
+      const all = await store.hgetall('subscribers');
+      const emails = Object.keys(all);
+      if (emails.length === 0) return res.status(400).json({ error: 'no_subscribers', message: 'אין עדיין נרשמים.' });
+      let sent = 0;
+      for (let i = 0; i < emails.length; i += 40) {
+        const batch = emails.slice(i, i + 40);
+        await sendMail({ to: NOTIFY_EMAIL || batch[0], bcc: batch, subject: String(subject).slice(0, 150), text: String(text).slice(0, 20000), html: html ? String(html).slice(0, 60000) : undefined });
+        sent += batch.length;
+      }
+      return res.json({ ok: true, sent });
+    } catch (err) {
+      console.error('send-weekly failed', err?.message);
+      return res.status(500).json({ error: 'send_failed', message: 'השליחה נכשלה: ' + String(err?.message || err).slice(0, 200) });
+    }
+  });
+
   // ---------- סטטיסטיקה (רק למנהלת) ----------
   app.get('/api/admin/stats', requireAdmin, async (_req, res) => {
     try {
-      const [visits, days, views, comments, submissions] = await Promise.all([
+      const [visits, days, views, comments, submissions, rateSum, rateCount, subscribers] = await Promise.all([
         store.hgetall('visits'), store.hgetall('visits-day'), store.hgetall('views'), store.hgetall('comments'), store.hgetall('submissions'),
+        store.hgetall('rate-sum'), store.hgetall('rate-count'), store.hgetall('subscribers'),
       ]);
+      const ratings = Object.entries(rateCount).map(([key, c]) => ({ key, count: Number(c), avg: Number(rateSum[key] ?? 0) / Number(c) }))
+        .sort((a, b) => b.count - a.count).slice(0, 25);
       const today = israelDate();
       const last = [];
       for (let i = 13; i >= 0; i--) {
@@ -255,6 +381,8 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
         totalViews: Object.values(views).reduce((s, n) => s + Number(n), 0),
         pendingComments,
         submissionsCount: Object.keys(submissions).length,
+        subscribersCount: Object.keys(subscribers).length,
+        ratings,
       });
     } catch {
       return res.status(500).json({ error: 'store_failed' });

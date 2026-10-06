@@ -9,6 +9,7 @@ interface NavItem { to: string; label: string; flame?: boolean }
 const MAIN_LINKS: NavItem[] = [
   { to: '/category/activities', label: 'פעולות ומערכים' },
   { to: '/category/activities?domain=פרשת שבוע', label: 'פרשת השבוע' },
+  { to: '/builder', label: 'בונה פעולה' },
   { to: '/category/social-nights', label: 'ערבי גיבוש' },
   { to: '/category/readings', label: 'קטעי קריאה' },
   { to: '/chuparim', label: 'צ׳ופרים' },

@@ -94,3 +94,25 @@ export function getAllViews(): Promise<Record<string, number>> {
   }
   return allViewsPromise;
 }
+
+export async function rateContent(kind: ViewKind, id: string, stars: number): Promise<{ ok: boolean; avg?: number; count?: number; message?: string }> {
+  const r = await postJson<{ avg: number; count: number; message?: string }>('/api/rate', { kind, id, stars });
+  if (r.ok && r.data) return { ok: true, avg: r.data.avg, count: r.data.count };
+  return { ok: false, message: r.data?.message || 'לא הצלחנו לשמור את הדירוג — נסו שוב.' };
+}
+
+export async function getRating(kind: ViewKind, id: string): Promise<{ avg: number; count: number } | null> {
+  try {
+    const res = await fetch(`/api/ratings/${kind}/${encodeURIComponent(id)}`);
+    if (!res.ok) return null;
+    return (await res.json()) as { avg: number; count: number };
+  } catch {
+    return null;
+  }
+}
+
+export async function subscribeEmail(email: string, name: string, website = ''): Promise<{ ok: boolean; message?: string }> {
+  const r = await postJson<{ message?: string }>('/api/subscribe', { email, name, website });
+  if (r.ok) return { ok: true };
+  return { ok: false, message: r.data?.message || (r.status === 0 ? 'אין חיבור לשרת כרגע.' : 'לא הצלחנו להירשם — נסו שוב.') };
+}

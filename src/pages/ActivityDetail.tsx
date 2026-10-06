@@ -12,6 +12,8 @@ import { CopyButton } from '../components/CopyButton';
 import { PrintButton } from '../components/PrintButton';
 import { ViewCount } from '../components/ViewCount';
 import { Comments } from '../components/Comments';
+import { RateActivity } from '../components/RateActivity';
+import { ShareButton } from '../components/ShareButton';
 import { buildActivityPrintHtml } from '../lib/activityPrint';
 import { ChuparDesign } from '../components/ChuparDesign';
 import { getChupar } from '../data/chuparim';
@@ -133,6 +135,8 @@ export function ActivityDetail() {
               label="העתקת הפעולה כטקסט"
               copiedLabel="✓ הועתק — אפשר להדביק ולערוך"
             />
+            <ShareButton title={activity.title} />
+            <Link to={`/present/${activity.id}`} className="btn btn-flame no-print" style={{ justifyContent: 'center' }}>מצב "בפעולה" — מסך גדול</Link>
           </div>
         </div>
       </Reveal>
@@ -322,6 +326,7 @@ export function ActivityDetail() {
           <div style={{ background: 'var(--yellow-tint)', border: '1px solid var(--yellow)', borderRadius: 12, padding: '16px 20px', fontSize: 14.5, marginTop: 8 }}>
             <b>טיפ למדריך: </b>{activity.tip}
           </div>
+          <RateActivity kind="activity" id={activity.id} />
           <Comments kind="activity" targetId={activity.id} />
         </div>
       </Reveal>

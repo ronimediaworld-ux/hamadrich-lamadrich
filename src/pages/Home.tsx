@@ -8,6 +8,7 @@ import { categories } from '../data/categories';
 import { activities } from '../data/activities';
 import { getCurrentParsha, getCurrentParshaNames } from '../lib/parsha';
 import { CountUp } from '../components/CountUp';
+import { SubscribeBox } from '../components/SubscribeBox';
 import { readings } from '../data/readings';
 import { chuparim } from '../data/chuparim';
 import { staffStudy } from '../data/staffStudy';
@@ -303,6 +304,11 @@ export function Home() {
             </div>
           </Reveal>
         </div>
+      </div>
+
+      {/* SUBSCRIBE */}
+      <div className="wrap" style={{ paddingBottom: 40 }}>
+        <Reveal><SubscribeBox /></Reveal>
       </div>
 
       {/* THE MANAGER */}

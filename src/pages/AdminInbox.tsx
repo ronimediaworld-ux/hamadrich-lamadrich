@@ -1,4 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
+import { activities } from '../data/activities';
+import { readings } from '../data/readings';
+import { getCurrentParsha, getCurrentParshaNames } from '../lib/parsha';
 
 interface Stats {
   storage: 'upstash' | 'file';
@@ -9,6 +12,8 @@ interface Stats {
   totalViews: number;
   pendingComments: number;
   submissionsCount: number;
+  subscribersCount: number;
+  ratings: { key: string; count: number; avg: number }[];
 }
 interface AdminComment { id: string; kind: string; targetId: string; name: string; text: string; createdAt: number; status: string }
 interface AdminSubmission { id: string; name: string; contact: string; title: string; body: string; createdAt: number; attachment: { name: string; type: string; size: number } | null }
@@ -43,7 +48,7 @@ function StatsView() {
         </div>
       )}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginBottom: 18 }}>
-        {[['כניסות לאתר (סה״כ)', s.visitsTotal], ['כניסות היום', s.visitsToday], ['צפיות בתכנים (סה״כ)', s.totalViews], ['תגובות ממתינות', s.pendingComments], ['הצעות פעולות', s.submissionsCount]].map(([label, n]) => (
+        {[['כניסות לאתר (סה״כ)', s.visitsTotal], ['כניסות היום', s.visitsToday], ['צפיות בתכנים (סה״כ)', s.totalViews], ['תגובות ממתינות', s.pendingComments], ['הצעות פעולות', s.submissionsCount], ['נרשמים לעדכון שבועי', s.subscribersCount]].map(([label, n]) => (
           <div key={String(label)} className="card" style={{ padding: '14px 16px', textAlign: 'center' }}>
             <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--flame-ink)' }}>{Number(n).toLocaleString('he-IL')}</div>
             <div style={{ fontSize: 12.5, color: 'var(--ink-faint)' }}>{label}</div>
@@ -61,6 +66,17 @@ function StatsView() {
           ))}
         </div>
       </Panel>
+      <Panel title="דירוגי מדריכים (איך הלך?)">
+        {s.ratings.length === 0 ? <p style={{ color: 'var(--ink-faint)', fontSize: 14 }}>עדיין אין דירוגים.</p> : (
+          <ul style={{ margin: 0, paddingInlineStart: 20, display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
+            {s.ratings.map((r) => {
+              const [kind, ...rest] = r.key.split(':');
+              const id = rest.join(':');
+              return <li key={r.key}><a href={`/${KIND_PATH[kind] ?? 'activity'}/${id}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>{id}</a> <span style={{ color: 'var(--ink-faint)' }}>— {r.avg.toFixed(1)} מתוך 5 ({r.count} דירוגים)</span></li>;
+            })}
+          </ul>
+        )}
+      </Panel>
       <Panel title="התכנים הנצפים ביותר">
         {s.topViews.length === 0 ? <p style={{ color: 'var(--ink-faint)', fontSize: 14 }}>עדיין אין צפיות.</p> : (
           <ol style={{ margin: 0, paddingInlineStart: 22, display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
@@ -77,6 +93,80 @@ function StatsView() {
             })}
           </ol>
         )}
+      </Panel>
+    </div>
+  );
+}
+
+interface Sub { email: string; name: string; createdAt: number }
+
+function SubscribersView() {
+  const [list, setList] = useState<Sub[] | null>(null);
+  const [mailOk, setMailOk] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState('');
+  const load = useCallback(() => {
+    fetch('/api/admin/subscribers').then((r) => r.json()).then((d) => { setList(d.subscribers ?? []); setMailOk(!!d.mailConfigured); }).catch(() => setList([]));
+  }, []);
+  useEffect(load, [load]);
+
+  const parsha = getCurrentParsha();
+  const names = getCurrentParshaNames();
+  const forParsha = activities.filter((a) => a.categorySlug === 'activities' && a.tags.some((t) => names.includes(t))).slice(0, 5);
+  const latestReading = readings[readings.length - 1];
+  const origin = window.location.origin;
+  const subject = parsha ? `פעולות לפרשת ${parsha} — המדריך למדריך` : 'פעולה חדשה מהמדריך למדריך';
+  const lines = [
+    parsha ? `שבת שלום! אלה הפעולות של פרשת ${parsha}:` : 'שבוע טוב! כמה תכנים מהמאגר:',
+    '',
+    ...(forParsha.length ? forParsha.map((a) => `• ${a.title} (${a.ageLabel}, ${a.duration} דק׳) — ${origin}/activity/${a.id}`) : [`• כל הפעולות: ${origin}/category/activities`]),
+    '',
+    `קטע קריאה לשבת: ${latestReading.title} — ${origin}/reading/${latestReading.id}`,
+    '',
+    'להתראות, רוני',
+  ];
+  const text = lines.join('\n');
+  const html = `<div dir="rtl" style="font-family:Arial,sans-serif;line-height:1.7">${lines.map((l) => (l ? `<p>${l.replace(/(https?:\/\/\S+)/g, '<a href="$1">$1</a>')}</p>` : '')).join('')}</div>`;
+
+  async function send() {
+    if (!window.confirm(`לשלוח את המייל ל-${list?.length ?? 0} נרשמים?`)) return;
+    setBusy(true); setMsg('');
+    const r = await fetch('/api/admin/send-weekly', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject, text, html }) });
+    const d = await r.json().catch(() => ({}));
+    setBusy(false);
+    setMsg(r.ok ? `נשלח ל-${d.sent} נרשמים.` : d.message || 'השליחה נכשלה.');
+  }
+  async function del(email: string) {
+    if (!window.confirm(`להסיר את ${email}?`)) return;
+    await fetch(`/api/admin/subscribers/${encodeURIComponent(email)}`, { method: 'DELETE' });
+    load();
+  }
+
+  if (list === null) return <p style={{ color: 'var(--ink-faint)' }}>טוען...</p>;
+  return (
+    <div>
+      <Panel title={`נרשמים לעדכון השבועי (${list.length})`}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+          <a className="btn btn-outline" style={{ fontSize: 12.5, padding: '7px 14px' }} href="/api/admin/subscribers.csv">הורדת רשימה (CSV)</a>
+        </div>
+        {list.length === 0 ? <p style={{ color: 'var(--ink-faint)', fontSize: 14 }}>עדיין אין נרשמים.</p> : (
+          <ul style={{ margin: 0, paddingInlineStart: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 }}>
+            {list.map((x) => (
+              <li key={x.email} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                <span dir="ltr">{x.email}</span>
+                <span style={{ color: 'var(--ink-faint)', fontSize: 12 }}>{new Date(x.createdAt).toLocaleDateString('he-IL')}</span>
+                <button onClick={() => del(x.email)} style={{ border: 'none', background: 'transparent', color: 'var(--ink-faint)', textDecoration: 'underline', fontSize: 12.5 }}>הסרה</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
+      <Panel title="המייל השבועי">
+        <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 6 }}>נושא: {subject}</div>
+        <pre style={{ whiteSpace: 'pre-wrap', direction: 'rtl', background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 12, padding: 14, fontFamily: 'Heebo, sans-serif', fontSize: 13.5, margin: '0 0 12px' }}>{text}</pre>
+        <button className="btn btn-flame" disabled={busy || !mailOk || list.length === 0} onClick={send}>{busy ? 'שולח...' : 'שליחה לכל הנרשמים'}</button>
+        {!mailOk && <p style={{ fontSize: 13, color: 'var(--flame-ink)', marginTop: 10 }}>שליחת מיילים עוד לא הוגדרה בשרת (RESEND_API_KEY ו-MAIL_FROM — ראו README). עד אז אפשר להעתיק את הטקסט ולשלוח ידנית.</p>}
+        {msg && <p style={{ fontSize: 13.5, marginTop: 10 }}>{msg}</p>}
       </Panel>
     </div>
   );
@@ -160,17 +250,19 @@ function SubmissionsView() {
 }
 
 export function AdminInbox() {
-  const [tab, setTab] = useState<'stats' | 'submissions' | 'comments'>('stats');
+  const [tab, setTab] = useState<'stats' | 'submissions' | 'comments' | 'subscribers'>('stats');
   return (
     <div className="wrap" style={{ paddingTop: 22, paddingBottom: 60, maxWidth: 900 }}>
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
         <button className={`chip${tab === 'stats' ? ' is-active' : ''}`} onClick={() => setTab('stats')}>סטטיסטיקה</button>
         <button className={`chip${tab === 'submissions' ? ' is-active' : ''}`} onClick={() => setTab('submissions')}>הצעות פעולות</button>
         <button className={`chip${tab === 'comments' ? ' is-active' : ''}`} onClick={() => setTab('comments')}>תגובות</button>
+        <button className={`chip${tab === 'subscribers' ? ' is-active' : ''}`} onClick={() => setTab('subscribers')}>נרשמים ומייל שבועי</button>
       </div>
       {tab === 'stats' && <StatsView />}
       {tab === 'submissions' && <SubmissionsView />}
       {tab === 'comments' && <CommentsView />}
+      {tab === 'subscribers' && <SubscribersView />}
     </div>
   );
 }
