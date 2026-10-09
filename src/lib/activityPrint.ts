@@ -143,7 +143,10 @@ function renderColumns(content: string): string {
 function renderSlips(content: string): string {
   const [introBlock, ...restBlocks] = content.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
   const lines = restBlocks.join('\n').split('\n').map((l) => l.trim()).filter(Boolean);
-  return `<p class="app-intro">${escapeHtml(introBlock || '')}</p><div class="slips">${lines.map((l) => `<div class="slip">${escapeHtml(l)}</div>`).join('')}</div>`;
+  return `<p class="app-intro">${escapeHtml(introBlock || '')}</p><div class="slips">${lines.map((l) => {
+    const [head, body] = l.split('||');
+    return body ? `<div class="slip"><div><div class="slip-h">${escapeHtml(head)}</div>${escapeHtml(body)}</div></div>` : `<div class="slip">${escapeHtml(l)}</div>`;
+  }).join('')}</div>`;
 }
 
 function renderAppendix(ap: { label: string; content: string }): string {
@@ -221,6 +224,7 @@ const CSS = `
   .colnote { margin-top: 10px; font-size: 12px; color: var(--faint); }
   .slips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .slip { border: 2px dashed #E6B94F; border-radius: 12px; background: #FFFEFA; padding: 16px 14px; min-height: 84px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 14.5px; line-height: 1.7; break-inside: avoid; }
+  .slip-h { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 15px; color: var(--flame-ink); margin-bottom: 6px; }
   .qgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .qcard { position: relative; min-height: 118px; border: 2px dashed #E6B94F; border-radius: 14px; background: #FFFEFA; padding: 22px 16px 14px; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 6px; break-inside: avoid; }
   .qn { position: absolute; top: 7px; left: 11px; font-size: 11px; font-weight: 700; color: var(--faint); }
@@ -243,7 +247,7 @@ function renderChuparPage(c: Chupar, vals: string[]): string {
   const rows = Math.max(1, Math.floor((215 + gap) / (shape.h + gap)));
   const card = renderCard(c, '', '', vals);
   const cells = Array.from({ length: cols * rows }, () => `<div class="ccell">${card}</div>`).join('');
-  return `<section class="app page"><h2 class="app-h"><span class="bar"></span>צ׳ופר לסיום — ${/\(לבנים\)/.test(c.title) ? 'גרסה גברית' : 'גרסה נשית'} (לגזירה)</h2><p class="app-intro">מדפיסים על נייר עבה וגוזרים לאורך הקווים המקווקווים.</p><div class="cgrid" style="grid-template-columns:repeat(${cols},${shape.w}mm);grid-auto-rows:${shape.h}mm;gap:${gap}mm">${cells}</div></section>`;
+  return `<section class="app page"><h2 class="app-h"><span class="bar"></span>צ׳ופר לסיום${/\(לבנים\)/.test(c.title) ? ' — גרסה גברית' : /\(לבנות\)/.test(c.title) ? ' — גרסה נשית' : ''} (לגזירה)</h2><p class="app-intro">מדפיסים על נייר עבה וגוזרים לאורך הקווים המקווקווים.</p><div class="cgrid" style="grid-template-columns:repeat(${cols},${shape.w}mm);grid-auto-rows:${shape.h}mm;gap:${gap}mm">${cells}</div></section>`;
 }
 
 export function renderActivityMain(a: Activity, categoryLabel: string, badge: string, extra?: { chuparim: Chupar[]; vals: string[] }): string {
