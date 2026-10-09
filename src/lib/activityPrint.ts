@@ -125,6 +125,27 @@ function renderCards(content: string): string | null {
   return `${intro}<div class="qgrid">${grid}</div>${src}`;
 }
 
+// טקסטים לקריאה בעמודות: בלוקים מופרדים בשורה ריקה; השורה הראשונה בבלוק היא הכותרת/המקור.
+function renderColumns(content: string): string {
+  const blocks = content.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
+  const intro = blocks.length && !blocks[0].includes('\n') ? `<p class="app-intro">${escapeHtml(blocks.shift() as string)}</p>` : '';
+  const items = blocks.map((b) => {
+    const [head, ...rest] = b.split('\n');
+    if (!rest.length) return `<div class="colnote">${escapeHtml(head)}</div>`;
+    return `<div class="colblock"><div class="colhead">${escapeHtml(head)}</div><div class="coltext">${escapeHtml(rest.join(' '))}</div></div>`;
+  });
+  const notes = items.filter((i) => i.startsWith('<div class="colnote">'));
+  const main = items.filter((i) => !i.startsWith('<div class="colnote">'));
+  return `${intro}<div class="cols">${main.join('')}</div>${notes.join('')}`;
+}
+
+// כרטיסים לגזירה: פסקת הסבר ואז שורה לכל כרטיס (בלי מספרים, כדי לא לחשוף את הסדר).
+function renderSlips(content: string): string {
+  const [introBlock, ...restBlocks] = content.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
+  const lines = restBlocks.join('\n').split('\n').map((l) => l.trim()).filter(Boolean);
+  return `<p class="app-intro">${escapeHtml(introBlock || '')}</p><div class="slips">${lines.map((l) => `<div class="slip">${escapeHtml(l)}</div>`).join('')}</div>`;
+}
+
 function renderAppendix(ap: { label: string; content: string }): string {
   const heading = `<h2 class="app-h"><span class="bar"></span>${escapeHtml(ap.label)}</h2>`;
   if (/המגן שלי/.test(ap.label)) {
@@ -133,6 +154,8 @@ function renderAppendix(ap: { label: string; content: string }): string {
   }
   const cards = renderCards(ap.content);
   if (cards) return `<section class="app page">${heading}${cards}</section>`;
+  if (/בעמודות/.test(ap.label)) return `<section class="app page">${heading}${renderColumns(ap.content)}</section>`;
+  if (/לגזירה/.test(ap.label)) return `<section class="app page">${heading}${renderSlips(ap.content)}</section>`;
   if (/מאגר|עוד משפטים|רוצים עוד/.test(ap.label)) {
     return `<section class="app"><div class="infobox"><h4>${escapeHtml(ap.label)}</h4>${renderBody(ap.content)}</div></section>`;
   }
@@ -191,6 +214,13 @@ const CSS = `
   .textcard p { margin-bottom: 9px; }
   .infobox { margin-top: 18px; background: #DDEAF3; border-radius: 16px; padding: 14px 20px; break-inside: avoid; font-size: 13px; }
   .infobox h4 { margin: 0 0 6px; font-family: 'Rubik', sans-serif; font-weight: 800; color: #1F3F5C; font-size: 14px; }
+  .cols { column-count: 2; column-gap: 26px; }
+  .colblock { break-inside: avoid; margin: 0 0 14px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 14px; background: #FFFEFA; }
+  .colhead { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 13px; color: var(--flame-ink); margin-bottom: 4px; }
+  .coltext { font-size: 15px; line-height: 1.9; }
+  .colnote { margin-top: 10px; font-size: 12px; color: var(--faint); }
+  .slips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .slip { border: 2px dashed #E6B94F; border-radius: 12px; background: #FFFEFA; padding: 16px 14px; min-height: 84px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 14.5px; line-height: 1.7; break-inside: avoid; }
   .qgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .qcard { position: relative; min-height: 118px; border: 2px dashed #E6B94F; border-radius: 14px; background: #FFFEFA; padding: 22px 16px 14px; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 6px; break-inside: avoid; }
   .qn { position: absolute; top: 7px; left: 11px; font-size: 11px; font-weight: 700; color: var(--faint); }
