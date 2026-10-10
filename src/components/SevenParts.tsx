@@ -90,6 +90,7 @@ export function SevenParts() {
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 28 }}>
         <button type="button" className="btn btn-flame" onClick={() => void offerHtml('seven-parts-sheet.html', buildSevenPartsPrintHtml())}>הדפסת דף בנייה עם מקרא צבעים</button>
+        <Link to="/my/new" className="btn btn-outline">תבנית אישית למילוי ושמירה</Link>
         <CopyButton variant="mini" text={sevenPartsText()} label="העתקת השיטה" />
       </div>
 

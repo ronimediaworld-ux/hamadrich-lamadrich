@@ -46,7 +46,7 @@ const STATIC = {
   '/accessibility': { title: `הצהרת נגישות — ${SITE_NAME}`, desc: 'הצהרת הנגישות של האתר, ההתאמות שבוצעו והדרך לפנות אלינו.' },
   '/reviews': { title: `דירוג והמלצות — ${SITE_NAME}`, desc: 'מה אומרים המדריכים על האתר.' },
 };
-const NOINDEX = ['/search', '/favorites', '/admin', '/present'];
+const NOINDEX = ['/search', '/favorites', '/admin', '/present', '/my'];
 
 export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
   const indexHtml = fs.readFileSync(path.join(distPath, 'index.html'), 'utf8');
@@ -151,7 +151,7 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
   }
 
   app.get('/robots.txt', (req, res) => {
-    res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nDisallow: /present/\nDisallow: /search\nDisallow: /favorites\n\nSitemap: ${baseUrl(req)}/sitemap.xml\n`);
+    res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nDisallow: /present/\nDisallow: /search\nDisallow: /favorites\nDisallow: /my/\n\nSitemap: ${baseUrl(req)}/sitemap.xml\n`);
   });
 
   app.get('/sitemap.xml', (req, res) => {

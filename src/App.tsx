@@ -23,6 +23,7 @@ import { PlanBuilder } from './pages/PlanBuilder';
 import { ShabbatPack } from './pages/ShabbatPack';
 import { WhatsNew } from './pages/WhatsNew';
 import { NeedNow } from './pages/NeedNow';
+import { PersonalCopy } from './pages/PersonalCopy';
 import { Privacy, Terms, Accessibility } from './pages/Legal';
 import { trackVisit } from './lib/api';
 import { ScrollProgress } from './components/ScrollProgress';
@@ -87,6 +88,7 @@ export default function App() {
           <Route path="/shabbat-pack" element={<ShabbatPack />} />
           <Route path="/whats-new" element={<WhatsNew />} />
           <Route path="/now" element={<NeedNow />} />
+          <Route path="/my/:id" element={<PersonalCopy />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/contact" element={<Reviews />} />
           <Route path="/submit" element={<SubmitActivity />} />

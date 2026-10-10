@@ -138,6 +138,7 @@ export function ActivityDetail() {
               copiedLabel="✓ הועתק — אפשר להדביק ולערוך"
             />
             <ShareButton title={activity.title} />
+            <Link to={`/my/${activity.id}`} className="btn btn-outline no-print" style={{ justifyContent: 'center' }}>עותק אישי לעריכה והערות</Link>
             <Link to={`/present/${activity.id}`} className="btn btn-flame no-print" style={{ justifyContent: 'center' }}>מצב "בפעולה" — מסך גדול</Link>
           </div>
         </div>

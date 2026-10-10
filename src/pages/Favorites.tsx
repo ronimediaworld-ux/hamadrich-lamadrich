@@ -13,6 +13,7 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { buildCombinedPrintHtml } from '../lib/activityPrint';
 import { entriesForKeys } from '../lib/binderPrint';
 import { offerHtml } from '../lib/printFile';
+import { listCopies, type PersonalCopy } from '../lib/personalCopies';
 
 interface Tab { id: string; label: string; color: string; tint: string }
 
@@ -32,6 +33,14 @@ export function Favorites() {
   useDocumentTitle('הקלסר שלי');
   const [keys, setKeys] = useState<string[]>([]);
   const [active, setActive] = useState<string>('all');
+
+  const [copies, setCopies] = useState<PersonalCopy[]>([]);
+  useEffect(() => {
+    setCopies(listCopies());
+    const onCopies = () => setCopies(listCopies());
+    window.addEventListener('personal-copies-changed', onCopies);
+    return () => window.removeEventListener('personal-copies-changed', onCopies);
+  }, []);
 
   useEffect(() => {
     setKeys(getFavoriteIds());
@@ -143,6 +152,27 @@ export function Favorites() {
           </div>
         </div>
       )}
+
+      <section aria-labelledby="my-copies" style={{ marginTop: 44 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
+          <h2 id="my-copies" style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>העותקים והתבניות האישיים שלי</h2>
+          <Link to="/my/new" className="btn btn-outline">תבנית חדשה לפי שבעת החלקים</Link>
+        </div>
+        {copies.length === 0 ? (
+          <p style={{ fontSize: 14, color: 'var(--ink-faint)', margin: 0 }}>
+            אפשר ליצור עותק אישי של כל פעולה (בלחיצה על "עותק אישי לעריכה והערות" בתוך הפעולה), לערוך אותו ולהדפיס. העותקים נשמרים רק בדפדפן הזה.
+          </p>
+        ) : (
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 8 }}>
+            {copies.map((c) => (
+              <li key={c.id} className="card" style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                <Link to={`/my/${c.id}`} style={{ fontWeight: 800 }}>{c.title}</Link>
+                <span style={{ fontSize: 12.5, color: 'var(--ink-faint)' }}>{c.kind === 'copy' ? 'עותק של פעולה' : 'תבנית אישית'} · עודכן {new Date(c.updatedAt).toLocaleDateString('he-IL')}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
