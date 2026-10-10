@@ -6,6 +6,7 @@ import { CopyButton } from '../components/CopyButton';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { TALK_CARDS, TALK_TOPICS, buildTalkCardsHtml } from '../lib/personalTalkCards';
 import { offerHtml } from '../lib/printFile';
+import { SevenParts } from '../components/SevenParts';
 
 interface Part {
   name: string;
@@ -30,10 +31,22 @@ interface Guide {
   steps: Step[];
   mistakes: string[];
   checklist: string[];
-  extra?: 'talk-cards' | 'canva-links';
+  extra?: 'talk-cards' | 'canva-links' | 'seven-parts';
 }
 
 const GUIDES: Guide[] = [
+  {
+    id: 'sheva',
+    tab: 'שיטת שבעת החלקים',
+    heading: 'השיטה שלי: שבעה חלקים לפעולה',
+    intro: '',
+    partsTitle: '',
+    parts: [],
+    steps: [],
+    mistakes: [],
+    checklist: [],
+    extra: 'seven-parts',
+  },
   {
     id: 'peula',
     tab: 'איך בונים פעולה',
@@ -619,9 +632,9 @@ export function HowToBuild() {
       <Reveal delay={60} key={guide.id}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 12 }}>
           <h2 style={{ fontSize: 22, fontWeight: 800 }}>{guide.heading}</h2>
-          <CopyButton variant="mini" text={guideToText(guide)} label="העתקת המדריך" />
+          {guide.extra !== 'seven-parts' && <CopyButton variant="mini" text={guideToText(guide)} label="העתקת המדריך" />}
         </div>
-        <GuideBody guide={guide} />
+        {guide.extra === 'seven-parts' ? <SevenParts /> : <GuideBody guide={guide} />}
         {guide.extra === 'talk-cards' && <TalkCardsExtra />}
         {guide.extra === 'canva-links' && <CanvaExtra />}
       </Reveal>
