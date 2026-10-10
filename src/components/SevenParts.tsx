@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { SEVEN_NOTE, SEVEN_PARTS } from '../data/sevenParts';
+import { Link } from 'react-router-dom';
+import { SEVEN_BONUS, SEVEN_NOTE, SEVEN_PARTS } from '../data/sevenParts';
 import { CopyButton } from './CopyButton';
 import { escapeHtml, offerHtml } from '../lib/printFile';
 
@@ -8,15 +9,16 @@ const KEY = 'hlm-seven-checklist';
 function loadChecked(): boolean[] {
   try {
     const raw = JSON.parse(localStorage.getItem(KEY) || '[]');
-    return SEVEN_PARTS.map((_, i) => !!raw[i]);
+    return [...SEVEN_PARTS, SEVEN_BONUS].map((_, i) => !!raw[i]);
   } catch {
-    return SEVEN_PARTS.map(() => false);
+    return [...SEVEN_PARTS, SEVEN_BONUS].map(() => false);
   }
 }
 
 export function sevenPartsText(): string {
   return `שיטת שבעת החלקים לבניית פעולה\n\n${SEVEN_NOTE}\n\n` + SEVEN_PARTS.map((p) =>
-    `${p.n}. ${p.name} (מרקר ${p.marker})\nמטרה: ${p.purpose}\nמה כותבים: ${p.write}\nאיך זה מקדם את הפעולה: ${p.advances}\nממה להימנע: ${p.avoid}`).join('\n\n');
+    `${p.n}. ${p.name} (מרקר ${p.marker})\nמטרה: ${p.purpose}\nמה כותבים: ${p.write}\nאיך זה מקדם את הפעולה: ${p.advances}\nממה להימנע: ${p.avoid}`).join('\n\n') +
+    `\n\nבונוס: ${SEVEN_BONUS.name} (מרקר ${SEVEN_BONUS.marker})\nמטרה: ${SEVEN_BONUS.purpose}\nמה כותבים: ${SEVEN_BONUS.write}\nאיך זה מקדם את הפעולה: ${SEVEN_BONUS.advances}\nממה להימנע: ${SEVEN_BONUS.avoid}`;
 }
 
 // דף להדפסה: כותרות בצבעים, מקרא למרקרים ומקום לכתיבה בכל חלק.
@@ -27,7 +29,7 @@ export function buildSevenPartsPrintHtml(): string {
     <p class="hint">${escapeHtml(p.purpose)}</p>
     <div class="lines"><i></i><i></i><i></i></div>
   </section>`).join('');
-  const legend = SEVEN_PARTS.map((p) => `<span class="lg" style="--c:${p.color};--t:${p.tint}"><b>${p.n}</b> ${escapeHtml(p.name)} · ${escapeHtml(p.marker)}</span>`).join('');
+  const legend = [...SEVEN_PARTS, SEVEN_BONUS].map((p) => `<span class="lg" style="--c:${p.color};--t:${p.tint}"><b>${p.n === 8 ? '+' : p.n}</b> ${escapeHtml(p.name)} · ${escapeHtml(p.marker)}</span>`).join('');
   return `<!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8"><title>שיטת שבעת החלקים — דף בנייה</title>
 <style>
@@ -53,6 +55,11 @@ export function buildSevenPartsPrintHtml(): string {
   <div class="legend">${legend}</div>
   <p class="sub">מקרא למרקרים: מסמנים כל כותרת במרקר בצבע שלה, ובסוף בודקים שכל שבעת הצבעים מופיעים.</p>
   ${rows}
+  <section class="part" style="--c:${SEVEN_BONUS.color};--t:${SEVEN_BONUS.tint}">
+    <h2><span class="n">+</span>${escapeHtml(SEVEN_BONUS.name)}</h2>
+    <p class="hint">${escapeHtml(SEVEN_BONUS.purpose)}</p>
+    <div class="lines"><i></i></div>
+  </section>
   <p class="foot">${escapeHtml(SEVEN_NOTE)} · המדריך למדריך</p>
 </div><script>window.addEventListener('load', function(){ setTimeout(function(){ window.print(); }, 600); });</script></body></html>`;
 }
@@ -62,7 +69,7 @@ export function SevenParts() {
   useEffect(() => {
     try { localStorage.setItem(KEY, JSON.stringify(checked)); } catch { /* ממשיכים בלי שמירה */ }
   }, [checked]);
-  const done = checked.filter(Boolean).length;
+  const done = checked.slice(0, 7).filter(Boolean).length;
 
   return (
     <div>
@@ -101,6 +108,19 @@ export function SevenParts() {
             </dl>
           </section>
         ))}
+        <section id="seven-bonus" style={{ background: SEVEN_BONUS.tint, border: `2px dashed ${SEVEN_BONUS.color}`, borderRadius: 14, padding: '16px 20px 18px', scrollMarginTop: 90 }}>
+          <h3 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 19, fontWeight: 800, margin: '0 0 8px' }}>
+            <span style={{ width: 30, height: 30, borderRadius: '50%', background: SEVEN_BONUS.color, color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 17 }}>+</span>
+            {SEVEN_BONUS.name}
+          </h3>
+          <dl style={{ margin: 0, display: 'grid', gap: 8, fontSize: 14.5, lineHeight: 1.75 }}>
+            <div><dt style={{ fontWeight: 800, display: 'inline' }}>מה המטרה? </dt><dd style={{ display: 'inline', margin: 0 }}>{SEVEN_BONUS.purpose}</dd></div>
+            <div><dt style={{ fontWeight: 800, display: 'inline' }}>מה כותבים? </dt><dd style={{ display: 'inline', margin: 0 }}>{SEVEN_BONUS.write}</dd></div>
+            <div><dt style={{ fontWeight: 800, display: 'inline' }}>איך זה מקדם את הפעולה? </dt><dd style={{ display: 'inline', margin: 0 }}>{SEVEN_BONUS.advances}</dd></div>
+            <div><dt style={{ fontWeight: 800, display: 'inline' }}>ממה להימנע? </dt><dd style={{ display: 'inline', margin: 0 }}>{SEVEN_BONUS.avoid}</dd></div>
+          </dl>
+          <p style={{ margin: '10px 0 0' }}><Link to="/chuparim" className="btn btn-outline">למאגר הצ׳ופרים</Link></p>
+        </section>
       </div>
 
       <section aria-labelledby="seven-check" style={{ border: '2px solid var(--ink)', borderRadius: 16, padding: '18px 22px', marginBottom: 40, background: 'var(--paper)' }}>
@@ -109,18 +129,18 @@ export function SevenParts() {
           <span style={{ fontSize: 13, fontWeight: 700, color: done === 7 ? '#2F7A4B' : 'var(--ink-faint)' }}>{done} מתוך 7</span>
         </div>
         <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 12px', display: 'grid', gap: 6 }}>
-          {SEVEN_PARTS.map((p, i) => (
+          {[...SEVEN_PARTS, SEVEN_BONUS].map((p, i) => (
             <li key={p.key}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 10px', borderRadius: 10, background: checked[i] ? p.tint : 'transparent', cursor: 'pointer', fontSize: 15 }}>
                 <input type="checkbox" checked={checked[i]} onChange={() => setChecked((prev) => prev.map((v, j) => (j === i ? !v : v)))} style={{ width: 18, height: 18, accentColor: p.color }} />
-                <span style={{ width: 20, height: 20, borderRadius: '50%', background: p.color, color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{p.n}</span>
+                <span style={{ width: 20, height: 20, borderRadius: '50%', background: p.color, color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{p.n === 8 ? '+' : p.n}</span>
                 <b>{p.name}</b>
               </label>
             </li>
           ))}
         </ul>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          <button type="button" className="btn btn-outline" onClick={() => setChecked(SEVEN_PARTS.map(() => false))}>איפוס הרשימה</button>
+          <button type="button" className="btn btn-outline" onClick={() => setChecked([...SEVEN_PARTS, SEVEN_BONUS].map(() => false))}>איפוס הרשימה</button>
           <span style={{ fontSize: 12.5, color: 'var(--ink-faint)' }}>הסימונים נשמרים רק בדפדפן שלך.</span>
         </div>
       </section>
