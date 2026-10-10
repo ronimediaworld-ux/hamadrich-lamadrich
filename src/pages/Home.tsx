@@ -10,6 +10,7 @@ import { getCurrentParsha, getCurrentParshaNames } from '../lib/parsha';
 import { CountUp } from '../components/CountUp';
 import { SubscribeBox } from '../components/SubscribeBox';
 import { WhatsNewHome } from '../components/WhatsNewHome';
+import { SEVEN_BONUS, SEVEN_PARTS } from '../data/sevenParts';
 import { readings } from '../data/readings';
 import { chuparim } from '../data/chuparim';
 import { staffStudy } from '../data/staffStudy';
@@ -169,6 +170,30 @@ export function Home() {
             <Link to="/category/activities?domain=פרשת שבוע" className="chip">פעולות לפרשת השבוע</Link>
             <Link to="/favorites" className="chip">הקלסר שלי</Link>
           </div>
+        </Reveal>
+      </div>
+
+      {/* BUILD YOUR OWN */}
+      <div className="wrap" style={{ paddingBottom: 40 }}>
+        <Reveal>
+          <section aria-labelledby="home-build" style={{ border: '2px solid var(--ink)', borderRadius: 20, padding: '22px 26px', background: 'var(--paper)', boxShadow: '6px 6px 0 rgba(36,28,17,.12)' }}>
+            <h2 id="home-build" style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px' }}>רוצות לבנות פעולה משלכן? מאפס, בשיטה שלי</h2>
+            <p style={{ fontSize: 15, color: 'var(--ink-soft)', margin: '0 0 14px', lineHeight: 1.75, maxWidth: '62ch' }}>
+              שבעה חלקים בסדר קבוע, כל אחד בצבע משלו, ובסוף צ׳ופר כבונוס. ממלאות תבנית אישית, שומרות בדפדפן ומדפיסות.
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+              {[...SEVEN_PARTS, SEVEN_BONUS].map((p) => (
+                <span key={p.name} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '3px 12px 3px 6px', borderRadius: 99, background: p.tint, border: `1.5px solid ${p.color}`, fontSize: 13.5, fontWeight: 700 }}>
+                  <span style={{ width: 22, height: 22, borderRadius: '50%', background: p.color, color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}>{p.n === 8 ? '+' : p.n}</span>
+                  {p.name}
+                </span>
+              ))}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+              <Link to="/my/new" className="btn btn-flame">לבנות פעולה מאפס</Link>
+              <Link to="/how-to-build" className="btn btn-outline">איך זה עובד</Link>
+            </div>
+          </section>
         </Reveal>
       </div>
 
