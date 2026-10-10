@@ -163,6 +163,7 @@ export function Home() {
         <Reveal>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
             <span style={{ fontWeight: 800, fontSize: 14, color: 'var(--ink-soft)' }}>כלים מהירים:</span>
+            <Link to="/now" className="chip">אני צריכה פעולה עכשיו</Link>
             <Link to="/builder" className="chip">בונה פעולה</Link>
             <Link to="/shabbat-pack" className="chip">חבילת שבת להדפסה</Link>
             <Link to="/category/activities?domain=פרשת שבוע" className="chip">פעולות לפרשת השבוע</Link>

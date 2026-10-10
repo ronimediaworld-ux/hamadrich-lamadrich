@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { ACTIVITY_KINDS, activityKind, fitsGrade, noEquipment, type ActivityKind } from '../lib/activityFilter';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { getCategory, getActivityDomain } from '../data/categories';
 import { activitiesByCategory } from '../data/activities';
@@ -42,6 +43,11 @@ export function CategoryPage() {
   const [quickKind, setQuickKind] = useState<QuickGameKind | 'הכל'>('הכל');
   const [pq, setPq] = useState(searchParams.get('q') ?? '');
   const [parshaFilter, setParshaFilter] = useState<string | null>(null);
+  const [gradeFilter, setGradeFilter] = useState(0); // 0 = כל הכיתות
+  const [maxMinutes, setMaxMinutes] = useState(0); // 0 = כל משך
+  const [placeFilter, setPlaceFilter] = useState<'הכל' | 'פנים' | 'חוץ'>('הכל');
+  const [kindFilter, setKindFilter] = useState<ActivityKind | 'הכל'>('הכל');
+  const [noEquipOnly, setNoEquipOnly] = useState(false);
 
   const items = useMemo(() => activitiesByCategory(slug ?? ''), [slug]);
 
@@ -53,6 +59,11 @@ export function CategoryPage() {
       if (ageFilter === 'old' && a.ageMax < 9) return false;
       if (slug === 'activities' && domainFilter !== 'הכל' && getActivityDomain(a.tags) !== domainFilter) return false;
       if (slug === 'activities' && domainFilter === 'פרשת שבוע' && parshaFilter && !a.tags.includes(parshaFilter)) return false;
+      if (gradeFilter && !fitsGrade(a, gradeFilter)) return false;
+      if (maxMinutes && a.duration > maxMinutes) return false;
+      if (placeFilter !== 'הכל' && a.place !== placeFilter && a.place !== 'שניהם') return false;
+      if (kindFilter !== 'הכל' && activityKind(a) !== kindFilter) return false;
+      if (noEquipOnly && !noEquipment(a)) return false;
       if (!matchesQuery([a.title, a.description, a.tags, a.subtopics, a.values], pq)) return false;
       return true;
     })
@@ -289,6 +300,51 @@ export function CategoryPage() {
             <button className={`chip${ageFilter === 'old' ? ' is-active' : ''}`} onClick={() => setAgeFilter('old')}>גיל תיכון (י'-י"ב)</button>
             <button className={`chip${shabbatOnly ? ' is-active' : ''}`} onClick={() => setShabbatOnly((v) => !v)}>מתאים לשבת</button>
           </div>
+
+          <details style={{ marginBottom: 22 }} open={!!(gradeFilter || maxMinutes || placeFilter !== 'הכל' || kindFilter !== 'הכל' || noEquipOnly)}>
+            <summary style={{ cursor: 'pointer', fontWeight: 800, fontSize: 14, marginBottom: 10 }}>סינון מתקדם: כיתה, משך, סוג, מקום וציוד</summary>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, alignItems: 'end', padding: '12px 0' }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, fontWeight: 700 }}>כיתה
+                <select value={gradeFilter} onChange={(e) => setGradeFilter(Number(e.target.value))} style={{ padding: '8px 10px', borderRadius: 10, border: '2px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
+                  <option value={0}>כל הכיתות</option>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((g) => <option key={g} value={g}>{['', 'א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ז׳', 'ח׳', 'ט׳', 'י׳', 'י״א', 'י״ב'][g]}</option>)}
+                </select>
+              </label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, fontWeight: 700 }}>משך
+                <select value={maxMinutes} onChange={(e) => setMaxMinutes(Number(e.target.value))} style={{ padding: '8px 10px', borderRadius: 10, border: '2px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
+                  <option value={0}>כל משך</option>
+                  <option value={20}>עד 20 דקות</option>
+                  <option value={30}>עד 30 דקות</option>
+                  <option value={45}>עד 45 דקות</option>
+                  <option value={60}>עד 60 דקות</option>
+                  <option value={90}>עד 90 דקות</option>
+                </select>
+              </label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, fontWeight: 700 }}>סוג פעילות
+                <select value={kindFilter} onChange={(e) => setKindFilter(e.target.value as ActivityKind | 'הכל')} style={{ padding: '8px 10px', borderRadius: 10, border: '2px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
+                  <option value="הכל">הכל</option>
+                  {ACTIVITY_KINDS.map((k) => <option key={k} value={k}>{k}</option>)}
+                </select>
+              </label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, fontWeight: 700 }}>פנים או חוץ
+                <select value={placeFilter} onChange={(e) => setPlaceFilter(e.target.value as 'הכל' | 'פנים' | 'חוץ')} style={{ padding: '8px 10px', borderRadius: 10, border: '2px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
+                  <option value="הכל">לא משנה</option>
+                  <option value="פנים">בפנים</option>
+                  <option value="חוץ">בחוץ</option>
+                </select>
+              </label>
+              <label style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13.5, fontWeight: 700 }}>
+                <input type="checkbox" checked={noEquipOnly} onChange={(e) => setNoEquipOnly(e.target.checked)} style={{ width: 18, height: 18 }} />
+                בלי ציוד
+              </label>
+              <button type="button" className="chip" onClick={() => { setGradeFilter(0); setMaxMinutes(0); setKindFilter('הכל'); setPlaceFilter('הכל'); setNoEquipOnly(false); }}>ניקוי הסינון</button>
+            </div>
+            <p style={{ fontSize: 12.5, color: 'var(--ink-faint)', margin: 0 }}>
+              "בלי ציוד" לפי המידע שרשום בפעולה: פעולה שלא צוין לה ציוד, או שצוין לה רק דף ועט, נחשבת בלי ציוד. אפשר גם <Link to="/now" style={{ textDecoration: 'underline' }}>לקבל הצעות לפי כיתה וזמן</Link>.
+            </p>
+          </details>
+
+          <p style={{ fontSize: 13.5, color: 'var(--ink-faint)', margin: '0 0 14px' }} aria-live="polite">{filtered.length} פעולות מתאימות לסינון</p>
 
           {slug === 'activities' && domainFilter === 'פרשת שבוע' && (
             <div className="card" style={{ padding: '18px 20px', marginBottom: 24, background: 'var(--magenta-tint)', border: '1px solid var(--magenta)' }}>
