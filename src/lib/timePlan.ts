@@ -24,6 +24,7 @@ function kindOf(label: string): TimedStep['kind'] {
   if (/קטע|סיפור|מקור|קריאה/.test(l)) return 'reading';
   if (/הסבר|חיבור|ומה זה קשור|מכאן/.test(l)) return 'explanation';
   if (/פתיחה/.test(l)) return 'opening';
+  if (/^מתודה|^מהלך/.test(l.trim())) return 'main';
   if (/משחק|חידות|תרגיל|סבב|תחנות|משימ/.test(l)) return 'game';
   return 'other';
 }
@@ -39,13 +40,14 @@ export function timedSteps(a: Activity): TimedStep[] | null {
   const steps: TimedStep[] = flow.map((s, index) => ({ index, step: s, minutes: mins[index] ?? 0, core: false, kind: kindOf(s.label) }));
   // שלב ללא דקות (למשל "דיון" כרשימת שאלות) נחשב חלק מהשלב שלפניו ולכן לא נספר בנפרד, ונשאר עם הליבה.
   const gameLike = steps.filter((t) => (t.kind === 'game' || t.kind === 'main' || t.kind === 'other') && t.minutes > 0);
-  const biggest = gameLike.sort((x, y) => y.minutes - x.minutes)[0];
+  const hasMain = steps.some((t) => t.kind === 'main');
+  const biggest = hasMain ? undefined : gameLike.sort((x, y) => y.minutes - x.minutes)[0];
   // מקור/קטע והסבר: אחד מכל סוג הוא ליבה (הארוך ביותר), האחרים הרחבה.
   const longest = (kind: TimedStep['kind']) => steps.filter((t) => t.kind === kind).sort((x, y) => y.minutes - x.minutes)[0];
   const coreReading = longest('reading');
   const coreExplanation = longest('explanation');
   for (const t of steps) {
-    if (t.kind === 'opening' || t.kind === 'discussion' || t.kind === 'summary') t.core = true;
+    if (t.kind === 'opening' || t.kind === 'discussion' || t.kind === 'summary' || t.kind === 'main') t.core = true;
     else if (t === coreReading || t === coreExplanation) t.core = true;
     else if (t === biggest) t.core = true; // חוויה מרכזית אחת נשארת תמיד
     else if (t.minutes === 0) t.core = true; // שלב בלי דקות לא מוותרים עליו
