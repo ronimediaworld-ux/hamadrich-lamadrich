@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { MascotIcon } from '../components/TeenAvatar';
 import { Reveal } from '../components/Reveal';
@@ -589,6 +589,12 @@ export function HowToBuild() {
     if (wanted && GUIDES.some((g) => g.id === wanted)) setActive(wanted);
   }, [wanted]);
   const guide = GUIDES.find((g) => g.id === active) ?? GUIDES[0];
+  const contentRef = useRef<HTMLDivElement>(null);
+  // לחיצה על לשונית: עוברים מיד לתוכן שלה (בטלפון הלשוניות תופסות כמה שורות והתוכן מתחתן)
+  function openGuide(id: string) {
+    setActive(id);
+    window.requestAnimationFrame(() => contentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }
 
   return (
     <div className="wrap" style={{ paddingTop: 30, paddingBottom: 70, maxWidth: 760 }}>
@@ -610,7 +616,7 @@ export function HowToBuild() {
             <button
               key={g.id}
               className={`chip${g.id === active ? ' is-active' : ''}`}
-              onClick={() => setActive(g.id)}
+              onClick={() => openGuide(g.id)}
             >
               {g.tab}
             </button>
@@ -618,7 +624,7 @@ export function HowToBuild() {
         </div>
       </Reveal>
 
-      <Reveal delay={60} key={guide.id}>
+      <div key={guide.id} ref={contentRef} style={{ scrollMarginTop: 84 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 12 }}>
           <h2 style={{ fontSize: 22, fontWeight: 800 }}>{guide.heading}</h2>
           <CopyButton variant="mini" text={guideToText(guide)} label="העתקת המדריך" />
@@ -633,7 +639,7 @@ export function HowToBuild() {
         <GuideBody guide={guide} />
         {guide.extra === 'talk-cards' && <TalkCardsExtra />}
         {guide.extra === 'canva-links' && <CanvaExtra />}
-      </Reveal>
+      </div>
 
       <Reveal delay={80}>
         <div style={{ background: 'var(--flame-tint)', borderRadius: 18, padding: '26px 30px' }}>

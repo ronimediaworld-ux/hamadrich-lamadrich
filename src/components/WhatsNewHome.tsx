@@ -47,7 +47,7 @@ export function WhatsNewHome() {
       )}
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 16 }}>
         <h2 style={{ fontSize: 28, fontWeight: 800 }}>מה חדש באתר</h2>
-        <Link to="/whats-new" style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>לכל החדשים ←</Link>
+        <Link to="/whats-new" style={{ display: 'inline-block', padding: '8px 4px', fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>לכל החדשים ←</Link>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 14 }}>
         {rows.map((r) => (

@@ -241,7 +241,7 @@ export function CategoryPage() {
                     href={s.sourceLink.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: 'var(--flame-ink)', fontWeight: 700 }}
+                    style={{ display: 'inline-block', marginTop: 4, padding: '8px 0', fontSize: 12.5, color: 'var(--flame-ink)', fontWeight: 700 }}
                   >
                     מקור: {s.sourceLink.title} ↗
                   </a>

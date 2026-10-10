@@ -60,7 +60,7 @@ export function Comments({ kind, targetId }: { kind: ViewKind; targetId: string 
         <textarea value={text} onChange={(e) => setText(e.target.value)} maxLength={600} rows={3} required placeholder="איך הלכה הפעולה? מה כדאי לשנות?" aria-label="התגובה שלך"
           style={{ padding: '10px 14px', borderRadius: 10, border: '2px solid var(--ink)', fontSize: 14, fontFamily: 'Heebo, sans-serif', resize: 'vertical' }} />
         <input value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true"
-          style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }} />
+          style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none', width: 1, height: 1, opacity: 0 }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <button type="submit" className="btn btn-flame" disabled={busy}>{busy ? 'שולח...' : 'שליחת תגובה'}</button>
           {msg && <span style={{ fontSize: 13.5, color: msg.ok ? 'var(--lime-ink)' : 'var(--flame-ink)' }}>{msg.text}</span>}

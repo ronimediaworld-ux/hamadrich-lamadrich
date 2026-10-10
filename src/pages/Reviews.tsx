@@ -68,6 +68,7 @@ function Stars({ value, onChange }: { value: number; onChange?: (n: number) => v
           onClick={onChange ? () => onChange(n) : undefined}
           aria-label={`${n} כוכבים`}
           disabled={!onChange}
+          className={onChange ? 'star-btn' : undefined}
           style={{
             background: 'none',
             border: 'none',

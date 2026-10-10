@@ -290,3 +290,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   outline: 3px solid var(--flame-ink, #b9501b) !important;
   outline-offset: 2px;
 }
+
+/* ---- מובייל: אזורי לחיצה נוחים ושדות שלא מקפיצים את המסך באייפון ---- */
+@media (max-width: 700px) {
+  input, select, textarea { font-size: 16px !important; }
+  input:not([type='checkbox']):not([type='radio']), select { min-height: 40px; }
+  .copy-mini { min-height: 36px; padding: 6px 12px !important; font-size: 13px !important; }
+  .star-btn { min-width: 40px; min-height: 40px; font-size: 32px !important; }
+  .chip { min-height: 38px; }
+  .btn { min-height: 42px; }
+}

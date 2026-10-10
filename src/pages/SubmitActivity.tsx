@@ -112,7 +112,7 @@ export function SubmitActivity() {
               </span>
             </label>
             <input value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true"
-              style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }} />
+              style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none', width: 1, height: 1, opacity: 0 }} />
 
             {error && <div role="alert" style={{ padding: '12px 16px', borderRadius: 12, background: 'var(--flame-tint)', color: 'var(--flame-ink)', fontSize: 14 }}>{error}</div>}
 

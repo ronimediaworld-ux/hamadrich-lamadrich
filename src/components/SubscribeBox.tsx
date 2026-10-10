@@ -25,7 +25,7 @@ export function SubscribeBox() {
         <form onSubmit={submit} style={{ display: 'flex', gap: 10, flexWrap: 'wrap', maxWidth: 520 }}>
           <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="כתובת המייל שלכם" aria-label="כתובת מייל" dir="ltr"
             style={{ flex: '1 1 240px', padding: '11px 16px', borderRadius: 999, border: '2px solid var(--ink)', fontSize: 14.5, fontFamily: 'Heebo, sans-serif', background: 'var(--paper)' }} />
-          <input value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }} />
+          <input value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none', width: 1, height: 1, opacity: 0 }} />
           <button type="submit" className="btn btn-flame" disabled={state === 'busy'}>{state === 'busy' ? 'רגע...' : 'הרשמה'}</button>
           {state === 'error' && <div role="alert" style={{ width: '100%', fontSize: 13.5, color: 'var(--flame-ink)' }}>{msg}</div>}
         </form>

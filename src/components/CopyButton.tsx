@@ -46,7 +46,7 @@ export function CopyButton({ text, label = 'העתקה', copiedLabel = '✓ הו
       <button
         type="button"
         onClick={handle}
-        className="no-print"
+        className="no-print copy-mini"
         style={{
           border: '1px solid var(--line-strong)',
           background: copied ? 'var(--lime-tint)' : 'var(--paper)',

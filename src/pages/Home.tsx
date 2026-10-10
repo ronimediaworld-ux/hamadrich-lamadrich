@@ -343,7 +343,7 @@ export function Home() {
           <Reveal>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20 }}>
               <h2 style={{ fontSize: 28, fontWeight: 800 }}>רעיונות לצ׳ופרים</h2>
-              <Link to="/chuparim" style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>כל הצ׳ופרים ←</Link>
+              <Link to="/chuparim" style={{ display: 'inline-block', padding: '8px 4px', fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>כל הצ׳ופרים ←</Link>
             </div>
           </Reveal>
         </div>
