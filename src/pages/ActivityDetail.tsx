@@ -42,12 +42,16 @@ function Section({ label, step, children }: { label: string; step?: number; chil
   );
 }
 
+import { TimePlanner } from '../components/TimePlanner';
+import { applyPlan, type TimePlan } from '../lib/timePlan';
+
 export function ActivityDetail() {
   const { id } = useParams();
   const activity = getActivity(id ?? '');
   const [saved, setSaved] = useState(false);
   const [chuparVals, setChuparVals] = useState<string[]>([]);
   const [chuparBusy, setChuparBusy] = useState(false);
+  const [plan, setPlan] = useState<TimePlan | null>(null);
   useDocumentTitle(activity?.title);
 
   useEffect(() => {
@@ -71,6 +75,7 @@ export function ActivityDetail() {
     );
   }
 
+  const view = plan ? applyPlan(activity, plan) : activity;
   const category = getCategory(activity.categorySlug);
   const chuparim = (activity.chuparIds ?? []).map((cid) => getChupar(cid)).filter((c): c is NonNullable<typeof c> => !!c);
   const badgeLabel = activity.categorySlug === 'activities' ? getActivityDomain(activity.tags) : category?.label;
@@ -109,7 +114,7 @@ export function ActivityDetail() {
 
           <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12, height: 'fit-content' }}>
             <Row icon={<UsersIcon size={16} />} label={activity.ageLabel} />
-            <Row icon={<ClockIcon size={16} />} label={`${activity.duration} דקות`} />
+            <Row icon={<ClockIcon size={16} />} label={plan ? `${view.duration} דקות (מותאם)` : `${activity.duration} דקות`} />
             <Row icon={<MapPinIcon size={16} />} label={activity.place === 'שניהם' ? 'פנים וחוץ' : activity.place} />
             <Row icon={<StarIcon size={16} />} label={`${activity.rating.toFixed(1)} דירוג מדריכים`} />
             <div style={{ height: 1, background: 'var(--line)' }} />
@@ -120,7 +125,7 @@ export function ActivityDetail() {
               <b>ציוד: </b>{activity.equipment.length ? activity.equipment.join(', ') : 'ללא ציוד מיוחד'}
             </div>
             <div className="no-print" style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-              <PrintButton filename={`${activity.id}.html`} title={activity.title} buildHtml={() => buildActivityPrintHtml(activity, category?.label ?? 'פעולות', [badgeLabel, activity.tags.find((t) => t !== badgeLabel)].filter(Boolean).join(' · '), chuparim.length ? { chuparim, vals: chuparVals } : undefined)} style={{ flex: 1 }} />
+              <PrintButton filename={`${activity.id}.html`} title={activity.title} buildHtml={() => buildActivityPrintHtml(view, category?.label ?? 'פעולות', [badgeLabel, activity.tags.find((t) => t !== badgeLabel)].filter(Boolean).join(' · '), chuparim.length ? { chuparim, vals: chuparVals } : undefined)} style={{ flex: 1 }} />
               <button
                 className="btn btn-outline"
                 onClick={handleSave}
@@ -131,7 +136,7 @@ export function ActivityDetail() {
               </button>
             </div>
             <CopyButton
-              text={activityToText(activity)}
+              text={activityToText(view)}
               label="העתקת הפעולה כטקסט"
               copiedLabel="✓ הועתק — אפשר להדביק ולערוך"
             />
@@ -162,9 +167,11 @@ export function ActivityDetail() {
             <div style={{ flex: 1, height: 1, background: 'var(--line)' }} />
           </div>
 
-          {activity.flow && activity.flow.length > 0 ? (
+          <TimePlanner activity={activity} onPlan={setPlan} />
+
+          {view.flow && view.flow.length > 0 ? (
             <>
-              {activity.flow.map((s, i) => (
+              {view.flow.map((s, i) => (
                 <Section key={i} label={s.label} step={i + 1}>
                   {s.body && <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{s.body}</p>}
                   {s.items && s.items.length > 0 && (
@@ -183,7 +190,7 @@ export function ActivityDetail() {
                 </Section>
               ))}
               {activity.sourceLink && (
-                <Section label="מקור חיצוני — צפייה/קריאה" step={activity.flow.length + 1}>
+                <Section label="מקור חיצוני — צפייה/קריאה" step={view.flow.length + 1}>
                   <div style={{ background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 10, padding: '14px 18px' }}>
                     <a href={activity.sourceLink.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, color: 'var(--flame-ink)', textDecoration: 'underline' }}>
                       {activity.sourceLink.title} ↗
