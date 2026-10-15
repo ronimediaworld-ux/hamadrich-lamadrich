@@ -303,9 +303,11 @@ export function ActivityDetail() {
             </div>
           )}
 
-          <Section label="הסבר למדריך">
-            <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{activity.guideNotes}</p>
-          </Section>
+          {activity.guideNotes?.trim() && (
+            <Section label="הסבר למדריך">
+              <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{activity.guideNotes}</p>
+            </Section>
+          )}
 
           {activity.appendices && activity.appendices.length > 0 && (
             <div style={{ marginTop: 34, marginBottom: 26 }}>
