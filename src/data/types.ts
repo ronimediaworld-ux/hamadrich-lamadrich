@@ -64,7 +64,7 @@ export interface Activity {
 }
 
 export interface ChuparPrint {
-  shape: 'card' | 'cert' | 'ticket' | 'label' | 'tag' | 'square' | 'image' | 'imagesq' | 'imagewide' | 'wide' | 'cinema' | 'note';
+  shape: 'card' | 'cert' | 'ticket' | 'label' | 'tag' | 'square' | 'image' | 'imagesq' | 'imagewide' | 'wide' | 'cinema' | 'note' | 'candy' | 'lollipop' | 'heart' | 'bubble' | 'bandaid' | 'pill' | 'drop' | 'cloud' | 'balloon';
   layout: 'center' | 'split' | 'seal' | 'label' | 'poem' | 'ticket' | 'sign' | 'pharmacy' | 'cinema' | 'plain';
   palette: string;
   motif: string;

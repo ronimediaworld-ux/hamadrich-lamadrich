@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Chupar } from '../data/types';
-import { renderCard, SHAPES } from '../lib/chuparDesign';
+import { isDieShape, renderCard, SHAPES } from '../lib/chuparDesign';
 
 const MM = 3.7795;
 
@@ -8,6 +8,7 @@ export function ChuparDesign({ chupar, maxWidth, name, values }: { chupar: Chupa
   const ref = useRef<HTMLDivElement>(null);
   const [avail, setAvail] = useState(240);
   const shape = SHAPES[chupar.print?.shape ?? 'card'] ?? SHAPES.card;
+  const die = isDieShape(chupar.print?.shape ?? 'card');
 
   useEffect(() => {
     const el = ref.current;
@@ -25,7 +26,7 @@ export function ChuparDesign({ chupar, maxWidth, name, values }: { chupar: Chupa
 
   return (
     <div ref={ref} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-      <div style={{ width: natural * scale, height: shape.h * MM * scale, borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,.18)', flex: 'none', direction: 'ltr' }}>
+      <div style={{ width: natural * scale, height: shape.h * MM * scale, borderRadius: die ? 0 : 8, overflow: die ? 'visible' : 'hidden', boxShadow: die ? 'none' : '0 1px 6px rgba(0,0,0,.18)', flex: 'none', direction: 'ltr' }}>
         <div
           style={{ width: natural, height: shape.h * MM, transform: `scale(${scale})`, transformOrigin: 'top left' }}
           dangerouslySetInnerHTML={{ __html: renderCard(chupar, window.location.origin, name ?? '', values ?? []) }}

@@ -10,7 +10,7 @@
     "tip": "כתבו משפט אישי אחד ומדויק לכל חניך — זה מה שנשאר בזיכרון אחרי שהחטיף נגמר.",
     "character": "A",
     "print": {
-      "shape": "tag",
+      "shape": "candy",
       "layout": "center",
       "palette": "sunrise",
       "motif": "candy",
@@ -130,7 +130,7 @@
     "tip": "ודאו שכל שם נכנס להגרלה פעם אחת בדיוק, כדי שאף אחד לא יישאר בלי מחמאה.",
     "character": "B",
     "print": {
-      "shape": "label",
+      "shape": "heart",
       "layout": "label",
       "palette": "berry",
       "motif": "heart",
@@ -190,7 +190,7 @@
     "tip": "הכינו דוגמת קליעה פשוטה מראש ותלמדו אותה בקצרה — לא כולם מכירים קליעת צמידים.",
     "character": "C",
     "print": {
-      "shape": "card",
+      "shape": "heart",
       "layout": "label",
       "palette": "grape",
       "motif": "heart",
@@ -230,7 +230,7 @@
     "tip": "הדפיסו והחליפו את השורה האחרונה בפרטים שלכם:\n\nמספרים חשובים:\nמשטרה — 100\nמד\"א — 101\nמכבי אש — 102\nהמדריך/ה: _______  טלפון: _______\n\n\"אני כאן בשבילך, לכל דבר 🧡\"",
     "character": "E",
     "print": {
-      "shape": "card",
+      "shape": "bubble",
       "layout": "sign",
       "palette": "cherry",
       "motif": "speech",
@@ -419,7 +419,7 @@
     "tip": "צ'ופר קצר ומצחיק לתחילת מסלול או טיול — לא דורש הכנה מיוחדת.",
     "character": "B",
     "print": {
-      "shape": "ticket",
+      "shape": "candy",
       "layout": "ticket",
       "palette": "mint",
       "motif": "candy",
@@ -438,7 +438,7 @@
     "tip": "הכריזו על \"זמן פתוח\" מוגבל (5-10 דקות) כדי שזה יישאר כיפי ולא יתפוס את כל הפעולה.",
     "character": "F",
     "print": {
-      "shape": "card",
+      "shape": "drop",
       "layout": "sign",
       "palette": "ocean",
       "motif": "drop",
@@ -538,7 +538,7 @@
     "tip": "משחק שהופך תלונות שגרתיות למשחק — עדיף עם מילים קלילות ולא עם דברים שהם באמת צריכים לומר (כמו כאב אמיתי).",
     "character": "F",
     "print": {
-      "shape": "cert",
+      "shape": "bubble",
       "layout": "sign",
       "palette": "cherry",
       "motif": "speech",
@@ -598,7 +598,7 @@
     "tip": "אפשר לצייר בעצמכם בכמה דקות, לא צריך כישרון מיוחד — הפואנטה היא הבדיחה, לא האיור.",
     "character": "B",
     "print": {
-      "shape": "square",
+      "shape": "candy",
       "layout": "center",
       "palette": "berry",
       "motif": "candy",
@@ -756,7 +756,7 @@
     "tip": "אפשר לתלות מול אור או חלון כדי שהשקיפות תודגש חזותית.",
     "character": "B",
     "print": {
-      "shape": "square",
+      "shape": "cloud",
       "layout": "center",
       "palette": "sky",
       "motif": "cloud",
@@ -974,7 +974,7 @@
     "tip": "דורש קצת הכנה (למצוא סוכריות גומי בצורות מתאימות) אבל התוצאה מאוד מוצלחת ומצחיקה.",
     "character": "D",
     "print": {
-      "shape": "card",
+      "shape": "candy",
       "layout": "center",
       "palette": "cherry",
       "motif": "candy",
@@ -994,7 +994,7 @@
     "tip": "אפשר להמציא עוד \"תרופות\" וצבעים לפי הצורך של הקבוצה שלכם.",
     "character": "C",
     "print": {
-      "shape": "card",
+      "shape": "pill",
       "layout": "label",
       "palette": "grape",
       "motif": "pill",
@@ -1073,7 +1073,7 @@
     "tip": "הכי חזק כשנותנים אותו אישית, ברגע נכון, בלי הרבה מילים סביב זה.",
     "character": "C",
     "print": {
-      "shape": "card",
+      "shape": "bandaid",
       "layout": "label",
       "palette": "berry",
       "motif": "bandaid",
@@ -1153,7 +1153,7 @@
     "tip": "אפשר להכין יחד עם הקבוצה — כל חניך כותב פתק אחד לחבר, וכולם מקבלים שקית עם פתקים שכתבו זה לזה.",
     "character": "D",
     "print": {
-      "shape": "card",
+      "shape": "cloud",
       "layout": "label",
       "palette": "mint",
       "motif": "cloud",
@@ -1193,7 +1193,7 @@
     "tip": "טוב בתור צ'ופר \"סתם כי בא לי\", בלי צורך בהקשר מיוחד.",
     "character": "A",
     "print": {
-      "shape": "tag",
+      "shape": "lollipop",
       "layout": "center",
       "palette": "berry",
       "motif": "lollipop",
@@ -1232,7 +1232,7 @@
     "tip": "כלי שימושי במיוחד עם חניכים ביישנים או צעירים שמתקשים לנסח רגשות במילים.",
     "character": "C",
     "print": {
-      "shape": "square",
+      "shape": "bubble",
       "layout": "center",
       "palette": "grape",
       "motif": "speech",
@@ -1351,7 +1351,7 @@
     "tip": "טקס יפה לפתיחת עונה או קייטנה — יוצר ציפייה ורגע חגיגי בסיום.",
     "character": "E",
     "print": {
-      "shape": "square",
+      "shape": "balloon",
       "layout": "center",
       "palette": "berry",
       "motif": "balloon",

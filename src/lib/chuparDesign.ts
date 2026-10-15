@@ -33,6 +33,16 @@ export const SHAPES: Record<string, { w: number; h: number }> = {
   wide: { w: 92, h: 44 },
   cinema: { w: 92, h: 42 },
   note: { w: 62, h: 60 },
+  // צורות גזורות לפי הנושא (הכרטיס עצמו הוא הצורה)
+  candy: { w: 92, h: 46 },
+  lollipop: { w: 50, h: 76 },
+  heart: { w: 64, h: 58 },
+  bubble: { w: 84, h: 56 },
+  bandaid: { w: 92, h: 38 },
+  pill: { w: 92, h: 36 },
+  drop: { w: 50, h: 66 },
+  cloud: { w: 84, h: 56 },
+  balloon: { w: 54, h: 74 },
 };
 
 function esc(s: string): string {
@@ -103,15 +113,6 @@ const FLAT: Record<string, [string, string]> = {
   sand: ['#C9A27E', '#FFEB00'], cherry: ['#FF4D4D', '#FF9500'], mint: ['#7EE06A', '#8FE3CE'],
   sky: ['#4A5D8F', '#8FB8E8'], chalk: ['#90A783', '#FFEB00'], cream: ['#FF9500', '#FFEB00'],
 };
-const PASTEL: Record<string, string> = {
-  sunrise: '#FFEFC2', berry: '#FFDDF0', ocean: '#D6ECFF', forest: '#DDF6CF', grape: '#EADBFF', night: '#DDE3FF',
-  sand: '#F9E6C9', cherry: '#FFDCD6', mint: '#D2F5E7', sky: '#DCE7FF', chalk: '#E1EEDD', cream: '#FFF1CC',
-};
-const BLOBS = [
-  'M20 60c-6-24 14-46 40-44 20 2 34-8 44 8 12 20 6 44-10 58-18 16-36 20-56 12C24 88 24 72 20 60z',
-  'M12 44c8-26 40-36 62-26 24 10 32 40 18 62-14 22-48 24-66 8C8 76 6 58 12 44z',
-  'M18 30c14-18 50-20 68-4 16 14 14 44-4 60-20 18-52 12-64-8C8 62 8 42 18 30z',
-];
 
 function hash(id: string): number {
   let h = 0;
@@ -120,9 +121,6 @@ function hash(id: string): number {
 }
 
 // מייצר כרטיס אחד (HTML עם סגנון inline בלבד) — גודל במ"מ לפי הצורה
-// לוגו ניצוץ (הלהבה המחייכת של האתר) — תגית עגולה קטנה בפינת הכרטיס
-const NITZOTZ = `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><path d="M40 6c10 14 26 24 26 42a26 26 0 0 1-52 0c0-8 3-14 7-19 2 7 7 10 11 7-5-13 1-22 8-30z" fill="#F5A93B" stroke="#241C11" stroke-width="3" stroke-linejoin="round"/><circle cx="32" cy="52" r="4" fill="#241C11"/><circle cx="50" cy="52" r="4" fill="#241C11"/><path d="M32 62c3 3 13 3 16 0" stroke="#241C11" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
-const nitzotzBadge = (pos: string, size = 6.2) => `<div style="position:absolute;${pos};width:${size}mm;height:${size}mm;border-radius:50%;background:#fff;border:.3mm solid #111;padding:.75mm;box-sizing:border-box">${NITZOTZ}</div>`;
 
 export interface ChuparField { label: string }
 
@@ -153,6 +151,89 @@ function fillBlanks(strs: [string, string], values: string[]): [string, string] 
   });
   return [f(strs[0]), f(strs[1])];
 }
+
+// ---- צורות גזורות: הכרטיס עצמו הוא הצורה (קו חיתוך שחור דק) ----
+const SW = 0.5; // עובי קו חיתוך במ"מ
+interface DieOut { svg: string; ins: { x: number; y: number; w: number; h: number } }
+type DieFn = (w: number, h: number, c1: string, c2: string, seed: number) => DieOut;
+const unionOutline = (shapes: Array<[string, string]>) =>
+  `<g fill="#111" stroke="#111" stroke-width="${SW * 2}" stroke-linejoin="round" stroke-linecap="round">${shapes.map(([el]) => el).join('')}</g><g stroke="none">${shapes.map(([el, fill]) => el.replace('/>', ` fill="${fill}"/>`)).join('')}</g>`;
+const pathOutline = (d: string, fill = '#fff') => `<path d="${d}" fill="${fill}" stroke="#111" stroke-width="${SW}" stroke-linejoin="round"/>`;
+const mflip = (pts: Array<[number, number]>, w: number) => pts.map(([x, y]) => [w - x, y] as [number, number]);
+const poly = (pts: Array<[number, number]>) => `<polygon points="${pts.map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`).join(' ')}"/>`;
+
+const DIE: Record<string, DieFn> = {
+  candy: (w, h, _c1, c2) => {
+    const m = SW + 0.3;
+    const wl: Array<[number, number]> = [[w * 0.2, h * 0.3], [m, h * 0.06], [w * 0.075, h * 0.5], [m, h * 0.94], [w * 0.2, h * 0.7]];
+    const wr = mflip(wl, w);
+    const body = `<rect x="${w * 0.17}" y="${h * 0.08}" width="${w * 0.66}" height="${h * 0.84}" rx="${h * 0.3}"/>`;
+    return {
+      svg: unionOutline([[poly(wl), c2], [poly(wr), c2], [body, '#fff']]),
+      ins: { x: w * 0.25, y: h * 0.17, w: w * 0.5, h: h * 0.66 },
+    };
+  },
+  lollipop: (w, h, c1, c2) => {
+    const r = w / 2 - SW - 0.3;
+    const stick = `<rect x="${w / 2 - 1.6}" y="${w - 3}" width="3.2" height="${h - w + 3 - SW - 0.3}" rx="1.6"/>`;
+    const head = `<circle cx="${w / 2}" cy="${w / 2}" r="${r}"/>`;
+    return {
+      svg: unionOutline([[stick, c2], [head, '#fff']]) + `<circle cx="${w / 2}" cy="${w / 2}" r="${r * 0.9}" fill="none" stroke="${c1}" stroke-width="1.3"/>`,
+      ins: { x: w / 2 - r * 0.68, y: w / 2 - r * 0.68, w: r * 1.36, h: r * 1.36 },
+    };
+  },
+  heart: (w, h) => {
+    const d = `M${w / 2} ${h * 0.94}C${w * 0.08} ${h * 0.64} ${w * 0.01} ${h * 0.36} ${w * 0.1} ${h * 0.2}C${w * 0.2} ${h * 0.03} ${w * 0.44} ${h * 0.03} ${w / 2} ${h * 0.24}C${w * 0.56} ${h * 0.03} ${w * 0.8} ${h * 0.03} ${w * 0.9} ${h * 0.2}C${w * 0.99} ${h * 0.36} ${w * 0.92} ${h * 0.64} ${w / 2} ${h * 0.94}Z`;
+    return { svg: pathOutline(d), ins: { x: w * 0.2, y: h * 0.22, w: w * 0.6, h: h * 0.42 } };
+  },
+  bubble: (w, h) => {
+    const r = 7, b = h - 9;
+    const d = `M${r + 1} 1H${w - r - 1}Q${w - 1} 1 ${w - 1} ${r + 1}V${b - r}Q${w - 1} ${b} ${w - r - 1} ${b}H${w * 0.4}L${w * 0.26} ${h - 1}L${w * 0.3} ${b}H${r + 1}Q1 ${b} 1 ${b - r}V${r + 1}Q1 1 ${r + 1} 1Z`;
+    return { svg: pathOutline(d), ins: { x: 5, y: 4, w: w - 10, h: b - 8 } };
+  },
+  bandaid: (w, h) => {
+    const m = SW + 0.3;
+    const body = `<rect x="${m}" y="${m}" width="${w - 2 * m}" height="${h - 2 * m}" rx="${(h - 2 * m) / 2}"/>`;
+    const dots = (x0: number) => [0, 1, 2].map((r) => [0, 1, 2].map((c2) => `<circle cx="${x0 + c2 * 2.6}" cy="${h / 2 - 2.6 + r * 2.6}" r=".55" fill="#111"/>`).join('')).join('');
+    return {
+      svg: unionOutline([[body, '#F6D7B8']]) +
+        `<rect x="${w * 0.3}" y="${m + 0.6}" width="${w * 0.4}" height="${h - 2 * m - 1.2}" fill="#fff" stroke="#111" stroke-width="${SW * 0.7}"/>` + dots(w * 0.08) + dots(w * 0.8) ,
+      ins: { x: w * 0.3 + 1.2, y: m + 2, w: w * 0.4 - 2.4, h: h - 2 * m - 4 },
+    };
+  },
+  pill: (w, h, c1, _c2, seed) => {
+    const m = SW + 0.3;
+    const id = `pc${seed}`;
+    const cap = `<rect x="${m}" y="${m}" width="${w - 2 * m}" height="${h - 2 * m}" rx="${(h - 2 * m) / 2}"/>`;
+    return {
+      svg: `<defs><clipPath id="${id}">${cap}</clipPath></defs>${unionOutline([[cap, '#fff']])}<rect x="0" y="0" width="${w * 0.3}" height="${h}" fill="${c1}" clip-path="url(#${id})"/><path d="M${w * 0.3} ${m}V${h - m}" stroke="#111" stroke-width="${SW * 0.7}"/>`,
+      ins: { x: w * 0.33, y: 3, w: w * 0.62, h: h - 6 },
+    };
+  },
+  drop: (w, h) => {
+    const d = `M${w / 2} 1C${w * 0.5} ${h * 0.2} ${w - 1} ${h * 0.42} ${w - 1} ${h * 0.66}C${w - 1} ${h * 0.88} ${w * 0.76} ${h - 1} ${w / 2} ${h - 1}C${w * 0.24} ${h - 1} 1 ${h * 0.88} 1 ${h * 0.66}C1 ${h * 0.42} ${w * 0.5} ${h * 0.2} ${w / 2} 1Z`;
+    return { svg: pathOutline(d), ins: { x: w * 0.18, y: h * 0.4, w: w * 0.64, h: h * 0.44 } };
+  },
+  cloud: (w, h) => {
+    const base = `<rect x="${w * 0.08}" y="${h * 0.5}" width="${w * 0.84}" height="${h * 0.42}" rx="${h * 0.21}"/>`;
+    const c = (cx: number, cy: number, r: number) => `<circle cx="${cx}" cy="${cy}" r="${r}"/>`;
+    return {
+      svg: unionOutline([[base, '#fff'], [c(w * 0.3, h * 0.52, h * 0.24), '#fff'], [c(w * 0.5, h * 0.4, h * 0.3), '#fff'], [c(w * 0.7, h * 0.5, h * 0.25), '#fff']]),
+      ins: { x: w * 0.2, y: h * 0.3, w: w * 0.6, h: h * 0.52 },
+    };
+  },
+  balloon: (w, h, c1, c2) => {
+    const m = SW + 0.3;
+    const ell = `<ellipse cx="${w / 2}" cy="${h * 0.4}" rx="${w / 2 - m}" ry="${h * 0.4 - m}"/>`;
+    const knot = poly([[w / 2 - 2.4, h * 0.82], [w / 2 + 2.4, h * 0.82], [w / 2, h * 0.78]]);
+    return {
+      svg: unionOutline([[ell, '#fff'], [knot, c1]]) + `<path d="M${w / 2} ${h * 0.82}C${w * 0.34} ${h * 0.88} ${w * 0.66} ${h * 0.92} ${w / 2} ${h - 1.2}" fill="none" stroke="#111" stroke-width="${SW * 0.8}" stroke-linecap="round"/><ellipse cx="${w / 2}" cy="${h * 0.4}" rx="${w / 2 - m - 1.6}" ry="${h * 0.4 - m - 1.6}" fill="none" stroke="${c2}" stroke-width="1.2"/>`,
+      ins: { x: w * 0.2, y: h * 0.2, w: w * 0.6, h: h * 0.4 },
+    };
+  },
+};
+
+export const isDieShape = (shape: string): boolean => shape in DIE;
 
 export function renderCard(c: Chupar, imgBase = '', name = '', values: string[] = []): string {
   const base: ChuparPrint = c.print ?? { shape: 'card', layout: 'center', palette: 'cream', motif: 'star', font: 'rubik', text: c.title };
@@ -195,7 +276,7 @@ ${sender ? `<div style="font-family:'Heebo',sans-serif;font-weight:500;font-size
 ${strip('left')}${strip('right')}
 <div style="position:absolute;left:8mm;right:8mm;top:1.6mm;bottom:1.6mm;border:.35mm solid #111;background:#FFF6DA"></div>
 <div style="position:absolute;left:8mm;top:1.6mm;bottom:1.6mm;width:23mm;background:#E0353B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1mm;border-inline-end:.5mm dashed #fff;box-sizing:border-box">
-${nitzotzBadge('position:relative;top:0;left:0', 5)}<div style="width:13mm;height:13mm">${pop}</div>
+<div style="width:13mm;height:13mm">${pop}</div>
 <div style="color:#fff;font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.6mm;line-height:1">כרטיס אחד</div></div>
 <div style="position:absolute;left:31mm;right:9mm;top:2mm;bottom:2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
 <div style="font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.4mm;line-height:1;letter-spacing:.06em">★ הקרנה מיוחדת ★</div>
@@ -215,7 +296,7 @@ ${nitzotzBadge('position:relative;top:0;left:0', 5)}<div style="width:13mm;heigh
       : `<span style="display:inline-block;min-width:${tfs * 2.6}mm;height:${tfs * 0.8}mm;border-bottom:${Math.max(.7, tfs * 0.09)}mm dotted #404040;vertical-align:baseline"></span>`;
     const chipCss = (bg: string, fg = '#111') => `background:${bg};color:${fg};font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.6mm;line-height:1;padding:.5mm 1.8mm .8mm;`;
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;">
-<div style="position:absolute;inset:1.8mm;border:.3mm solid #111;pointer-events:none"></div>${nitzotzBadge('top:.6mm;right:.8mm', 5.6)}
+<div style="position:absolute;inset:1.8mm;border:.3mm solid #111;pointer-events:none"></div>
 <div style="position:absolute;left:0;top:0;width:36mm;height:${h}mm">
 <svg viewBox="0 0 120 100" style="position:absolute;inset:0;width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M10 34c-2-16 16-26 34-20 14-8 34 0 38 18 14 6 24 22 12 38-8 12-22 12-30 8-4 14-24 22-38 12C8 78 2 60 10 34z" fill="#93A683"/></svg>
 <div style="position:absolute;left:7mm;top:5mm;width:22mm;height:22mm;background:#4A5D8F;transform:rotate(14deg)"></div>
@@ -234,127 +315,90 @@ ${nitzotzBadge('position:relative;top:0;left:0', 5)}<div style="width:13mm;heigh
   }
 
   const [f1, f2] = FLAT[pr.palette] ?? FLAT.cream;
-  const p: Palette = { bg: '#fff', fg: '#222', acc: f1, acc2: f2 };
-  const titleFont = pr.font === 'amatic' || pr.font === 'karantina' ? "'Secular One', 'Rubik', sans-serif" : pr.font === 'suez' ? "'Secular One', 'Rubik', sans-serif" : "'Rubik', sans-serif";
-  const titleWeight = titleFont.includes('Rubik') && !titleFont.includes('Secular') ? 900 : 400;
+  const ip: Palette = { bg: '#fff', fg: '#111', acc: f1, acc2: f2 };
+  const titleFont = "'Secular One', 'Rubik', sans-serif";
   const hand = "'Amatic SC', 'Heebo', cursive";
   const text = esc(pr.text).replace(/\n/g, '<br>');
-  const len = pr.text.length;
   const isPoem = pr.layout === 'poem';
-
   const subParts = (pr.sub ?? '').split(/\s*·\s*|\n/).map((x) => x.trim()).filter(Boolean);
   const asChips = !isPoem && subParts.length >= 2 && subParts.every((x) => x.length <= 24 && !/_/.test(x));
-
-  const area = w * h;
-  let fs = len < 24 ? 8.2 : len < 48 ? 6.6 : len < 90 ? 5.2 : len < 160 ? 4 : 3.2;
-  fs = Math.min(fs, Math.sqrt(area) / 6);
-  if (isPoem) fs = Math.min(fs, 3.9);
-  const sideMotif = pr.layout === 'split' || pr.layout === 'ticket';
-  const corner = hh % 2 === 0 ? 'left' : 'right';
-  const horiz = w / h >= 1.45;
-  const mSize = sideMotif ? Math.min(w, h) * 0.62 : horiz ? h * 0.58 : Math.min(w, h) * 0.4;
-  const reserve = mSize * 0.86 + 1.5;
-  const padBottom = sideMotif || horiz ? 5 : Math.max(5, reserve);
-  const padL = !sideMotif && horiz && corner === 'left' ? reserve : 8.5;
-  const padR = !sideMotif && horiz && corner === 'right' ? reserve : 8.5;
-  const centerPad = `padding:4mm ${padR}mm ${padBottom}mm ${padL}mm;`;
-  const usableW = (sideMotif ? w * 0.62 : w - padL - padR) * (pr.layout === 'label' ? 0.95 : 1);
-  const motifH = sideMotif || isPoem ? 0 : 0;
-  const chipRows = asChips ? Math.ceil(subParts.length / 2) : 0;
-  const usableH = h - 4 - padBottom - 2 - motifH - chipRows * 7;
-  const countLines = (t: string, size: number) => t.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * size * 0.56) / usableW)), 0);
   const subText = asChips ? '' : (pr.sub ?? '');
-  const fits = (size: number) => {
-    const subSize = Math.max(size * 0.85, 4.4);
-    const subH = subText ? countLines(subText, subSize * 0.6) * subSize * 1.0 + 1.5 : 0;
-    return countLines(pr.text, size) * size * 1.2 + subH <= usableH;
+  const icon = (size: number) => `<div style="width:${size}mm;height:${size}mm;flex:none"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif(pr.motif, ip)}</svg></div>`;
+
+  // התאמת גודל כתב לשטח פנוי
+  const fitFs = (uw: number, uh: number, maxFs: number): number => {
+    const lines = (t: string, size: number) => t.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * size * 0.56) / uw)), 0);
+    const chipRows = asChips ? Math.ceil((subParts.reduce((n, x) => n + x.length + 3, 0) * 4.2 * 0.5) / uw) : 0;
+    let fs = maxFs;
+    const fits = (size: number) => {
+      const subSize = Math.max(size * 0.85, 4.2);
+      const subH = subText ? lines(subText, subSize * 0.62) * subSize * 1.05 + 1.2 : 0;
+      return lines(pr.text, size) * size * 1.18 + subH + chipRows * 6.2 + (asChips || subText ? 2.2 : 0) <= uh;
+    };
+    while (fs > 2.3 && !fits(fs)) fs -= 0.25;
+    return fs;
   };
-  while (fs > 2.3 && !fits(fs)) fs -= 0.25;
-  let handPoem = 0;
-  if (isPoem) {
-    const subLines = pr.sub ? 1.4 : 0;
-    const pw = w - padL - padR - 2;
-    const ph = h - 4 - padBottom - 2;
-    handPoem = 7.5;
-    const need = (sz: number) => pr.text.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * sz * 0.36) / pw)), 0) * sz * 1.05 + subLines * sz;
-    while (handPoem > 3 && need(handPoem) > ph) handPoem -= 0.2;
-  }
+  const baseMax = (n: number) => (n < 24 ? 8.2 : n < 48 ? 6.6 : n < 90 ? 5.2 : n < 160 ? 4 : 3.2);
 
-  const svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif(pr.motif, p)}</svg>`;
-  const blob = `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%"><path d="${BLOBS[hh % BLOBS.length]}" fill="${f2}" opacity=".42"/></svg>`;
-  // "סטיקר": כתם + ריבועים חופפים + עיגול לבן עם האייקון — בהשראת הקומפוזיציה של העיצובים המקוריים
-  const deep = hh % 3 === 0 ? '#93A683' : '#4A5D8F';
-  const cluster = (rot: number) => `${blob}
-<div style="position:absolute;left:12%;top:8%;width:60%;height:60%;background:${deep};transform:rotate(${rot + 12}deg)"></div>
-<div style="position:absolute;left:38%;top:34%;width:44%;height:44%;background:#404040;transform:rotate(${rot - 8}deg)"></div>
-<div style="position:absolute;left:14%;top:14%;width:66%;height:66%;border-radius:50%;background:#fff;border:.3mm solid #111;box-sizing:border-box;padding:11%;transform:rotate(${rot}deg)">${svg}</div>`;
-  const peek = `position:absolute;bottom:${-mSize * 0.14}mm;${corner}:${-mSize * 0.14}mm;width:${mSize}mm;height:${mSize}mm;`;
-  const motifPeek = `<div style="${peek}">${cluster(corner === 'left' ? -8 : 8)}</div>`;
-  const HL = ['#FFEB00', '#7EE06A', '#F27FE0', '#FF9500'];
-  const hl = HL[hh % HL.length];
-  const titleHtml = `<span style="background-image:linear-gradient(transparent 60%,${hl} 60%,${hl} 92%,transparent 92%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 1.2mm">${text}</span>`;
-  const logoPos = `bottom:.7mm;${corner === 'left' ? 'right' : 'left'}:.9mm`;
-  const badge = nitzotzBadge(logoPos);
-  const brand = `<div style="position:absolute;bottom:.35mm;inset-inline:0;text-align:center;font-family:'Heebo',sans-serif;font-size:1.7mm;opacity:.5">המדריך למדריך</div>${badge}`;
-  const rule = `<div style="position:relative;height:${Math.max(.9, fs * 0.12)}mm;background:#404040;border-radius:1mm;width:70%;margin:${fs * 0.22}mm auto ${fs * 0.28}mm"></div>`;
-
-  const chips = asChips
-    ? `<div style="position:relative;display:flex;flex-wrap:wrap;gap:1.4mm;justify-content:center;margin-top:1.4mm">${subParts.map((t, i) => {
+  const chipsHtml = (fs: number) => asChips
+    ? `<div style="display:flex;flex-wrap:wrap;gap:1.3mm;justify-content:center;margin-top:1.2mm">${subParts.map((t, i) => {
         const col = CHIP_COLORS[(i + hh) % CHIP_COLORS.length];
         const dark = col === '#C137D6';
-        return `<span style="background:${col};color:${dark ? '#fff' : '#111'};font-family:${hand};font-weight:700;font-size:${Math.max(4.4, fs * 0.8)}mm;line-height:1;padding:.6mm 2mm .8mm;border-radius:.9mm;transform:rotate(${i % 2 === 0 ? -2 : 2}deg);display:inline-block">${esc(t)}</span>`;
+        return `<span style="background:${col};color:${dark ? '#fff' : '#111'};font-family:${hand};font-weight:700;font-size:${Math.max(4.2, fs * 0.8)}mm;line-height:1;padding:.5mm 1.8mm .8mm">${esc(t)}</span>`;
       }).join('')}</div>`
     : '';
-  const handSub = subText
-    ? `<div style="position:relative;font-family:${hand};font-weight:700;font-size:${Math.max(fs * 0.85, 4.4)}mm;line-height:1;margin-top:1.2mm">${esc(subText).replace(/\n/g, '<br>')}</div>`
+  const subHtml = (fs: number) => subText
+    ? `<div style="font-family:${hand};font-weight:700;font-size:${Math.max(fs * 0.85, 4.2)}mm;line-height:1.05;margin-top:1.1mm">${esc(subText).replace(/\n/g, '<br>')}</div>`
     : '';
+  const ruleHtml = (fs: number) => (asChips || subText ? `<div style="height:${Math.max(.8, fs * 0.1)}mm;background:#404040;border-radius:1mm;width:70%;margin:${fs * 0.2}mm auto ${fs * 0.26}mm"></div>` : '');
+  const titleHtml = (fs: number) => `<div style="font-family:${titleFont};font-weight:400;font-size:${fs}mm;line-height:1.12;color:#111">${text}</div>`;
+  const textBlock = (fs: number) => (isPoem
+    ? `<div style="font-family:${hand};font-weight:700;font-size:${fs}mm;line-height:1.05;color:#111">${text}${subText ? `<div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:${Math.max(fs * 0.6, 3)}mm;margin-top:1.4mm">${esc(subText)}</div>` : ''}</div>`
+    : `${titleHtml(fs)}${ruleHtml(fs)}${chipsHtml(fs)}${subHtml(fs)}`);
 
-  const confColors = [...CHIP_COLORS, f1];
-  const confetti = (() => {
-    const items: string[] = [];
-    let seed = hh;
-    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
-    const n = Math.round((w + h) / 9);
-    for (let i = 0; i < n; i++) {
-      const edge = i % 4;
-      const along = rnd();
-      const off = 0.6 + rnd() * 0.9;
-      const pos = edge === 0 ? `top:${off}mm;left:${along * (w - 3)}mm` : edge === 1 ? `bottom:${off}mm;left:${along * (w - 3)}mm` : edge === 2 ? `left:${off}mm;top:${along * (h - 3)}mm` : `right:${off}mm;top:${along * (h - 3)}mm`;
-      const col = confColors[Math.floor(rnd() * confColors.length)];
-      const kind = Math.floor(rnd() * 3);
-      const sz = 1.1 + rnd() * 0.8;
-      const shape = kind === 0 ? `border-radius:50%;background:${col}` : kind === 1 ? `background:${col};transform:rotate(${Math.round(rnd() * 80)}deg)` : `border-left:${sz / 2}mm solid transparent;border-right:${sz / 2}mm solid transparent;border-bottom:${sz}mm solid ${col}`;
-      items.push(`<div style="position:absolute;${pos};width:${kind === 2 ? 0 : sz}mm;height:${kind === 2 ? 0 : sz}mm;${shape}"></div>`);
-    }
-    return items.join('');
-  })();
-  const frame = `position:absolute;inset:2.5mm;border:.4mm solid #111;border-radius:3mm;background:#fff;pointer-events:none;`;
-  const root = `width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:${PASTEL[pr.palette] ?? '#FFF1CC'};color:#111;direction:rtl;text-align:center;`;
-  const titleStyle = `font-family:${titleFont};font-weight:${titleWeight};font-size:${fs}mm;line-height:1.12;`;
-
-  if (isPoem) {
-    return `<div style="${root}display:flex;align-items:center;justify-content:center;${centerPad}"><div style="${frame}"></div>${confetti}${motifPeek}
-<div style="position:relative;font-family:${hand};font-weight:700;font-size:${handPoem}mm;line-height:1.05;color:#111">${text}${subText ? `<div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:${Math.max(handPoem * 0.62, 3)}mm;margin-top:1.4mm">${esc(subText)}</div>` : ''}</div>${brand}</div>`;
+  // כרטיס בצורה גזורה לפי הנושא (סוכריה, לב, בלון...)
+  const dieFn = DIE[pr.shape];
+  if (dieFn) {
+    const d = dieFn(w, h, f1, f2, hh);
+    const maxF = isPoem ? 6.2 : Math.min(baseMax(pr.text.length), Math.min(d.ins.w, d.ins.h) / 3.2);
+    const fs = fitFs(d.ins.w, d.ins.h, maxF);
+    return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:transparent;color:#111;direction:rtl;text-align:center">
+<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:${w}mm;height:${h}mm">${d.svg}</svg>
+<div style="position:absolute;left:${d.ins.x}mm;top:${d.ins.y}mm;width:${d.ins.w}mm;height:${d.ins.h}mm;display:flex;flex-direction:column;align-items:center;justify-content:center">${textBlock(fs)}</div></div>`;
   }
+
+  // כרטיסים מלבניים: רקע לבן, מסגרת שחורה דקה, כיתוב שחור עבה, תוויות צבעוניות שטוחות
+  const frame = `position:absolute;inset:1.6mm;border:.35mm solid #111;pointer-events:none;`;
+  const root = `width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;text-align:center;`;
+  const minSide = Math.min(w, h);
+
   if (pr.layout === 'split') {
-    const side = mSize * 1.05;
-    return `<div style="${root}display:flex;align-items:center;justify-content:space-between;padding:3mm 5mm;"><div style="${frame}"></div>${confetti}
-<div style="position:relative;flex:none;width:${side}mm;height:${side}mm">${cluster(-7)}</div>
-<div style="position:relative;flex:1;padding-inline-start:3mm"><div style="${titleStyle}">${titleHtml}</div>${rule}${chips}${handSub}</div>${brand}</div>`;
+    const side = minSide * 0.6;
+    const uw = w - side - 14;
+    const uh = h - 9;
+    const fs = fitFs(uw, uh, isPoem ? 6 : baseMax(pr.text.length));
+    return `<div style="${root}display:flex;align-items:center;justify-content:space-between;padding:3mm 5.5mm"><div style="${frame}"></div>
+<div style="position:relative">${icon(side)}</div>
+<div style="position:relative;flex:1;padding-inline-start:3mm">${textBlock(fs)}</div></div>`;
   }
   if (pr.layout === 'ticket') {
-    return `<div style="${root}display:flex;align-items:center;padding:2mm 5mm;-webkit-mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 2.4mm at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 2.4mm at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;"><div style="${frame}border-style:dashed"></div>${confetti}
-<div style="position:relative;flex:1;padding-inline-end:3mm"><div style="${titleStyle}">${titleHtml}</div>${chips}${handSub}</div>
-<div style="position:relative;flex:none;width:${h * 0.62}mm;height:${h * 0.62}mm">${cluster(8)}</div>${badge}</div>`;
+    const stub = h * 0.7;
+    const uw = w - stub - 18;
+    const uh = h - 7;
+    const fs = fitFs(uw, uh, baseMax(pr.text.length));
+    return `<div style="${root}display:flex;align-items:center;padding:2mm 5.5mm"><div style="${frame}"></div>
+<div style="position:relative;flex:1;padding-inline-end:3mm">${textBlock(fs)}</div>
+<div style="position:relative;align-self:stretch;border-inline-start:.4mm dashed #111;padding-inline-start:3mm;display:flex;align-items:center">${icon(stub)}</div></div>`;
   }
-  if (pr.layout === 'seal') {
-    return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 5mm;"><div style="${frame}"></div>${confetti}<div style="position:absolute;inset:3.7mm;border:.2mm solid #111;border-radius:2mm;pointer-events:none"></div>
-<div style="width:${Math.min(w, h) * 0.2}mm;height:${Math.min(w, h) * 0.2}mm;margin-bottom:1mm;position:relative">${blob}<div style="position:absolute;inset:0">${svg}</div></div>
-<div style="position:relative;${titleStyle}">${titleHtml}</div>${rule}${chips}${handSub}${brand}</div>`;
-  }
-  // center / label / sign
-  return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;${centerPad}"><div style="${frame}"></div>${confetti}${motifPeek}
-<div style="position:relative;${titleStyle}">${titleHtml}</div>${asChips || subText ? rule : ''}${chips}${handSub}${brand}</div>`;
+  const iconSize = Math.min(minSide * 0.22, 15);
+  const showIcon = !isPoem && minSide >= 40;
+  const uw = w - 15;
+  const uh = h - 9 - (showIcon ? iconSize + 1.5 : 0);
+  const fs = fitFs(uw, uh, isPoem ? 8.6 : baseMax(pr.text.length));
+  const poemIcon = isPoem && minSide >= 40 ? `<div style="position:absolute;bottom:3.4mm;${hh % 2 ? 'left' : 'right'}:3.6mm">${icon(Math.min(minSide * 0.17, 10))}</div>` : '';
+  return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3.4mm 6mm"><div style="${frame}"></div>${poemIcon}
+${showIcon ? `<div style="position:relative;margin-bottom:1.2mm">${icon(iconSize)}</div>` : ''}
+<div style="position:relative;width:100%">${textBlock(fs)}</div></div>`;
 }
 
 // דף A4 עם עותקים רבים של הכרטיס — לגזירה
@@ -381,7 +425,7 @@ export function buildChuparPrintHtml(c: Chupar, pages: number, imgBase: string, 
   .page { width: 194mm; margin: 0 auto 6mm; background: #fff; padding: 0; page-break-after: always; break-after: page; position: relative; min-height: 281mm; }
   .page:last-child { page-break-after: auto; break-after: auto; }
   .grid { display: grid; grid-template-columns: repeat(${cols}, ${shape.w}mm); grid-auto-rows: ${shape.h}mm; gap: ${gap}mm; justify-content: center; }
-  .cell { outline: .25mm dashed #888; outline-offset: ${gap / 2}mm; }
+  .cell { ${isDieShape(c.print?.shape ?? 'card') ? '' : `outline: .25mm dashed #888; outline-offset: ${gap / 2}mm;`} }
   .foot { position: absolute; bottom: 0; inset-inline: 0; text-align: center; font-size: 8px; color: #999; }
   @media print { body { background: #fff; } .page { margin: 0; } }
 </style>
