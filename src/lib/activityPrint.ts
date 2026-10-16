@@ -4,6 +4,10 @@ import type { Activity, FlowStep } from '../data/types';
 import type { Chupar } from '../data/types';
 import { escapeHtml, mascotSvg } from './printFile';
 import { FONT_IMPORT, SHAPES, renderCard } from './chuparDesign';
+import { quickGames } from '../data/quickGames';
+import { bridgeCandidates, fillTopic, isSensitive } from '../data/gameBridges';
+import { timedSteps } from './timePlan';
+import { getChupar } from '../data/chuparim';
 
 const PALETTE = ['#C85B2A', '#A64D79', '#356E9A', '#5E7B2F', '#2F7D6A', '#6B5AA6', '#8A4D2A', '#B17824'];
 
@@ -207,6 +211,10 @@ const CSS = `
   .linkrow span { color: var(--faint); font-size: 11px; margin-inline-start: 6px; word-break: break-all; }
   .note { color: var(--faint); font-size: 12px; }
   .guide li { margin-bottom: 5px; }
+  .ideas { margin-top: 16px; border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; font-size: 13px; break-inside: avoid; }
+  .ideas h3 { font-family: 'Rubik', sans-serif; font-size: 15px; margin: 0 0 6px; }
+  .ideas .g { margin: 8px 0 0; }
+  .ideas .how { background: #FBF0CC; border-radius: 8px; padding: 4px 10px; margin-top: 3px; }
   .tipbox { margin-top: 14px; background: #FBF0CC; border: 1px solid #E8C86A; border-radius: 14px; padding: 11px 16px; font-size: 13px; break-inside: avoid; }
   .src { margin: 10px 0 0; font-size: 12.5px; }
   .page { break-before: page; page-break-before: always; }
@@ -239,6 +247,34 @@ const CSS = `
     @bottom-left { content: 'עמוד ' counter(page); font: 10px 'Heebo', sans-serif; color: #8C7F6B; } }
   @media print { .doc { max-width: none; padding: 0; } .crumbs { margin-top: 0; } }
 `;
+
+// "לפי הזמן שיש": על מה אפשר לוותר, ואילו משחקים אפשר להוסיף ואיך מקשרים אותם לנושא (כמו שמופיע בעמוד הפעולה)
+function renderIdeas(a: Activity): string {
+  const steps = timedSteps(a);
+  const skippable = (steps ?? []).filter((t) => !t.core && t.minutes > 0);
+  const byId = new Map(quickGames.map((g) => [g.id, g] as const));
+  const noEquip = (needs: string) => needs === 'ללא' || needs === 'אין';
+  const sensitive = isSensitive(a);
+  const shabbat = a.shabbat === 'שבת';
+  const seen = new Set<string>();
+  const games = sensitive ? [] : bridgeCandidates(a)
+    .map((c) => ({ ...c, g: byId.get(c.game.id) }))
+    .filter((c): c is typeof c & { g: NonNullable<typeof c.g> } => !!c.g)
+    .filter((c) => (shabbat ? noEquip(c.g.needs) : true))
+    .filter((c) => (seen.has(c.g.id) ? false : (seen.add(c.g.id), true)))
+    .slice(0, 6);
+  if (!skippable.length && !games.length && !sensitive) return '';
+  const strip = (l: string) => l.replace(/\s*\(\d+(?:\s*[–-]\s*\d+)?\s*דק[׳']*\)/, '');
+  const skip = skippable.length
+    ? `<p><b>אין הרבה זמן?</b> אפשר לוותר על: ${skippable.map((t) => `${escapeHtml(strip(t.step.label))} (${t.minutes} דק׳)`).join(' · ')}.</p>`
+    : '';
+  const more = sensitive
+    ? '<p><b>יש עוד זמן?</b> זו פעולה על זיכרון, ולכן לא מציעים להוסיף משחק. עדיף להאריך את השיחה, לתת לכל חניכה לשתף בשקט, או לקרוא יחד קטע נוסף.</p>'
+    : games.length
+      ? `<p><b>יש עוד זמן?</b> אפשר להוסיף משחק מוכר שקשור לנושא${shabbat ? ' (בלי ציוד, מתאים לשבת)' : ''}:</p>${games.map((c) => `<div class="g"><b>${escapeHtml(c.g.name)}</b> <span style="color:#8C7F6B">· ${escapeHtml(c.g.kind)} · ${escapeHtml(c.g.players)}${c.theme ? ` · מתאים ל${escapeHtml(c.theme)}` : ''}</span><div>${escapeHtml(c.g.description)}</div><div class="how"><b>איך מקשרים:</b> ${escapeHtml(fillTopic(c.game.how, a))}</div></div>`).join('')}`
+      : '';
+  return `<div class="ideas"><h3>לפי הזמן שיש</h3>${skip}${more}</div>`;
+}
 
 function renderChuparPage(c: Chupar, vals: string[]): string {
   const shape = SHAPES[c.print?.shape ?? 'card'] ?? SHAPES.card;
@@ -289,6 +325,7 @@ export function renderActivityMain(a: Activity, categoryLabel: string, badge: st
   ${a.sourceLink ? `<p class="src"><b>מקור חיצוני:</b> ${escapeHtml(a.sourceLink.title)} <span dir="ltr">${escapeHtml(a.sourceLink.url)}</span></p>` : ''}
   ${guideItems.length ? `<h2 class="sec" style="margin-top:20px">הסבר למדריך</h2><ul class="guide">${guideItems.map((g) => `<li>${inline(g)}</li>`).join('')}</ul>` : ''}
   ${a.tip ? `<div class="tipbox"><b>טיפ למדריך:</b> ${escapeHtml(a.tip)}</div>` : ''}
+  ${renderIdeas(a)}
   ${appendices}
 </main>`;
 }
@@ -334,6 +371,7 @@ export interface BinderEntry {
   categoryLabel?: string;
   badge?: string;
   generic?: { sub: string; text: string; link?: string };
+  chupar?: Chupar;
 }
 
 export function buildCombinedPrintHtml(docTitle: string, intro: string, entries: BinderEntry[]): string {
@@ -344,9 +382,12 @@ export function buildCombinedPrintHtml(docTitle: string, intro: string, entries:
     .join('');
   const cover = `<main class="doc cover"><h1>${escapeHtml(docTitle)}</h1><p class="desc">${escapeHtml(intro)}</p><ul class="toc">${toc}</ul></main>`;
   const items = entries.map((e) => {
-    if (e.activity) return `<div class="page">${renderActivityMain(e.activity, e.categoryLabel ?? e.section, e.badge ?? e.section)}</div>`;
+    if (e.activity) {
+      const chs = (e.activity.chuparIds ?? []).map((cid) => getChupar(cid)).filter((c): c is Chupar => !!c);
+      return `<div class="page">${renderActivityMain(e.activity, e.categoryLabel ?? e.section, e.badge ?? e.section, chs.length ? { chuparim: chs, vals: [] } : undefined)}</div>`;
+    }
     const g = e.generic!;
-    return `<main class="doc item-generic page"><div class="crumbs">${escapeHtml(e.section)}</div><h1>${escapeHtml(e.title)}</h1><p class="desc">${escapeHtml(g.sub)}</p><div class="textcard">${renderBody(g.text)}</div>${g.link ? `<p class="src"><span dir="ltr">${escapeHtml(g.link)}</span></p>` : ''}</main>`;
+    return `<main class="doc item-generic page"><div class="crumbs">${escapeHtml(e.section)}</div><h1>${escapeHtml(e.title)}</h1><p class="desc">${escapeHtml(g.sub)}</p><div class="textcard">${renderBody(g.text)}</div>${g.link ? `<p class="src"><span dir="ltr">${escapeHtml(g.link)}</span></p>` : ''}</main>${e.chupar ? renderChuparPage(e.chupar, []) : ''}`;
   }).join('\n');
   return wrapDoc(docTitle, docTitle, cover + items);
 }
