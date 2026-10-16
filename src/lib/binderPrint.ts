@@ -21,7 +21,7 @@ export function entriesForKeys(keys: string[]): BinderEntry[] {
       if (r) out.push({ section: 'קטעי קריאה', title: r.title, generic: { sub: `${r.ageLabel} · מקור: ${r.source}`, text: `${r.text}\n\nאיך משתמשים: ${r.howToUse}`, link: r.sourceLink?.url } });
     } else if (kind === 'staff-study') {
       const s = staffStudy.find((x) => x.id === id);
-      if (s) out.push({ section: 'לימוד צוות', title: s.title, generic: { sub: `${s.topic} · ${s.duration} דק׳`, text: `פתיחה: ${s.opening}\n\n${s.content}\n\nשאלות לדיון:\n${s.discussion.map((q) => `• ${q}`).join('\n')}\n\nלקחת מזה: ${s.takeaway}${s.explanation ? `\n\nהסבר מעמיק (אופציונלי):\n${s.explanation}` : ''}`, link: s.sourceLink?.url } });
+      if (s) out.push({ section: 'לימוד צוות', title: s.title, generic: { sub: `${s.topic} · ${s.duration} דק׳`, text: `${s.opening?.trim() ? `פתיחה: ${s.opening}\n\n` : ''}${s.content}\n\nשאלות לדיון:\n${s.discussion.map((q) => `• ${q}`).join('\n')}\n\nלקחת מזה: ${s.takeaway}${s.explanation ? `\n\nהסבר מעמיק (אופציונלי):\n${s.explanation}` : ''}`, link: s.sourceLink?.url } });
     } else if (kind === 'chupar') {
       const c = chuparim.find((x) => x.id === id);
       if (c) out.push({ section: 'צ׳ופרים', title: c.title, generic: { sub: `${c.kind} · ${c.prepTime} · תקציב ${c.budget}`, text: `${c.description}\n\nטיפ: ${c.tip}` } });

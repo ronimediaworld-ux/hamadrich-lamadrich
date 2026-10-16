@@ -71,9 +71,11 @@ export function StaffStudyDetail() {
             </Section>
           )}
 
-          <Section label="פתיחה">
-            <p style={{ margin: 0 }}>{study.opening}</p>
-          </Section>
+          {study.opening?.trim() && (
+            <Section label="פתיחה">
+              <p style={{ margin: 0 }}>{study.opening}</p>
+            </Section>
+          )}
 
           <Section label="תוכן המפגש">
             <p style={{ margin: 0 }}>{study.content}</p>
