@@ -17,7 +17,7 @@ export const PALETTES: Record<string, Palette> = {
   cream: { bg: '#FFF8E7', fg: '#3B2A14', acc: '#E05D2D', acc2: '#F2B84B' },
 };
 
-export const FONT_IMPORT = "https://fonts.googleapis.com/css2?family=Rubik:wght@500;800;900&family=Heebo:wght@400;700&family=Suez+One&family=Secular+One&family=Amatic+SC:wght@400;700&family=Karantina:wght@700&display=swap";
+export const FONT_IMPORT = "https://fonts.googleapis.com/css2?family=Rubik:wght@500;800;900&family=Heebo:wght@400;500;700;800&family=Suez+One&family=Secular+One&family=Amatic+SC:wght@400;700&family=Karantina:wght@700&family=Frank+Ruhl+Libre:wght@700;900&family=Varela+Round&family=Gveret+Levin&family=Playpen+Sans+Hebrew:wght@700;800&family=Alef:wght@700&family=David+Libre:wght@700&display=swap";
 
 // גודל כרטיס במ"מ לכל צורה
 export const SHAPES: Record<string, { w: number; h: number }> = {
@@ -40,7 +40,7 @@ export const SHAPES: Record<string, { w: number; h: number }> = {
   bubble: { w: 84, h: 56 },
   bandaid: { w: 92, h: 38 },
   pill: { w: 92, h: 36 },
-  drop: { w: 50, h: 66 },
+  drop: { w: 60, h: 78 },
   cloud: { w: 84, h: 56 },
   balloon: { w: 54, h: 74 },
 };
@@ -151,6 +151,17 @@ function fillBlanks(strs: [string, string], values: string[]): [string, string] 
   });
   return [f(strs[0]), f(strs[1])];
 }
+
+// זוגות פונטים: כל "בגד" טיפוגרפי נבחר לפי שדה font של הצ׳ופר (ולפעמים לפי סוג הכרטיס)
+const TYPE: Record<string, { family: string; weight: number; scale: number }> = {
+  suez: { family: "'Suez One','Frank Ruhl Libre',serif", weight: 400, scale: 1 },
+  secular: { family: "'Secular One','Rubik',sans-serif", weight: 400, scale: 1 },
+  rubik: { family: "'Rubik',sans-serif", weight: 900, scale: 0.96 },
+  amatic: { family: "'Gveret Levin','Amatic SC',cursive", weight: 400, scale: 1.05 },
+  karantina: { family: "'Karantina','Secular One',sans-serif", weight: 700, scale: 1.2 },
+  heebo: { family: "'Heebo',sans-serif", weight: 800, scale: 0.98 },
+  frank: { family: "'Frank Ruhl Libre',serif", weight: 900, scale: 0.98 },
+};
 
 // ---- צורות גזורות: הכרטיס עצמו הוא הצורה (קו חיתוך שחור דק) ----
 const SW = 0.5; // עובי קו חיתוך במ"מ
@@ -316,24 +327,31 @@ ${strip('left')}${strip('right')}
 
   const [f1, f2] = FLAT[pr.palette] ?? FLAT.cream;
   const ip: Palette = { bg: '#fff', fg: '#111', acc: f1, acc2: f2 };
-  const titleFont = "'Secular One', 'Rubik', sans-serif";
-  const hand = "'Amatic SC', 'Heebo', cursive";
+  const F = TYPE[pr.font] ?? TYPE.secular;
+  const dieFont = DIE[pr.shape] != null;
+  const isCert = pr.shape === 'cert' || pr.layout === 'seal';
+  const titleFamily = isCert && pr.font === 'secular' ? TYPE.frank.family : F.family;
+  const titleWeight = isCert && pr.font === 'secular' ? TYPE.frank.weight : F.weight;
+  const titleScale = isCert && pr.font === 'secular' ? TYPE.frank.scale : F.scale;
+  const hand = hh % 2 === 0 ? "'Gveret Levin', 'Amatic SC', cursive" : "'Amatic SC', 'Gveret Levin', cursive";
   const text = esc(pr.text).replace(/\n/g, '<br>');
   const isPoem = pr.layout === 'poem';
   const subParts = (pr.sub ?? '').split(/\s*·\s*|\n/).map((x) => x.trim()).filter(Boolean);
   const asChips = !isPoem && subParts.length >= 2 && subParts.every((x) => x.length <= 24 && !/_/.test(x));
   const subText = asChips ? '' : (pr.sub ?? '');
-  const icon = (size: number) => `<div style="width:${size}mm;height:${size}mm;flex:none"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif(pr.motif, ip)}</svg></div>`;
+  const svgIcon = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif(pr.motif, ip)}</svg>`;
+  // סטיקר: עיגול לבן עם קו שחור וצל קשיח
+  const sticker = (size: number) => `<div style="width:${size}mm;height:${size}mm;border-radius:50%;background:#fff;border:.5mm solid #111;box-shadow:.8mm .8mm 0 #111;display:flex;align-items:center;justify-content:center;flex:none;box-sizing:border-box;padding:${size * 0.17}mm">${svgIcon}</div>`;
+  const stripes = `background-color:${f1};background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.3) 0 1.1mm,transparent 1.1mm 2.6mm);`;
 
-  // התאמת גודל כתב לשטח פנוי
   const fitFs = (uw: number, uh: number, maxFs: number): number => {
-    const lines = (t: string, size: number) => t.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * size * 0.56) / uw)), 0);
+    const lines = (t: string, size: number) => t.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * size * titleScale * 0.56) / uw)), 0);
     const chipRows = asChips ? Math.ceil((subParts.reduce((n, x) => n + x.length + 3, 0) * 4.2 * 0.5) / uw) : 0;
     let fs = maxFs;
     const fits = (size: number) => {
       const subSize = Math.max(size * 0.85, 4.2);
-      const subH = subText ? lines(subText, subSize * 0.62) * subSize * 1.05 + 1.2 : 0;
-      return lines(pr.text, size) * size * 1.18 + subH + chipRows * 6.2 + (asChips || subText ? 2.2 : 0) <= uh;
+      const subH = subText ? lines(subText, subSize * 0.8) * subSize * 1.18 + 1.6 : 0;
+      return lines(pr.text, size) * size * titleScale * 1.2 + subH + chipRows * 6.8 + (asChips || subText ? 3 : 0) <= uh;
     };
     while (fs > 2.3 && !fits(fs)) fs -= 0.25;
     return fs;
@@ -341,24 +359,26 @@ ${strip('left')}${strip('right')}
   const baseMax = (n: number) => (n < 24 ? 8.2 : n < 48 ? 6.6 : n < 90 ? 5.2 : n < 160 ? 4 : 3.2);
 
   const chipsHtml = (fs: number) => asChips
-    ? `<div style="display:flex;flex-wrap:wrap;gap:1.3mm;justify-content:center;margin-top:1.2mm">${subParts.map((t, i) => {
+    ? `<div style="display:flex;flex-wrap:wrap;gap:1.3mm;justify-content:center;margin-top:1.4mm">${subParts.map((t, i) => {
         const col = CHIP_COLORS[(i + hh) % CHIP_COLORS.length];
         const dark = col === '#C137D6';
-        return `<span style="background:${col};color:${dark ? '#fff' : '#111'};font-family:${hand};font-weight:700;font-size:${Math.max(4.2, fs * 0.8)}mm;line-height:1;padding:.5mm 1.8mm .8mm">${esc(t)}</span>`;
+        return `<span style="background:${col};color:${dark ? '#fff' : '#111'};font-family:${hand};font-weight:700;font-size:${Math.max(4.2, fs * 0.8)}mm;line-height:1;padding:.55mm 2mm .85mm;border:.3mm solid #111;box-shadow:.4mm .4mm 0 #111">${esc(t)}</span>`;
       }).join('')}</div>`
     : '';
   const subHtml = (fs: number) => subText
-    ? `<div style="font-family:${hand};font-weight:700;font-size:${Math.max(fs * 0.85, 4.2)}mm;line-height:1.05;margin-top:1.1mm">${esc(subText).replace(/\n/g, '<br>')}</div>`
+    ? `<div style="font-family:${hand};font-weight:700;font-size:${Math.max(fs * 0.9, 4.4)}mm;line-height:1.05;margin-top:1.1mm;color:#222">${esc(subText).replace(/\n/g, '<br>')}</div>`
     : '';
-  const ruleHtml = (fs: number) => (asChips || subText ? `<div style="height:${Math.max(.8, fs * 0.1)}mm;background:#404040;border-radius:1mm;width:70%;margin:${fs * 0.2}mm auto ${fs * 0.26}mm"></div>` : '');
-  const titleHtml = (fs: number) => `<div style="font-family:${titleFont};font-weight:400;font-size:${fs}mm;line-height:1.12;color:#111">${text}</div>`;
+  const ruleHtml = (fs: number) => (asChips || subText
+    ? `<div style="height:${Math.max(.9, fs * 0.11)}mm;background:${f1};border:.3mm solid #111;border-radius:1mm;width:${Math.min(22, 8 + fs * 1.6)}mm;margin:${fs * 0.22}mm auto ${fs * 0.26}mm"></div>`
+    : '');
+  const titleHtml = (fs: number) => `<div style="font-family:${titleFamily};font-weight:${titleWeight};font-size:${fs * titleScale}mm;line-height:1.1;color:#111">${text}</div>`;
   const textBlock = (fs: number) => (isPoem
     ? `<div style="font-family:${hand};font-weight:700;font-size:${fs}mm;line-height:1.05;color:#111">${text}${subText ? `<div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:${Math.max(fs * 0.6, 3)}mm;margin-top:1.4mm">${esc(subText)}</div>` : ''}</div>`
     : `${titleHtml(fs)}${ruleHtml(fs)}${chipsHtml(fs)}${subHtml(fs)}`);
 
   // כרטיס בצורה גזורה לפי הנושא (סוכריה, לב, בלון...)
   const dieFn = DIE[pr.shape];
-  if (dieFn) {
+  if (dieFn && dieFont) {
     const d = dieFn(w, h, f1, f2, hh);
     const maxF = isPoem ? 6.2 : Math.min(baseMax(pr.text.length), Math.min(d.ins.w, d.ins.h) / 3.2);
     const fs = fitFs(d.ins.w, d.ins.h, maxF);
@@ -367,38 +387,65 @@ ${strip('left')}${strip('right')}
 <div style="position:absolute;left:${d.ins.x}mm;top:${d.ins.y}mm;width:${d.ins.w}mm;height:${d.ins.h}mm;display:flex;flex-direction:column;align-items:center;justify-content:center">${textBlock(fs)}</div></div>`;
   }
 
-  // כרטיסים מלבניים: רקע לבן, מסגרת שחורה דקה, כיתוב שחור עבה, תוויות צבעוניות שטוחות
-  const frame = `position:absolute;inset:1.6mm;border:.35mm solid #111;pointer-events:none;`;
-  const root = `width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;text-align:center;`;
+  // כרטיסים מלבניים: "פוסטר" עם מסגרת שחורה וצל קשיח, וארבע תבניות הרכב
   const minSide = Math.min(w, h);
+  const root = `width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;text-align:center;`;
+  const shadow = `<div style="position:absolute;left:2.9mm;top:2.9mm;right:1.3mm;bottom:1.3mm;background:#111"></div>`;
+  const pBox = `position:absolute;left:1.3mm;top:1.3mm;right:2.9mm;bottom:2.9mm;background:#fff;border:.5mm solid #111;overflow:hidden;box-sizing:border-box;`;
+  const PW = w - 4.2 - 1; // רוחב פנימי של הפוסטר במ"מ (בערך)
+  const PH = h - 4.2 - 1;
 
-  if (pr.layout === 'split') {
-    const side = minSide * 0.6;
-    const uw = w - side - 14;
-    const uh = h - 9;
-    const fs = fitFs(uw, uh, isPoem ? 6 : baseMax(pr.text.length));
-    return `<div style="${root}display:flex;align-items:center;justify-content:space-between;padding:3mm 5.5mm"><div style="${frame}"></div>
-<div style="position:relative">${icon(side)}</div>
-<div style="position:relative;flex:1;padding-inline-start:3mm">${textBlock(fs)}</div></div>`;
+  let tpl: 'banner' | 'side' | 'badge' | 'frame';
+  if (pr.layout === 'poem') tpl = 'frame';
+  else if (pr.layout === 'split' || (pr.layout === 'label' && w >= 56)) tpl = 'side';
+  else if (pr.layout === 'seal') tpl = 'badge';
+  else if (pr.layout === 'sign') tpl = w < 52 ? 'badge' : 'banner';
+  else if (w < 50) tpl = hh % 2 ? 'badge' : 'frame';
+  else tpl = (['banner', 'badge', 'frame'] as const)[hh % 3];
+  if (pr.layout === 'ticket') tpl = 'side';
+
+  if (tpl === 'side') {
+    const panelW = Math.min(PW * 0.34, 30);
+    const uw = PW - panelW - 8;
+    const uh = PH - 6;
+    const fs = fitFs(uw, uh, isPoem ? 6.4 : baseMax(pr.text.length));
+    const dashed = pr.layout === 'ticket' ? 'border-inline-end:.5mm dashed #111;' : 'border-inline-end:.5mm solid #111;';
+    return `<div style="${root}">${shadow}<div style="${pBox}display:flex;align-items:stretch">
+<div style="${stripes}${dashed}width:${panelW}mm;flex:none;display:flex;align-items:center;justify-content:center">${sticker(Math.min(panelW * 0.78, PH * 0.6))}</div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2mm 3.4mm">${textBlock(fs)}</div></div></div>`;
   }
-  if (pr.layout === 'ticket') {
-    const stub = h * 0.7;
-    const uw = w - stub - 18;
-    const uh = h - 7;
-    const fs = fitFs(uw, uh, baseMax(pr.text.length));
-    return `<div style="${root}display:flex;align-items:center;padding:2mm 5.5mm"><div style="${frame}"></div>
-<div style="position:relative;flex:1;padding-inline-end:3mm">${textBlock(fs)}</div>
-<div style="position:relative;align-self:stretch;border-inline-start:.4mm dashed #111;padding-inline-start:3mm;display:flex;align-items:center">${icon(stub)}</div></div>`;
+  if (tpl === 'badge') {
+    const bd = Math.min(minSide * 0.28, 17);
+    const uw = PW - 8;
+    const uh = PH - bd - 5;
+    const fs = fitFs(uw, uh, isPoem ? 6.4 : baseMax(pr.text.length));
+    return `<div style="${root}">${shadow}<div style="${pBox}display:flex;flex-direction:column;align-items:center">
+<div style="${stripes}width:100%;height:${bd * 0.62}mm;border-bottom:.5mm solid #111;flex:none"></div>
+<div style="margin-top:${-bd * 0.5}mm;flex:none">${sticker(bd)}</div>
+<div style="flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1mm 4mm 2mm">${textBlock(fs)}</div></div></div>`;
   }
-  const iconSize = Math.min(minSide * 0.22, 15);
-  const showIcon = !isPoem && minSide >= 40;
-  const uw = w - 15;
-  const uh = h - 9 - (showIcon ? iconSize + 1.5 : 0);
-  const fs = fitFs(uw, uh, isPoem ? 8.6 : baseMax(pr.text.length));
-  const poemIcon = isPoem && minSide >= 40 ? `<div style="position:absolute;bottom:3.4mm;${hh % 2 ? 'left' : 'right'}:3.6mm">${icon(Math.min(minSide * 0.17, 10))}</div>` : '';
-  return `<div style="${root}display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3.4mm 6mm"><div style="${frame}"></div>${poemIcon}
-${showIcon ? `<div style="position:relative;margin-bottom:1.2mm">${icon(iconSize)}</div>` : ''}
-<div style="position:relative;width:100%">${textBlock(fs)}</div></div>`;
+  if (tpl === 'banner') {
+    const bh = Math.min(Math.max(PH * 0.26, 10), 15);
+    const uw = PW - 9;
+    const uh = PH - bh - 4;
+    const fs = fitFs(uw, uh, isPoem ? 6.4 : baseMax(pr.text.length));
+    return `<div style="${root}">${shadow}<div style="${pBox}display:flex;flex-direction:column">
+<div style="${stripes}height:${bh}mm;border-bottom:.5mm solid #111;flex:none;display:flex;align-items:center;justify-content:center;gap:3mm">
+<div style="flex:1;height:.4mm;background:#111;opacity:.0"></div>${sticker(bh * 1.18)}</div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2mm 4.5mm 3mm;margin-top:${bh * 0.2}mm">${textBlock(fs)}</div></div></div>`;
+  }
+  // frame: מסגרת כפולה, ריבועי פינה, ועיטור עם אייקון קטן
+  const orn = Math.min(minSide * 0.17, 11);
+  const uw = PW - 12;
+  const uh = PH - orn - 8;
+  const fs = fitFs(uw, uh, isPoem ? 7.4 : baseMax(pr.text.length));
+  const corner = (pos: string) => `<div style="position:absolute;${pos};width:2.6mm;height:2.6mm;background:${f1};border:.3mm solid #111"></div>`;
+  return `<div style="${root}">${shadow}<div style="${pBox}">
+<div style="position:absolute;inset:1.6mm;border:.3mm dashed #111;pointer-events:none"></div>
+${corner('left:.9mm;top:.9mm')}${corner('right:.9mm;top:.9mm')}${corner('left:.9mm;bottom:.9mm')}${corner('right:.9mm;bottom:.9mm')}
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 3mm">
+<div style="width:100%">${textBlock(fs)}</div>
+<div style="display:flex;align-items:center;gap:2mm;width:78%;margin-top:${isPoem ? 1.6 : 2.2}mm"><div style="flex:1;height:.4mm;background:#111"></div><div style="width:${orn}mm;height:${orn}mm;flex:none">${svgIcon}</div><div style="flex:1;height:.4mm;background:#111"></div></div></div></div></div>`;
 }
 
 // דף A4 עם עותקים רבים של הכרטיס — לגזירה
