@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { SEVEN_BONUS, SEVEN_NOTE, SEVEN_PARTS } from '../data/sevenParts';
 import { CopyButton } from './CopyButton';
 import { escapeHtml, offerHtml } from '../lib/printFile';
+import { BLANK_TEMPLATE_ID, blankTemplate, buildPersonalPrintHtml } from '../lib/personalCopies';
+import { FavoriteButton } from './FavoriteButton';
 
 const KEY = 'hlm-seven-checklist';
 
@@ -90,6 +92,8 @@ export function SevenParts() {
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 28 }}>
         <button type="button" className="btn btn-flame" onClick={() => void offerHtml('seven-parts-sheet.html', buildSevenPartsPrintHtml())}>הדפסת דף בנייה עם מקרא צבעים</button>
+        <button type="button" className="btn btn-outline" onClick={() => void offerHtml('blank-template.html', buildPersonalPrintHtml(blankTemplate()))}>הדפסת תבנית ריקה (PDF)</button>
+        <FavoriteButton kind="personal" id={BLANK_TEMPLATE_ID} label="הוספת התבנית הריקה לקלסר" savedLabel="התבנית הריקה בקלסר" />
         <Link to="/my/new" className="btn btn-outline">תבנית אישית למילוי ושמירה</Link>
         <CopyButton variant="mini" text={sevenPartsText()} label="העתקת השיטה" />
       </div>

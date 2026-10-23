@@ -14,7 +14,7 @@ import { buildCombinedPrintHtml } from '../lib/activityPrint';
 import { entriesForKeys } from '../lib/binderPrint';
 import { offerHtml } from '../lib/printFile';
 import { FavoriteButton } from '../components/FavoriteButton';
-import { getCopy, listCopies, type PersonalCopy } from '../lib/personalCopies';
+import { BLANK_TEMPLATE_ID, buildPersonalPrintHtml, blankTemplate, getPersonal, listCopies, type PersonalCopy } from '../lib/personalCopies';
 
 interface Tab { id: string; label: string; color: string; tint: string }
 
@@ -65,8 +65,8 @@ export function Favorites() {
         const s = staffStudy.find((x) => x.id === id);
         if (s) out.push({ tab: 'staff-study', key, kind, id, title: s.title, sub: `${s.topic} · ${s.duration} דק׳`, url: `/staff-study/${s.id}` });
       } else if (kind === 'personal') {
-        const p = getCopy(id);
-        if (p) out.push({ tab: 'personal', key, kind, id, title: p.title, sub: p.kind === 'copy' ? 'עותק אישי של פעולה' : 'תבנית אישית', url: `/my/${p.id}` });
+        const p = getPersonal(id);
+        if (p) out.push({ tab: 'personal', key, kind, id, title: p.title, sub: p.id === BLANK_TEMPLATE_ID ? 'תבנית ריקה להדפסה' : p.kind === 'copy' ? 'עותק אישי של פעולה' : 'תבנית אישית', url: p.id === BLANK_TEMPLATE_ID ? '/how-to-build' : `/my/${p.id}` });
       } else if (kind === 'chupar') {
         const c = chuparim.find((x) => x.id === id);
         if (c) out.push({ tab: 'chuparim', key, kind, id, title: c.title, sub: `${c.kind} · ${c.prepTime}`, url: `/chupar/${c.id}` });
@@ -162,6 +162,10 @@ export function Favorites() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
           <h2 id="my-copies" style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>העותקים והתבניות האישיים שלי</h2>
           <Link to="/my/new" className="btn btn-outline">תבנית חדשה לפי שבעת החלקים</Link>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 14 }}>
+          <button type="button" className="btn btn-flame" onClick={() => void offerHtml('blank-template.html', buildPersonalPrintHtml(blankTemplate()))}>הדפסת תבנית ריקה (PDF)</button>
+          <FavoriteButton kind="personal" id={BLANK_TEMPLATE_ID} label="הוספת התבנית הריקה לקלסר" savedLabel="התבנית הריקה בקלסר" />
         </div>
         {copies.length === 0 ? (
           <p style={{ fontSize: 14, color: 'var(--ink-faint)', margin: 0 }}>

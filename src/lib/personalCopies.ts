@@ -35,6 +35,17 @@ function writeAll(all: Record<string, PersonalCopy>) {
   } catch { /* האחסון מלא או חסום: העריכה תימשך בלי שמירה */ }
 }
 
+// תבנית ריקה מובנית: מדפיסים או מוסיפים לקלסר בלי ליצור עותק ובלי לשמור כלום.
+export const BLANK_TEMPLATE_ID = 'blank-template';
+
+export function blankTemplate(): PersonalCopy {
+  const steps: CopyStep[] = [...SEVEN_PARTS, SEVEN_BONUS].map((p) => ({ label: p.name, body: '', color: p.color, hint: p.write }));
+  return { id: BLANK_TEMPLATE_ID, baseId: null, kind: 'template', title: 'תבנית פעולה ריקה: שבעת החלקים', goals: '', steps, notes: '', cleanPrint: true, updatedAt: 0 };
+}
+
+// עותק או תבנית שמורים, או התבנית הריקה המובנית
+export const getPersonal = (id: string): PersonalCopy | null => (id === BLANK_TEMPLATE_ID ? blankTemplate() : getCopy(id));
+
 export const listCopies = (): PersonalCopy[] => Object.values(readAll()).sort((a, b) => b.updatedAt - a.updatedAt);
 export const getCopy = (id: string): PersonalCopy | null => readAll()[id] ?? null;
 export function saveCopy(c: PersonalCopy) { const all = readAll(); all[c.id] = { ...c, updatedAt: Date.now() }; writeAll(all); }
@@ -75,7 +86,7 @@ export function buildPersonalPrintHtml(c: PersonalCopy): string {
   const steps = c.steps.map((s, i) => `
   <section class="st" style="--c:${s.color || '#D96A2B'}">
     <h2><span class="n">${i + 1}</span>${escapeHtml(s.label)}</h2>
-    <p>${s.body.trim() ? para(s.body) : '<span class="blank">&nbsp;</span>'}</p>
+    <p>${s.body.trim() ? para(s.body) : (c.cleanPrint ? '<span class="blank">&nbsp;</span>'.repeat(4) : '<span class="blank">&nbsp;</span>')}</p>
   </section>`).join('');
   const goals = c.goals.trim() ? `<h3>מטרות</h3><ul>${c.goals.split('\n').filter(Boolean).map((g) => `<li>${escapeHtml(g)}</li>`).join('')}</ul>` : '';
   const notes = c.notes.trim() ? `<div class="notes"><b>הערות אישיות:</b><br>${para(c.notes)}</div>` : '';
@@ -94,7 +105,7 @@ export function buildPersonalPrintHtml(c: PersonalCopy): string {
   .st h2 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 17px; margin: 0 0 3px; display: flex; align-items: center; gap: 8px; }
   .n { background: var(--c); color: #fff; border-radius: 50%; width: 24px; height: 24px; line-height: 24px; text-align: center; font-size: 13px; }
   .st p { margin: 0; }
-  .blank { display: block; height: 46px; border-bottom: 1px solid #C9BFA9; }
+  .blank { display: block; height: ${c.cleanPrint ? 34 : 46}px; border-bottom: 1px solid #C9BFA9; }
   .notes { margin-top: 12px; padding: 10px 14px; border: 1.5px dashed #8C7F6B; border-radius: 8px; }
   .foot { margin-top: 14px; font-size: 11px; color: #8C7F6B; }
 </style></head><body><div class="doc">

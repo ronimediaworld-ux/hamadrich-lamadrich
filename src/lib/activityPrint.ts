@@ -382,7 +382,7 @@ function renderPersonalBody(c: PersonalCopy): string {
   const steps = c.steps.map((s, i) => {
     const body = s.body.trim()
       ? `<div>${renderBody(s.body)}</div>`
-      : `${s.hint && !c.cleanPrint ? `<div style="color:#8C7F6B;font-size:12px">${escapeHtml(s.hint)}</div>` : ''}<div style="height:46px;border-bottom:1px solid #C9BFA9"></div>`;
+      : `${s.hint && !c.cleanPrint ? `<div style="color:#8C7F6B;font-size:12px">${escapeHtml(s.hint)}</div>` : ''}${('<div style="height:' + (c.cleanPrint ? 34 : 46) + 'px;border-bottom:1px solid #C9BFA9"></div>').repeat(c.cleanPrint ? 4 : 1)}`;
     return `<section style="border-inline-start:5px solid ${escapeHtml(s.color || '#D96A2B')};padding:6px 14px 8px;margin:0 0 10px;break-inside:avoid;background:#FFFEFA;border-radius:6px"><h2 style="font-size:17px;margin:0 0 3px">${i + 1}. ${escapeHtml(s.label)}</h2>${body}</section>`;
   }).join('');
   const notes = c.notes.trim() ? `<div style="margin-top:12px;padding:10px 14px;border:1.5px dashed #8C7F6B;border-radius:8px"><b>הערות אישיות:</b><br>${escapeHtml(c.notes).replace(/\n/g, '<br>')}</div>` : '';
