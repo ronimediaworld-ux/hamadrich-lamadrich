@@ -100,6 +100,11 @@ export function PersonalCopy() {
       <label style={{ display: 'block', fontWeight: 800, fontSize: 14, margin: '0 0 4px' }}>הערות אישיות למדריכה (מודפסות בסוף)</label>
       <textarea value={copy.notes} onChange={(e) => update({ ...copy, notes: e.target.value })} rows={4} placeholder="מה לשנות בפעם הבאה, שמות של חניכות, זמנים שהתאימו לקבוצה שלי..." style={{ ...FIELD, marginBottom: 20 }} />
 
+      <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, margin: '0 0 16px' }}>
+        <input type="checkbox" checked={!!copy.cleanPrint} onChange={(e) => update({ ...copy, cleanPrint: e.target.checked })} style={{ width: 18, height: 18 }} />
+        הדפסה נקייה בקלסר: בלי טקסט הכוונה, רק כותרות השלבים ושורות לכתיבה
+      </label>
+
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
         <button type="button" className="btn btn-flame" onClick={() => void offerHtml(`${copy.id}.html`, buildPersonalPrintHtml(copy))}>הדפסה מסודרת</button>
         <FavoriteButton kind="personal" id={copy.id} label="הוספה לקלסר להדפסה" savedLabel="בקלסר להדפסה" />

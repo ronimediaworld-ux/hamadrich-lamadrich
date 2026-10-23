@@ -13,6 +13,7 @@ export interface PersonalCopy {
   goals: string; // שורה לכל מטרה
   steps: CopyStep[];
   notes: string;
+  cleanPrint?: boolean; // הדפסה נקייה: בלי טקסט הכוונה, רק כותרות שלבים ושורות לכתיבה
   updatedAt: number;
 }
 
