@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getActivity } from '../data/activities';
 import { CopyButton } from '../components/CopyButton';
+import { FavoriteButton } from '../components/FavoriteButton';
+import { favKey, isFavorite, toggleFavorite } from '../lib/favorites';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { offerHtml } from '../lib/printFile';
 import {
@@ -100,12 +102,13 @@ export function PersonalCopy() {
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
         <button type="button" className="btn btn-flame" onClick={() => void offerHtml(`${copy.id}.html`, buildPersonalPrintHtml(copy))}>הדפסה מסודרת</button>
+        <FavoriteButton kind="personal" id={copy.id} label="הוספה לקלסר להדפסה" savedLabel="בקלסר להדפסה" />
         <CopyButton variant="mini" text={personalText(copy)} label="העתקה כטקסט" />
         {base && <Link to={`/activity/${base.id}`} className="btn btn-outline">לפעולה המקורית</Link>}
         {base && (
           <button type="button" className="btn btn-outline" onClick={() => { if (window.confirm('לאפס את העותק לפעולה המקורית? העריכות שלך יימחקו.')) { const c = copyFromActivity(base); saveCopy(c); setCopy(c); } }}>איפוס לפעולה המקורית</button>
         )}
-        <button type="button" className="btn btn-outline" onClick={() => { if (window.confirm('למחוק את העותק האישי הזה?')) { deleteCopy(copy.id); navigate('/favorites'); } }}>מחיקת העותק</button>
+        <button type="button" className="btn btn-outline" onClick={() => { if (window.confirm('למחוק את העותק האישי הזה?')) { if (isFavorite(favKey('personal', copy.id))) toggleFavorite(favKey('personal', copy.id)); deleteCopy(copy.id); navigate('/favorites'); } }}>מחיקת העותק</button>
       </div>
     </div>
   );

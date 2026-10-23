@@ -8,6 +8,7 @@ import { quickGames } from '../data/quickGames';
 import { bridgeCandidates, fillTopic, isSensitive } from '../data/gameBridges';
 import { timedSteps } from './timePlan';
 import { getChupar } from '../data/chuparim';
+import type { PersonalCopy } from './personalCopies';
 
 const PALETTE = ['#C85B2A', '#A64D79', '#356E9A', '#5E7B2F', '#2F7D6A', '#6B5AA6', '#8A4D2A', '#B17824'];
 
@@ -372,6 +373,20 @@ export interface BinderEntry {
   badge?: string;
   generic?: { sub: string; text: string; link?: string };
   chupar?: Chupar;
+  personal?: PersonalCopy;
+}
+
+// תבנית או עותק אישי בקלסר: שלבים ממולאים, ובשלב ריק שורת כתיבה (עם הכוונה קצרה) להשלמה ביד.
+function renderPersonalBody(c: PersonalCopy): string {
+  const goals = c.goals.trim() ? `<h3>מטרות</h3><ul>${c.goals.split('\n').filter(Boolean).map((g) => `<li>${escapeHtml(g)}</li>`).join('')}</ul>` : '';
+  const steps = c.steps.map((s, i) => {
+    const body = s.body.trim()
+      ? `<div>${renderBody(s.body)}</div>`
+      : `${s.hint ? `<div style="color:#8C7F6B;font-size:12px">${escapeHtml(s.hint)}</div>` : ''}<div style="height:46px;border-bottom:1px solid #C9BFA9"></div>`;
+    return `<section style="border-inline-start:5px solid ${escapeHtml(s.color || '#D96A2B')};padding:6px 14px 8px;margin:0 0 10px;break-inside:avoid;background:#FFFEFA;border-radius:6px"><h2 style="font-size:17px;margin:0 0 3px">${i + 1}. ${escapeHtml(s.label)}</h2>${body}</section>`;
+  }).join('');
+  const notes = c.notes.trim() ? `<div style="margin-top:12px;padding:10px 14px;border:1.5px dashed #8C7F6B;border-radius:8px"><b>הערות אישיות:</b><br>${escapeHtml(c.notes).replace(/\n/g, '<br>')}</div>` : '';
+  return goals + steps + notes;
 }
 
 export function buildCombinedPrintHtml(docTitle: string, intro: string, entries: BinderEntry[]): string {
@@ -385,6 +400,9 @@ export function buildCombinedPrintHtml(docTitle: string, intro: string, entries:
     if (e.activity) {
       const chs = (e.activity.chuparIds ?? []).map((cid) => getChupar(cid)).filter((c): c is Chupar => !!c);
       return `<div class="page">${renderActivityMain(e.activity, e.categoryLabel ?? e.section, e.badge ?? e.section, chs.length ? { chuparim: chs, vals: [] } : undefined)}</div>`;
+    }
+    if (e.personal) {
+      return `<main class="doc item-generic page"><div class="crumbs">${escapeHtml(e.section)}</div><h1>${escapeHtml(e.title)}</h1><p class="desc">${escapeHtml(e.generic?.sub ?? '')}</p>${renderPersonalBody(e.personal)}</main>`;
     }
     const g = e.generic!;
     return `<main class="doc item-generic page"><div class="crumbs">${escapeHtml(e.section)}</div><h1>${escapeHtml(e.title)}</h1><p class="desc">${escapeHtml(g.sub)}</p><div class="textcard">${renderBody(g.text)}</div>${g.link ? `<p class="src"><span dir="ltr">${escapeHtml(g.link)}</span></p>` : ''}</main>${e.chupar ? renderChuparPage(e.chupar, []) : ''}`;

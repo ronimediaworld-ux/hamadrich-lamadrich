@@ -13,7 +13,8 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { buildCombinedPrintHtml } from '../lib/activityPrint';
 import { entriesForKeys } from '../lib/binderPrint';
 import { offerHtml } from '../lib/printFile';
-import { listCopies, type PersonalCopy } from '../lib/personalCopies';
+import { FavoriteButton } from '../components/FavoriteButton';
+import { getCopy, listCopies, type PersonalCopy } from '../lib/personalCopies';
 
 interface Tab { id: string; label: string; color: string; tint: string }
 
@@ -25,6 +26,7 @@ const TABS: Tab[] = [
   { id: 'readings', label: 'קטעי קריאה', color: '#C24270', tint: '#F6DDE7' },
   { id: 'staff-study', label: 'לימוד צוות', color: '#6B5AA6', tint: '#E6E1F4' },
   { id: 'chuparim', label: 'צ׳ופרים', color: '#3E7EA6', tint: '#DCEAF2' },
+  { id: 'personal', label: 'התבניות והעותקים שלי', color: '#2F7A4B', tint: '#DCEFE3' },
 ];
 
 interface Item { tab: string; key: string; kind: FavKind; id: string; title: string; sub: string; url: string }
@@ -62,6 +64,9 @@ export function Favorites() {
       } else if (kind === 'staff-study') {
         const s = staffStudy.find((x) => x.id === id);
         if (s) out.push({ tab: 'staff-study', key, kind, id, title: s.title, sub: `${s.topic} · ${s.duration} דק׳`, url: `/staff-study/${s.id}` });
+      } else if (kind === 'personal') {
+        const p = getCopy(id);
+        if (p) out.push({ tab: 'personal', key, kind, id, title: p.title, sub: p.kind === 'copy' ? 'עותק אישי של פעולה' : 'תבנית אישית', url: `/my/${p.id}` });
       } else if (kind === 'chupar') {
         const c = chuparim.find((x) => x.id === id);
         if (c) out.push({ tab: 'chuparim', key, kind, id, title: c.title, sub: `${c.kind} · ${c.prepTime}`, url: `/chupar/${c.id}` });
@@ -168,6 +173,7 @@ export function Favorites() {
               <li key={c.id} className="card" style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                 <Link to={`/my/${c.id}`} style={{ fontWeight: 800 }}>{c.title}</Link>
                 <span style={{ fontSize: 12.5, color: 'var(--ink-faint)' }}>{c.kind === 'copy' ? 'עותק של פעולה' : 'תבנית אישית'} · עודכן {new Date(c.updatedAt).toLocaleDateString('he-IL')}</span>
+                <FavoriteButton kind="personal" id={c.id} label="הוספה לקלסר להדפסה" savedLabel="בקלסר להדפסה" style={{ padding: '6px 12px', fontSize: 13 }} />
               </li>
             ))}
           </ul>

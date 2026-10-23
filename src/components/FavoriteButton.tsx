@@ -4,7 +4,7 @@ import { favKey, isFavorite, toggleFavorite, type FavKind } from '../lib/favorit
 import { burst } from '../lib/effects';
 
 // כפתור "שמירה בקלסר" לכל סוג תוכן.
-export function FavoriteButton({ kind, id, style }: { kind: FavKind; id: string; style?: React.CSSProperties }) {
+export function FavoriteButton({ kind, id, style, label, savedLabel }: { kind: FavKind; id: string; style?: React.CSSProperties; label?: string; savedLabel?: string }) {
   const key = favKey(kind, id);
   const [saved, setSaved] = useState(false);
   useEffect(() => {
@@ -29,7 +29,7 @@ export function FavoriteButton({ kind, id, style }: { kind: FavKind; id: string;
       style={{ justifyContent: 'center', background: saved ? 'var(--flame-tint)' : undefined, borderColor: saved ? 'var(--flame)' : undefined, ...style }}
     >
       <HeartIcon size={15} color={saved ? 'var(--flame)' : 'currentColor'} />
-      {saved ? 'נשמר בקלסר שלי' : 'שמירה בקלסר שלי'}
+      {saved ? (savedLabel ?? 'נשמר בקלסר שלי') : (label ?? 'שמירה בקלסר שלי')}
     </button>
   );
 }
