@@ -50,6 +50,13 @@ export const categories: CategoryDef[] = [
     color: 'yellow',
     icon: 'tent',
   },
+  {
+    slug: 'walls',
+    label: 'קירות וגלופות',
+    description: 'חודש ארגון: שמות השכבות בבני עקיבא, אריאל ועזרא',
+    color: 'flame',
+    icon: 'spark',
+  },
 ];
 
 export function getCategory(slug: string): CategoryDef | undefined {

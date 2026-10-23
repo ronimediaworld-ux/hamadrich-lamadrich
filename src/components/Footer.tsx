@@ -17,6 +17,7 @@ export function Footer() {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, fontSize: 13.5, color: 'var(--ink-soft)' }}>
           <Link to="/category/activities">מאגר פעולות</Link>
           <Link to="/chuparim">צ׳ופרים</Link>
+          <Link to="/category/walls">קירות וגלופות</Link>
           <Link to="/ai">עוזר AI</Link>
           <Link to="/category/tools">סיטואציות בהדרכה</Link>
           <Link to="/how-to-build">נדבר ת׳כלס</Link>

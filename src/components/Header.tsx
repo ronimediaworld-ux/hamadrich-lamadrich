@@ -18,6 +18,7 @@ const NAV: NavEntry[] = [
     kind: 'menu', id: 'extra', label: 'תוכן נלווה',
     items: [
       { to: '/category/readings', label: 'קטעי קריאה', desc: 'סיפורים, משלים ושירה' },
+      { to: '/category/walls', label: 'קירות וגלופות', desc: 'חודש ארגון ושמות השכבות' },
       { to: '/chuparim', label: 'צ׳ופרים', desc: 'מוכנים להדפסה, עם השם שלכם' },
       { to: '/category/games', label: 'משחקים', desc: 'קרחונים, אמון וגיבוש' },
       { to: '/category/methods', label: 'מתודות', desc: 'כלים לשילוב בכל פעולה' },

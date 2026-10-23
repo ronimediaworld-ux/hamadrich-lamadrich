@@ -146,3 +146,13 @@ export interface CategoryDef {
   color: 'flame' | 'lime' | 'magenta' | 'sky' | 'yellow';
   icon: string;
 }
+
+export interface MovementNames {
+  id: string;
+  movement: string;
+  intro: string;
+  groups: { grade: string; name: string; slogans: string[] }[];
+  fixedTitle: string | null;
+  fixed: string[];
+  notes: string[];
+}
