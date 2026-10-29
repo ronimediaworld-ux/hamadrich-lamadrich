@@ -4,7 +4,7 @@ import { CopyButton } from './CopyButton';
 import { Reveal } from './Reveal';
 
 export function WallsSection({ query }: { query: string }) {
-  const movements = movementNames.filter((m) =>
+  const movements = movementNames.filter((m) => m.id !== 'general').filter((m) =>
     matchesQuery([m.movement, m.intro, m.groups.map((g) => `${g.name} ${g.grade}`), m.fixed, m.notes], query),
   );
   const gluphot = movementNames.flatMap((m) =>
@@ -59,7 +59,7 @@ export function WallsSection({ query }: { query: string }) {
           <div key={x.text} className="card" style={{ padding: '18px 18px 12px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 12 }}>
             <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 18, lineHeight: 1.4 }}>{x.text}</div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-              <span style={{ fontSize: 11.5, color: 'var(--ink-faint)' }}>{x.movement} · {x.name}</span>
+              <span style={{ fontSize: 11.5, color: 'var(--ink-faint)' }}>{x.movement === 'לכל השכבות' ? x.movement : `${x.movement} · ${x.name}`}</span>
               <CopyButton variant="mini" text={x.text} />
             </div>
           </div>
