@@ -326,6 +326,17 @@ a:hover > .logo-flame { animation-duration: .9s; }
 .binder-btn:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 var(--ink); }
 .binder-btn b { background: var(--ink); color: #fff; border-radius: 999px; padding: 0 8px; font-size: 12.5px; font-family: 'Rubik', sans-serif; }
 @media (max-width: 700px) { .binder-btn { padding: 5px 12px; font-size: 13px; } }
+/* מסכי טלפון צרים: הלוגו, כפתור הקלסר והתפריט נכנסים בלי להיחתך */
+@media (max-width: 520px) {
+  .site-header .wrap { gap: 8px !important; }
+  .site-logo { font-size: 15.5px !important; gap: 6px !important; min-width: 0; }
+  .site-logo svg { width: 26px; height: 26px; }
+  .header-actions { gap: 6px !important; min-width: 0; }
+  .binder-btn { padding: 4px 10px; font-size: 12.5px; gap: 6px; }
+  .binder-btn b { padding: 0 6px; font-size: 11.5px; }
+  .header-burger { width: 34px !important; height: 34px !important; }
+}
+@media (max-width: 360px) { .site-logo { font-size: 14px !important; } .binder-btn span { font-size: 12px; } }
 
 /* קו מרקר "מצויר" מתחת למילה בכותרת */
 .squig { position: relative; display: inline-block; }

@@ -1,4 +1,6 @@
 import type { Chupar, ChuparPrint } from '../data/types';
+import { LOOKS } from './chuparLooks';
+import type { Box, LookOut } from './chuparLooks';
 
 export interface Palette { bg: string; fg: string; acc: string; acc2: string }
 
@@ -161,6 +163,8 @@ const TYPE: Record<string, { family: string; weight: number; scale: number }> = 
   karantina: { family: "'Karantina','Secular One',sans-serif", weight: 700, scale: 1.2 },
   heebo: { family: "'Heebo',sans-serif", weight: 800, scale: 0.98 },
   frank: { family: "'Frank Ruhl Libre',serif", weight: 900, scale: 0.98 },
+  playpen: { family: "'Playpen Sans Hebrew','Gveret Levin',cursive", weight: 800, scale: 0.9 },
+  alef: { family: "'Alef','Heebo',sans-serif", weight: 700, scale: 1.02 },
 };
 
 // ---- צורות גזורות: הכרטיס עצמו הוא הצורה (קו חיתוך שחור דק) ----
@@ -223,7 +227,7 @@ const DIE: Record<string, DieFn> = {
   },
   drop: (w, h) => {
     const d = `M${w / 2} 1C${w * 0.5} ${h * 0.2} ${w - 1} ${h * 0.42} ${w - 1} ${h * 0.66}C${w - 1} ${h * 0.88} ${w * 0.76} ${h - 1} ${w / 2} ${h - 1}C${w * 0.24} ${h - 1} 1 ${h * 0.88} 1 ${h * 0.66}C1 ${h * 0.42} ${w * 0.5} ${h * 0.2} ${w / 2} 1Z`;
-    return { svg: pathOutline(d), ins: { x: w * 0.18, y: h * 0.4, w: w * 0.64, h: h * 0.44 } };
+    return { svg: pathOutline(d), ins: { x: w * 0.1, y: h * 0.34, w: w * 0.8, h: h * 0.52 } };
   },
   cloud: (w, h) => {
     const base = `<rect x="${w * 0.08}" y="${h * 0.5}" width="${w * 0.84}" height="${h * 0.42}" rx="${h * 0.21}"/>`;
@@ -245,6 +249,22 @@ const DIE: Record<string, DieFn> = {
 };
 
 export const isDieShape = (shape: string): boolean => shape in DIE;
+
+// שלושה צבעי עיצוב לכל פלטה: שני צבעים בהירים (מתחת לטקסט שחור) וצבע כהה לגושים קטנים
+const THEMES: Record<string, [string, string, string]> = {
+  sunrise: ['#FF9500', '#FFEB00', '#404040'], berry: ['#F27FE0', '#FFEB00', '#C137D6'], ocean: ['#8FB8E8', '#FFEB00', '#4A5D8F'],
+  forest: ['#7EE06A', '#F27FE0', '#4A5D8F'], grape: ['#D49BEF', '#7EE06A', '#C137D6'], night: ['#8FB8E8', '#FFEB00', '#4A5D8F'],
+  sand: ['#E3C29B', '#FF9500', '#404040'], cherry: ['#FF7A70', '#FFEB00', '#404040'], mint: ['#8FE3CE', '#FFEB00', '#4A5D8F'],
+  sky: ['#A9C0FF', '#7EE06A', '#4A5D8F'], chalk: ['#B7CBA9', '#FFEB00', '#4A5D8F'], cream: ['#FFEB00', '#FF9500', '#404040'],
+};
+
+// בחירת לוק לכרטיס שלא הוגדר לו: לפי היחס בין הרוחב לגובה
+function pickLook(want: string | undefined, w: number, h: number, hh: number, poem: boolean): string {
+  if (want && LOOKS[want]) return want;
+  const wide = w / h;
+  const pool = h < 38 ? ['stripe', 'blobs', 'grid'] : wide > 1.3 ? ['blobs', 'highlight', 'ribbon', 'diag', 'layers', 'arch', 'bunting', 'tape'] : ['highlight', 'layers', 'confetti', 'tape', 'circle', 'bunting', 'dots', 'grid'];
+  return poem ? pool.filter((x) => x !== 'ribbon' && x !== 'circle')[hh % (pool.length - (pool.includes('ribbon') ? 1 : 0) - (pool.includes('circle') ? 1 : 0))] : pool[hh % pool.length];
+}
 
 export function renderCard(c: Chupar, imgBase = '', name = '', values: string[] = []): string {
   const base: ChuparPrint = c.print ?? { shape: 'card', layout: 'center', palette: 'cream', motif: 'star', font: 'rubik', text: c.title };
@@ -339,24 +359,27 @@ ${strip('left')}${strip('right')}
   const subParts = (pr.sub ?? '').split(/\s*·\s*|\n/).map((x) => x.trim()).filter(Boolean);
   const asChips = !isPoem && subParts.length >= 2 && subParts.every((x) => x.length <= 24 && !/_/.test(x));
   const subText = asChips ? '' : (pr.sub ?? '');
-  const svgIcon = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${motif(pr.motif, ip)}</svg>`;
-  // סטיקר: עיגול לבן עם קו שחור וצל קשיח
-  const sticker = (size: number) => `<div style="width:${size}mm;height:${size}mm;border-radius:50%;background:#fff;border:.5mm solid #111;box-shadow:.8mm .8mm 0 #111;display:flex;align-items:center;justify-content:center;flex:none;box-sizing:border-box;padding:${size * 0.17}mm">${svgIcon}</div>`;
-  const stripes = `background-color:${f1};background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.3) 0 1.1mm,transparent 1.1mm 2.6mm);`;
 
-  const fitFs = (uw: number, uh: number, maxFs: number): number => {
-    const lines = (t: string, size: number) => t.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * size * titleScale * 0.56) / uw)), 0);
+  const fitFs = (uw: number, uh: number, maxFs: number, part: 'all' | 'title' | 'sub' = 'all'): number => {
+    const lines = (t: string, size: number) => t.split('\n').reduce((n, seg) => n + Math.max(1, Math.ceil((seg.length * size * titleScale * 0.6) / uw)), 0);
     const chipRows = asChips ? Math.ceil((subParts.reduce((n, x) => n + x.length + 3, 0) * 4.2 * 0.5) / uw) : 0;
     let fs = maxFs;
     const fits = (size: number) => {
       const subSize = Math.max(size * 0.85, 4.2);
       const subH = subText ? lines(subText, subSize * 0.8) * subSize * 1.18 + 1.6 : 0;
-      return lines(pr.text, size) * size * titleScale * 1.2 + subH + chipRows * 6.8 + (asChips || subText ? 3 : 0) <= uh;
+      const titleH = part === 'sub' ? 0 : lines(pr.text, size) * size * titleScale * 1.2;
+      if (part === 'title') return titleH <= uh;
+      return titleH + subH + chipRows * 6.8 + (asChips || subText ? 3 : 0) <= uh;
     };
     while (fs > 2.3 && !fits(fs)) fs -= 0.25;
     return fs;
   };
   const baseMax = (n: number) => (n < 24 ? 8.2 : n < 48 ? 6.6 : n < 90 ? 5.2 : n < 160 ? 4 : 3.2);
+
+  // התאמות של כל לוק: צבע דיו, צבע הקו, ומרקר מאחורי שורות הכותרת
+  let ink = '#111';
+  let ruleCol = '';
+  let hlCols: string[] | null = null;
 
   const chipsHtml = (fs: number) => asChips
     ? `<div style="display:flex;flex-wrap:wrap;gap:1.3mm;justify-content:center;margin-top:1.4mm">${subParts.map((t, i) => {
@@ -366,14 +389,20 @@ ${strip('left')}${strip('right')}
       }).join('')}</div>`
     : '';
   const subHtml = (fs: number) => subText
-    ? `<div style="font-family:${hand};font-weight:700;font-size:${Math.max(fs * 0.9, 4.4)}mm;line-height:1.05;margin-top:1.1mm;color:#222">${esc(subText).replace(/\n/g, '<br>')}</div>`
+    ? `<div style="font-family:${hand};font-weight:700;font-size:${Math.max(fs * 0.9, 4.4)}mm;line-height:1.05;margin-top:1.1mm;color:${ink === '#111' ? '#222' : ink}">${esc(subText).replace(/\n/g, '<br>')}</div>`
     : '';
   const ruleHtml = (fs: number) => (asChips || subText
-    ? `<div style="height:${Math.max(.9, fs * 0.11)}mm;background:${f1};border:.3mm solid #111;border-radius:1mm;width:${Math.min(22, 8 + fs * 1.6)}mm;margin:${fs * 0.22}mm auto ${fs * 0.26}mm"></div>`
+    ? `<div style="height:${Math.max(.9, fs * 0.11)}mm;background:${ruleCol || f1};border:.3mm solid #111;border-radius:1mm;width:${Math.min(22, 8 + fs * 1.6)}mm;margin:${fs * 0.22}mm auto ${fs * 0.26}mm"></div>`
     : '');
-  const titleHtml = (fs: number) => `<div style="font-family:${titleFamily};font-weight:${titleWeight};font-size:${fs * titleScale}mm;line-height:1.1;color:#111">${text}</div>`;
+  const titleHtml = (fs: number) => {
+    const body = hlCols
+      ? esc(pr.text).split('\n').map((ln, i) => `<span style="background:linear-gradient(transparent 52%,${hlCols![i % hlCols!.length]} 52%,${hlCols![i % hlCols!.length]} 94%,transparent 94%);padding:0 1.3mm;-webkit-box-decoration-break:clone;box-decoration-break:clone">${ln}</span>`).join('<br>')
+      : text;
+    return `<div style="font-family:${titleFamily};font-weight:${titleWeight};font-size:${fs * titleScale}mm;line-height:${hlCols ? 1.3 : 1.1};color:${ink}">${body}</div>`;
+  };
+  const subOnly = (fs: number) => `${ruleHtml(fs)}${chipsHtml(fs)}${subHtml(fs)}`;
   const textBlock = (fs: number) => (isPoem
-    ? `<div style="font-family:${hand};font-weight:700;font-size:${fs}mm;line-height:1.05;color:#111">${text}${subText ? `<div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:${Math.max(fs * 0.6, 3)}mm;margin-top:1.4mm">${esc(subText)}</div>` : ''}</div>`
+    ? `<div style="font-family:${hand};font-weight:700;font-size:${fs}mm;line-height:1.05;color:${ink}">${text}${subText ? `<div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:${Math.max(fs * 0.6, 3)}mm;margin-top:1.4mm">${esc(subText)}</div>` : ''}</div>`
     : `${titleHtml(fs)}${ruleHtml(fs)}${chipsHtml(fs)}${subHtml(fs)}`);
 
   // כרטיס בצורה גזורה לפי הנושא (סוכריה, לב, בלון...)
@@ -381,71 +410,42 @@ ${strip('left')}${strip('right')}
   if (dieFn && dieFont) {
     const d = dieFn(w, h, f1, f2, hh);
     const maxF = isPoem ? 6.2 : Math.min(baseMax(pr.text.length), Math.min(d.ins.w, d.ins.h) / 3.2);
+    // בצורות לבנות מוסיפים מרקר מאחורי הכותרת ושני ניצוצות צבע, כמו בעיצובים המקוריים
+    const white = ['heart', 'bubble', 'cloud', 'drop'].includes(pr.shape) && !isPoem;
+    if (white) hlCols = [f2, f1];
     const fs = fitFs(d.ins.w, d.ins.h, maxF);
+    const sp = (x: number, y: number, r: number, fill: string) => `<path d="M${x} ${y - r}Q${x + r * 0.18} ${y - r * 0.18} ${x + r} ${y}Q${x + r * 0.18} ${y + r * 0.18} ${x} ${y + r}Q${x - r * 0.18} ${y + r * 0.18} ${x - r} ${y}Q${x - r * 0.18} ${y - r * 0.18} ${x} ${y - r}Z" fill="${fill}"/>`;
+    const accents = white ? sp(+(d.ins.x + d.ins.w * 0.97).toFixed(2), +(d.ins.y + 0.2).toFixed(2), 1.9, f1) + `<circle cx="${(d.ins.x + d.ins.w * 0.05).toFixed(2)}" cy="${(d.ins.y + d.ins.h - 0.4).toFixed(2)}" r="1" fill="${f2}"/>` : '';
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:transparent;color:#111;direction:rtl;text-align:center">
-<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:${w}mm;height:${h}mm">${d.svg}</svg>
+<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:${w}mm;height:${h}mm">${d.svg}${accents}</svg>
 <div style="position:absolute;left:${d.ins.x}mm;top:${d.ins.y}mm;width:${d.ins.w}mm;height:${d.ins.h}mm;display:flex;flex-direction:column;align-items:center;justify-content:center">${textBlock(fs)}</div></div>`;
   }
 
-  // כרטיסים מלבניים: "פוסטר" עם מסגרת שחורה וצל קשיח, וארבע תבניות הרכב
-  const minSide = Math.min(w, h);
-  const root = `width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;text-align:center;`;
-  const shadow = `<div style="position:absolute;left:2.9mm;top:2.9mm;right:1.3mm;bottom:1.3mm;background:#111"></div>`;
-  const pBox = `position:absolute;left:1.3mm;top:1.3mm;right:2.9mm;bottom:2.9mm;background:#fff;border:.5mm solid #111;overflow:hidden;box-sizing:border-box;`;
-  const PW = w - 4.2 - 1; // רוחב פנימי של הפוסטר במ"מ (בערך)
-  const PH = h - 4.2 - 1;
-
-  let tpl: 'banner' | 'side' | 'badge' | 'frame';
-  if (pr.layout === 'poem') tpl = 'frame';
-  else if (pr.layout === 'split' || (pr.layout === 'label' && w >= 56)) tpl = 'side';
-  else if (pr.layout === 'seal') tpl = 'badge';
-  else if (pr.layout === 'sign') tpl = w < 52 ? 'badge' : 'banner';
-  else if (w < 50) tpl = hh % 2 ? 'badge' : 'frame';
-  else tpl = (['banner', 'badge', 'frame'] as const)[hh % 3];
-  if (pr.layout === 'ticket') tpl = 'side';
-
-  if (tpl === 'side') {
-    const panelW = Math.min(PW * 0.34, 30);
-    const uw = PW - panelW - 8;
-    const uh = PH - 6;
-    const fs = fitFs(uw, uh, isPoem ? 6.4 : baseMax(pr.text.length));
-    const dashed = pr.layout === 'ticket' ? 'border-inline-end:.5mm dashed #111;' : 'border-inline-end:.5mm solid #111;';
-    return `<div style="${root}">${shadow}<div style="${pBox}display:flex;align-items:stretch">
-<div style="${stripes}${dashed}width:${panelW}mm;flex:none;display:flex;align-items:center;justify-content:center">${sticker(Math.min(panelW * 0.78, PH * 0.6))}</div>
-<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2mm 3.4mm">${textBlock(fs)}</div></div></div>`;
+  // כרטיסים מלבניים: כל כרטיס מקבל "לוק" משלו (ראו chuparLooks.ts) — לבן, מסגרת דקה וגושי צבע שטוחים
+  const look = pickLook(pr.look, w, h, hh, isPoem);
+  const th = THEMES[pr.palette] ?? THEMES.cream;
+  const swap = (hh >> 4) % 2 === 1;
+  const out: LookOut = LOOKS[look]({
+    w, h, hh,
+    c: swap ? [th[1], th[0], th[2]] : th,
+    hasSub: Boolean(subText || asChips),
+    poem: isPoem,
+    icon: (x, y, size, pal, rot = 0) => `<svg x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${size.toFixed(2)}" height="${size.toFixed(2)}" viewBox="0 0 100 100" overflow="visible"><g${rot ? ` transform="rotate(${rot} 50 50)"` : ''}>${motif(pr.motif, pal ? { bg: '#fff', ...pal } : ip)}</g></svg>`,
+  });
+  ink = out.ink ?? '#111';
+  ruleCol = out.rule ?? '';
+  hlCols = out.hl ?? null;
+  const maxF = Math.min(isPoem ? 6.6 : baseMax(pr.text.length), out.maxF ?? 99);
+  const place = (b: Box, html: string) => `<div style="position:absolute;left:${b.x.toFixed(2)}mm;top:${b.y.toFixed(2)}mm;width:${b.w.toFixed(2)}mm;height:${b.h.toFixed(2)}mm;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:visible">${html}</div>`;
+  let inner = '';
+  if (out.titleBox) {
+    inner += place(out.titleBox, titleHtml(fitFs(out.titleBox.w, out.titleBox.h, maxF, 'title')));
+    if (out.subBox && (subText || asChips)) inner += place(out.subBox, subOnly(fitFs(out.subBox.w, out.subBox.h, 5.4, 'sub')));
+  } else if (out.box) {
+    inner = place(out.box, textBlock(fitFs(out.box.w, out.box.h, maxF)));
   }
-  if (tpl === 'badge') {
-    const bd = Math.min(minSide * 0.28, 17);
-    const uw = PW - 8;
-    const uh = PH - bd - 5;
-    const fs = fitFs(uw, uh, isPoem ? 6.4 : baseMax(pr.text.length));
-    return `<div style="${root}">${shadow}<div style="${pBox}display:flex;flex-direction:column;align-items:center">
-<div style="${stripes}width:100%;height:${bd * 0.62}mm;border-bottom:.5mm solid #111;flex:none"></div>
-<div style="margin-top:${-bd * 0.5}mm;flex:none">${sticker(bd)}</div>
-<div style="flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1mm 4mm 2mm">${textBlock(fs)}</div></div></div>`;
-  }
-  if (tpl === 'banner') {
-    const bh = Math.min(Math.max(PH * 0.26, 10), 15);
-    const uw = PW - 9;
-    const uh = PH - bh - 4;
-    const fs = fitFs(uw, uh, isPoem ? 6.4 : baseMax(pr.text.length));
-    return `<div style="${root}">${shadow}<div style="${pBox}display:flex;flex-direction:column">
-<div style="${stripes}height:${bh}mm;border-bottom:.5mm solid #111;flex:none;display:flex;align-items:center;justify-content:center;gap:3mm">
-<div style="flex:1;height:.4mm;background:#111;opacity:.0"></div>${sticker(bh * 1.18)}</div>
-<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2mm 4.5mm 3mm;margin-top:${bh * 0.2}mm">${textBlock(fs)}</div></div></div>`;
-  }
-  // frame: מסגרת כפולה, ריבועי פינה, ועיטור עם אייקון קטן
-  const orn = Math.min(minSide * 0.17, 11);
-  const uw = PW - 12;
-  const uh = PH - orn - 8;
-  const fs = fitFs(uw, uh, isPoem ? 7.4 : baseMax(pr.text.length));
-  const corner = (pos: string) => `<div style="position:absolute;${pos};width:2.6mm;height:2.6mm;background:${f1};border:.3mm solid #111"></div>`;
-  return `<div style="${root}">${shadow}<div style="${pBox}">
-<div style="position:absolute;inset:1.6mm;border:.3mm dashed #111;pointer-events:none"></div>
-${corner('left:.9mm;top:.9mm')}${corner('right:.9mm;top:.9mm')}${corner('left:.9mm;bottom:.9mm')}${corner('right:.9mm;bottom:.9mm')}
-<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4mm 6mm 3mm">
-<div style="width:100%">${textBlock(fs)}</div>
-<div style="display:flex;align-items:center;gap:2mm;width:78%;margin-top:${isPoem ? 1.6 : 2.2}mm"><div style="flex:1;height:.4mm;background:#111"></div><div style="width:${orn}mm;height:${orn}mm;flex:none">${svgIcon}</div><div style="flex:1;height:.4mm;background:#111"></div></div></div></div></div>`;
+  return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:${out.bg ?? '#fff'};color:${ink};direction:rtl;text-align:center">
+<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:${w}mm;height:${h}mm">${out.svg}</svg>${inner}</div>`;
 }
 
 // דף A4 עם עותקים רבים של הכרטיס — לגזירה

@@ -68,7 +68,8 @@ export interface ChuparPrint {
   layout: 'center' | 'split' | 'seal' | 'label' | 'poem' | 'ticket' | 'sign' | 'pharmacy' | 'cinema' | 'plain';
   palette: string;
   motif: string;
-  font: 'suez' | 'secular' | 'rubik' | 'amatic' | 'karantina' | 'heebo';
+  font: 'suez' | 'secular' | 'rubik' | 'amatic' | 'karantina' | 'heebo' | 'playpen' | 'alef';
+  look?: string; // קומפוזיציית הכרטיס (blobs, highlight, stripe...) — ראו chuparLooks.ts
   text: string;
   sub?: string;
   customName?: { prefix: string; placeholder: string; example: string };

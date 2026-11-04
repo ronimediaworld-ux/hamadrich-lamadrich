@@ -95,7 +95,7 @@ export function Header() {
   return (
     <div role="banner" className="no-print site-header" style={{ position: 'sticky', top: 0, zIndex: 60, background: 'var(--paper)', borderBottom: '2px solid var(--ink)' }}>
       <div className="wrap" style={{ height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 18 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 18, flex: 'none' }}>
+        <Link to="/" className="site-logo" style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 18, flex: 'none' }}>
           <span className="logo-flame"><MascotIcon size={30} /></span>
           המדריך למדריך
         </Link>
@@ -126,7 +126,7 @@ export function Header() {
 
         {searchForm('header-search-wrap')}
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 'none' }}>
+        <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 'none' }}>
           <Link to="/favorites" aria-label="הקלסר שלי" title="הקלסר שלי" className="binder-btn">
             <span>הקלסר שלי</span> {favCount > 0 && <b>{favCount}</b>}
           </Link>

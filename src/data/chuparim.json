@@ -34,9 +34,10 @@
       "layout": "seal",
       "palette": "sand",
       "motif": "rosette",
-      "font": "suez",
+      "font": "secular",
       "text": "תעודת הוקרה",
-      "sub": "לכבוד: __________\nעל היותך: __________"
+      "sub": "לכבוד: __________\nעל היותך: __________",
+      "look": "blobs"
     }
   },
   {
@@ -54,9 +55,10 @@
       "layout": "split",
       "palette": "night",
       "motif": "chest",
-      "font": "suez",
+      "font": "rubik",
       "text": "נפתח בסוף השנה",
-      "sub": "לא מציצים לפני הזמן"
+      "sub": "לא מציצים לפני הזמן",
+      "look": "highlight"
     }
   },
   {
@@ -94,9 +96,10 @@
       "layout": "center",
       "palette": "sky",
       "motif": "envelope",
-      "font": "amatic",
+      "font": "suez",
       "text": "מכתב מהעתיד",
-      "sub": "אליי, בעוד שנה: ____________"
+      "sub": "אליי, בעוד שנה: ____________",
+      "look": "ribbon"
     }
   },
   {
@@ -114,9 +117,10 @@
       "layout": "center",
       "palette": "forest",
       "motif": "star",
-      "font": "suez",
+      "font": "playpen",
       "text": "שקית המזל שלך",
-      "sub": "לפתוח כשצריך קצת מזל"
+      "sub": "לפתוח כשצריך קצת מזל",
+      "look": "layers"
     }
   },
   {
@@ -156,7 +160,8 @@
       "motif": "sun",
       "font": "secular",
       "text": "בוקר טוב! סתם כי כן",
-      "sub": "הפתעה קטנה מהצוות"
+      "sub": "הפתעה קטנה מהצוות",
+      "look": "diag"
     }
   },
   {
@@ -174,9 +179,10 @@
       "layout": "seal",
       "palette": "night",
       "motif": "star",
-      "font": "suez",
+      "font": "karantina",
       "text": "כוכב/ת השבוע",
-      "sub": "על: __________________"
+      "sub": "על: __________________",
+      "look": "arch"
     }
   },
   {
@@ -214,9 +220,10 @@
       "layout": "center",
       "palette": "mint",
       "motif": "jar",
-      "font": "secular",
+      "font": "alef",
       "text": "תודה!",
-      "sub": "פתק תודה לצנצנת\nלמי: ______"
+      "sub": "פתק תודה לצנצנת\nלמי: ______",
+      "look": "confetti"
     }
   },
   {
@@ -254,9 +261,10 @@
       "layout": "center",
       "palette": "sand",
       "motif": "mapx",
-      "font": "amatic",
+      "font": "rubik",
       "text": "מפת האוצר שלי",
-      "sub": "X מסמן את החלום"
+      "sub": "X מסמן את החלום",
+      "look": "bunting"
     }
   },
   {
@@ -274,9 +282,10 @@
       "layout": "label",
       "palette": "sunrise",
       "motif": "rosette",
-      "font": "secular",
+      "font": "suez",
       "text": "התגברתי!",
-      "sub": "ההישג שלי: __________"
+      "sub": "ההישג שלי: __________",
+      "look": "stripe"
     }
   },
   {
@@ -383,9 +392,10 @@
       "layout": "seal",
       "palette": "forest",
       "motif": "key",
-      "font": "suez",
+      "font": "secular",
       "text": "איפה שקשה לך,\nשם זה התיקון שלך",
-      "sub": "מאת: ________ , באהבה"
+      "sub": "מאת: ________ , באהבה",
+      "look": "tape"
     }
   },
   {
@@ -405,7 +415,8 @@
       "motif": "drink",
       "font": "secular",
       "text": "מחנה בלי מורל\nזה כמו טרופית בלי קש",
-      "sub": "קש רק אחרי שצועקים: מורל!"
+      "sub": "קש רק אחרי שצועקים: מורל!",
+      "look": "blobs"
     }
   },
   {
@@ -462,9 +473,10 @@
       "layout": "label",
       "palette": "cherry",
       "motif": "bolt",
-      "font": "secular",
+      "font": "heebo",
       "text": "זריקת מרץ",
-      "sub": "לקחת כשהאנרגיה יורדת"
+      "sub": "לקחת כשהאנרגיה יורדת",
+      "look": "highlight"
     }
   },
   {
@@ -484,7 +496,8 @@
       "motif": "tag",
       "font": "secular",
       "text": "אני חניך/ה\nמשבט: ______\nהמוצא — אין להחזיר",
-      "sub": "טלפון מדריך: ___________"
+      "sub": "טלפון מדריך: ___________",
+      "look": "dots"
     }
   },
   {
@@ -502,9 +515,10 @@
       "layout": "label",
       "palette": "berry",
       "motif": "lips",
-      "font": "amatic",
+      "font": "rubik",
       "text": "נשיקת לילה טוב",
-      "sub": "מהצוות של ________"
+      "sub": "מהצוות של ________",
+      "look": "grid"
     }
   },
   {
@@ -524,7 +538,8 @@
       "motif": "crown",
       "font": "suez",
       "text": "הנסיך והנסיכה שלא צחצחו שיניים",
-      "sub": "מברשת רזרבית למי ששכח"
+      "sub": "מברשת רזרבית למי ששכח",
+      "look": "ribbon"
     }
   },
   {
@@ -562,9 +577,10 @@
       "layout": "center",
       "palette": "ocean",
       "motif": "bubbles",
-      "font": "amatic",
+      "font": "playpen",
       "text": "הכל תלוי במצב הרוח",
-      "sub": "מחנה זה כמו בועות סבון"
+      "sub": "מחנה זה כמו בועות סבון",
+      "look": "diag"
     }
   },
   {
@@ -584,7 +600,8 @@
       "motif": "sun",
       "font": "secular",
       "text": "הקם להורגך — השכם להורגו",
-      "sub": "בוקר טוב!"
+      "sub": "בוקר טוב!",
+      "look": "stripe"
     }
   },
   {
@@ -623,7 +640,8 @@
       "palette": "sunrise",
       "motif": "rooster",
       "font": "amatic",
-      "text": "תרנגול קטן חשב: למה לקום בחמש?\nהחליט לקום בעשר כמו כולם.\nאבל היום — השכמה מוקדמת.\nבוקר טוב!"
+      "text": "תרנגול קטן חשב: למה לקום בחמש?\nהחליט לקום בעשר כמו כולם.\nאבל היום — השכמה מוקדמת.\nבוקר טוב!",
+      "look": "layers"
     }
   },
   {
@@ -641,9 +659,10 @@
       "layout": "sign",
       "palette": "chalk",
       "motif": "arrow",
-      "font": "karantina",
+      "font": "alef",
       "text": "אם זה טוב ואם זה רע —\nאין דרך חזרה",
-      "sub": "תחילת המסלול"
+      "sub": "תחילת המסלול",
+      "look": "chalk"
     }
   },
   {
@@ -661,8 +680,9 @@
       "layout": "center",
       "palette": "grape",
       "motif": "mirror",
-      "font": "suez",
-      "text": "כל יום אני קמה יפה\nאבל היום וואלה הגזמתי"
+      "font": "rubik",
+      "text": "כל יום אני קמה יפה\nאבל היום וואלה הגזמתי",
+      "look": "circle"
     }
   },
   {
@@ -680,9 +700,10 @@
       "layout": "center",
       "palette": "night",
       "motif": "sheep",
-      "font": "secular",
+      "font": "suez",
       "text": "לא מצליחים להירדם?",
-      "sub": "תספרו כבשים…"
+      "sub": "תספרו כבשים…",
+      "look": "confetti"
     }
   },
   {
@@ -702,7 +723,8 @@
       "motif": "drink",
       "font": "secular",
       "text": "יש ימים קשים\nויש ימים ורודים",
-      "sub": "היום זה גם וגם"
+      "sub": "היום זה גם וגם",
+      "look": "tape"
     }
   },
   {
@@ -720,9 +742,10 @@
       "layout": "center",
       "palette": "night",
       "motif": "moon",
-      "font": "suez",
+      "font": "secular",
       "text": "כתוב בקלפים",
-      "sub": "שיהיה לך מחנה מדהים"
+      "sub": "שיהיה לך מחנה מדהים",
+      "look": "bunting"
     }
   },
   {
@@ -742,7 +765,8 @@
       "motif": "flag",
       "font": "amatic",
       "text": "יש התחלה של כיפה\nיש התחלה של מירוץ\nיש התחלה של יום\nיש התחלה של בית ספר\nאבל הכי טובה —\nהתחלה של טיול!",
-      "sub": "שיהיה לנו טיול מדהים"
+      "sub": "שיהיה לנו טיול מדהים",
+      "look": "dots"
     }
   },
   {
@@ -781,7 +805,8 @@
       "motif": "moon",
       "font": "amatic",
       "text": "צחקתי, שרתי, חיבקתי, רצתי,\nחירפנתי, הצקתי, עיצבנתי, נפלתי,\nהתייבשתי, לא הרגשתי טוב —\nוזהו, עשיתי את שלי להיום.\nאפשר ללכת לישון.",
-      "sub": "לילה טוב"
+      "sub": "לילה טוב",
+      "look": "highlight"
     }
   },
   {
@@ -799,9 +824,10 @@
       "layout": "sign",
       "palette": "forest",
       "motif": "snake",
-      "font": "karantina",
+      "font": "rubik",
       "text": "זהירות!\nנחש בשק״ש",
-      "sub": "בדיחה בלבד · ללא סכנה"
+      "sub": "בדיחה בלבד · ללא סכנה",
+      "look": "arch"
     }
   },
   {
@@ -821,7 +847,8 @@
       "motif": "crown",
       "font": "suez",
       "text": "כתר — לא יוצא לי מהראש",
-      "sub": "שבט: ________"
+      "sub": "שבט: ________",
+      "look": "grid"
     }
   },
   {
@@ -839,9 +866,10 @@
       "layout": "seal",
       "palette": "sand",
       "motif": "scroll",
-      "font": "suez",
+      "font": "playpen",
       "text": "כל המהלך ארבע אמות בישראל…",
-      "sub": "ובהצלחה עם כל המצוות שעוד מחכות לכם"
+      "sub": "ובהצלחה עם כל המצוות שעוד מחכות לכם",
+      "look": "blobs"
     }
   },
   {
@@ -861,7 +889,8 @@
       "motif": "hat",
       "font": "secular",
       "text": "תכניסו את זה טוב לאוזניים:",
-      "sub": "כובע · נעליים · מים!"
+      "sub": "כובע · נעליים · מים!",
+      "look": "ribbon"
     }
   },
   {
@@ -880,7 +909,8 @@
       "palette": "sunrise",
       "motif": "drink",
       "font": "rubik",
-      "text": "אחרי שהוצאנו לכם את המיץ — קחו אותו בחזרה"
+      "text": "אחרי שהוצאנו לכם את המיץ — קחו אותו בחזרה",
+      "look": "layers"
     }
   },
   {
@@ -898,9 +928,10 @@
       "layout": "label",
       "palette": "cherry",
       "motif": "star",
-      "font": "suez",
+      "font": "alef",
       "text": "קולה כבוד!",
-      "sub": "ל: ________\nעל משהו יפה שעשית"
+      "sub": "ל: ________\nעל משהו יפה שעשית",
+      "look": "diag"
     }
   },
   {
@@ -918,9 +949,10 @@
       "layout": "center",
       "palette": "night",
       "motif": "glow",
-      "font": "secular",
+      "font": "rubik",
       "text": "אתם מדליקים!",
-      "sub": "שרשרת זוהרת"
+      "sub": "שרשרת זוהרת",
+      "look": "circle"
     }
   },
   {
@@ -938,9 +970,10 @@
       "layout": "center",
       "palette": "forest",
       "motif": "paw",
-      "font": "secular",
+      "font": "suez",
       "text": "אל תאבדו את השבט",
-      "sub": "לבד — כמו חיה בטבע"
+      "sub": "לבד — כמו חיה בטבע",
+      "look": "stripe"
     }
   },
   {
@@ -960,7 +993,8 @@
       "motif": "compass",
       "font": "amatic",
       "text": "קח מצפן זה, הנח אותו בכף ידך\nבזווית של 180 מעלות\nעד למציאת אובדנך.\nבהצלחה!",
-      "sub": "לא עזר? התקשרו: ___________"
+      "sub": "לא עזר? התקשרו: ___________",
+      "look": "bunting"
     }
   },
   {
@@ -1018,9 +1052,10 @@
       "layout": "center",
       "palette": "ocean",
       "motif": "bubbles",
-      "font": "amatic",
+      "font": "secular",
       "text": "שלא תשתעממו לי בדרך לאוטובוס",
-      "sub": "פצפצו בכיף"
+      "sub": "פצפצו בכיף",
+      "look": "arch"
     }
   },
   {
@@ -1038,9 +1073,10 @@
       "layout": "split",
       "palette": "cherry",
       "motif": "cards",
-      "font": "suez",
+      "font": "heebo",
       "text": "אתם עשר!",
-      "sub": "שלא תשעממו בדרך"
+      "sub": "שלא תשעממו בדרך",
+      "look": "tape"
     }
   },
   {
@@ -1059,7 +1095,8 @@
       "palette": "sky",
       "motif": "flag",
       "font": "amatic",
-      "text": "סוף סוף האוטובוס זז:\nהאיחור, הצפיפות, הרעב,\nהנעליים הלוחצות…\nעם קצת סבלנות ופחות עצבים —\nיהיה לנו טיול מקסים!"
+      "text": "סוף סוף האוטובוס זז:\nהאיחור, הצפיפות, הרעב,\nהנעליים הלוחצות…\nעם קצת סבלנות ופחות עצבים —\nיהיה לנו טיול מקסים!",
+      "look": "confetti"
     }
   },
   {
@@ -1097,9 +1134,10 @@
       "layout": "center",
       "palette": "sunrise",
       "motif": "thermo",
-      "font": "secular",
+      "font": "rubik",
       "text": "מד החום של הקבוצה",
-      "sub": "משועמם · בסדר · כיף · מטורף · הכי טוב אי פעם"
+      "sub": "משועמם · בסדר · כיף · מטורף · הכי טוב אי פעם",
+      "look": "blobs"
     }
   },
   {
@@ -1119,7 +1157,8 @@
       "motif": "rosette",
       "font": "suez",
       "text": "תעודת גבורה לשורד/ת המסלול",
-      "sub": "מוענקת בזאת ל: ________\nעל עמידה איתנה מול נעליים לוחצות, שמש קופחת ורצון עז לנוח"
+      "sub": "מוענקת בזאת ל: ________\nעל עמידה איתנה מול נעליים לוחצות, שמש קופחת ורצון עז לנוח",
+      "look": "highlight"
     }
   },
   {
@@ -1137,9 +1176,10 @@
       "layout": "sign",
       "palette": "chalk",
       "motif": "bolt",
-      "font": "karantina",
+      "font": "playpen",
       "text": "הוראות הפעלה לחניך עייף",
-      "sub": "1. הוסף מים · 2. הוסף חטיף\n3. המתן 10 דק׳ · 4. הוסף חיבוק · 5. הפעל מחדש"
+      "sub": "1. הוסף מים · 2. הוסף חטיף\n3. המתן 10 דק׳ · 4. הוסף חיבוק · 5. הפעל מחדש",
+      "look": "chalk"
     }
   },
   {
@@ -1177,9 +1217,10 @@
       "layout": "seal",
       "palette": "sky",
       "motif": "stamp",
-      "font": "suez",
+      "font": "secular",
       "text": "פוליסת ביטוח נגד שעמום",
-      "sub": "שם המבוטח: ________\nכיסוי מלא לכל הטיול"
+      "sub": "שם המבוטח: ________\nכיסוי מלא לכל הטיול",
+      "look": "dots"
     }
   },
   {
@@ -1216,9 +1257,10 @@
       "layout": "ticket",
       "palette": "night",
       "motif": "moon",
-      "font": "suez",
+      "font": "karantina",
       "text": "VIP · מועדון חצות",
-      "sub": "שם החבר/ה: ________\nאסור להירדם לפני מחצית!"
+      "sub": "שם החבר/ה: ________\nאסור להירדם לפני מחצית!",
+      "look": "stripe"
     }
   },
   {
@@ -1256,9 +1298,10 @@
       "layout": "label",
       "palette": "forest",
       "motif": "stamp",
-      "font": "rubik",
+      "font": "alef",
       "text": "עמדתי באתגר!",
-      "sub": "שם: ________"
+      "sub": "שם: ________",
+      "look": "layers"
     }
   },
   {
@@ -1276,9 +1319,10 @@
       "layout": "center",
       "palette": "sunrise",
       "motif": "magnet",
-      "font": "suez",
+      "font": "rubik",
       "text": "הסיסמה שלנו:",
-      "sub": "______________________"
+      "sub": "______________________",
+      "look": "circle"
     }
   },
   {
@@ -1296,9 +1340,10 @@
       "layout": "center",
       "palette": "ocean",
       "motif": "compass",
-      "font": "amatic",
+      "font": "suez",
       "text": "לפעמים המצפן הכי טוב\nהוא זה שבפנים",
-      "sub": "תסמכו עליו"
+      "sub": "תסמכו עליו",
+      "look": "grid"
     }
   },
   {
@@ -1316,9 +1361,10 @@
       "layout": "seal",
       "palette": "sunrise",
       "motif": "rosette",
-      "font": "suez",
+      "font": "amatic",
       "text": "פרס הקבוצה",
-      "sub": "לכבוד: __________\nעל: __________"
+      "sub": "לכבוד: __________\nעל: __________",
+      "look": "diag"
     }
   },
   {
@@ -1336,8 +1382,9 @@
       "layout": "center",
       "palette": "sand",
       "motif": "jar",
-      "font": "amatic",
-      "text": "הרגע הכי מתוק היום:"
+      "font": "secular",
+      "text": "הרגע הכי מתוק היום:",
+      "look": "confetti"
     }
   },
   {
@@ -1374,9 +1421,10 @@
       "layout": "split",
       "palette": "sand",
       "motif": "key",
-      "font": "suez",
+      "font": "heebo",
       "text": "המפתח לכל בעיה:",
-      "sub": "לפעמים פשוט צריך לישון עליה"
+      "sub": "לפעמים פשוט צריך לישון עליה",
+      "look": "ribbon"
     }
   },
   {
@@ -1396,7 +1444,8 @@
       "motif": "flag",
       "font": "amatic",
       "text": "שריקת המחצית מהדהדת במגרש\nהם שותים, נושמים וקצת מדברים\nמה היה טוב ומה לשפר —\nוכשהשריקה נשמעת, הם חוזרים כמו אריות.\nיש עוד מחצית לשנות מהלך.\nהעיקרון פשוט: לא לוותר!",
-      "sub": "שריקת הסיום עוד לא נשמעה"
+      "sub": "שריקת הסיום עוד לא נשמעה",
+      "look": "bunting"
     }
   },
   {
