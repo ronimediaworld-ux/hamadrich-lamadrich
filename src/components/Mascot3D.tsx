@@ -59,21 +59,21 @@ export function Mascot3D({ size = 180 }: { size?: number }) {
       <div className="m3d-body" ref={body} style={{ width: w, height: h }}>
         <div className="m3d-glow" />
         <svg className="m3d-layer" viewBox="0 0 100 120" style={{ transform: 'translateZ(-26px) scale(1.04)' }}>
-          <path d={FLAME} fill="#8E3410" />
+          <path d={FLAME} fill="#D2631F" opacity=".55" />
         </svg>
         <svg className="m3d-layer" viewBox="0 0 100 120" style={{ transform: 'translateZ(0)' }}>
           <defs>
             <radialGradient id="m3dBody" cx="36%" cy="38%" r="82%">
               <stop offset="0%" stopColor="#FFD878" />
               <stop offset="42%" stopColor="#F58D2F" />
-              <stop offset="100%" stopColor="#C24A14" />
+              <stop offset="100%" stopColor="#D2581A" />
             </radialGradient>
             <linearGradient id="m3dShade" x1="0.2" y1="0.1" x2="0.9" y2="1">
               <stop offset="0%" stopColor="#5A1E00" stopOpacity="0" />
-              <stop offset="100%" stopColor="#5A1E00" stopOpacity=".42" />
+              <stop offset="100%" stopColor="#5A1E00" stopOpacity=".28" />
             </linearGradient>
           </defs>
-          <path d={FLAME} fill="url(#m3dBody)" stroke="#241C11" strokeWidth="4.5" strokeLinejoin="round" />
+          <path d={FLAME} fill="url(#m3dBody)" />
           <path d={FLAME} fill="url(#m3dShade)" />
         </svg>
         <svg className="m3d-layer" viewBox="0 0 100 120" style={{ transform: 'translateZ(16px)' }}>
@@ -87,14 +87,14 @@ export function Mascot3D({ size = 180 }: { size?: number }) {
         </svg>
         <svg className="m3d-layer" viewBox="0 0 100 120" style={{ transform: 'translateZ(30px)' }}>
           <g className="m3d-eyes">
-            <ellipse cx="39" cy="84" rx="4.8" ry="6" fill="#241C11" />
-            <ellipse cx="61" cy="84" rx="4.8" ry="6" fill="#241C11" />
+            <ellipse cx="39" cy="84" rx="4.2" ry="5.4" fill="#5A2A12" />
+            <ellipse cx="61" cy="84" rx="4.2" ry="5.4" fill="#5A2A12" />
             <circle cx="40.6" cy="81.8" r="1.7" fill="#fff" />
             <circle cx="62.6" cy="81.8" r="1.7" fill="#fff" />
           </g>
           <circle cx="29" cy="94" r="5.2" fill="#FF7A6B" opacity=".45" />
           <circle cx="71" cy="94" r="5.2" fill="#FF7A6B" opacity=".45" />
-          <path d="M41 95q9 9 18 0" fill="none" stroke="#241C11" strokeWidth="4" strokeLinecap="round" />
+          <path d="M41 95q9 8 18 0" fill="none" stroke="#5A2A12" strokeWidth="3" strokeLinecap="round" />
         </svg>
         <svg className="m3d-layer" viewBox="0 0 100 120" style={{ transform: 'translateZ(42px)' }}>
           <defs>
