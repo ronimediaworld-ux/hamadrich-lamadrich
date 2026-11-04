@@ -22,37 +22,45 @@ import { offerHtml } from '../lib/printFile';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { SEVEN_BONUS, SEVEN_PARTS } from '../data/sevenParts';
 
-// צבע החלק לפי שמו, מתוך שבעת החלקים של האתר (למשל "פתיחה" ירוק, "משחק" כתום). רק מספר השלב וקו דק מקבלים צבע.
-function partColor(label: string): string {
-  const find = (key: string) => SEVEN_PARTS.find((p) => p.key === key)?.color;
-  if (/צ[׳']ופר/.test(label)) return SEVEN_BONUS.color;
-  if (/^פתיחה/.test(label)) return find('opening') ?? 'var(--flame)';
-  if (/דיון|שאלות/.test(label)) return find('discussion') ?? 'var(--flame)';
-  if (/קטע|סיפור|מקור|קריאה/.test(label)) return find('reading') ?? 'var(--flame)';
-  if (/הסבר|חיבור/.test(label)) return find('explanation') ?? 'var(--flame)';
-  if (/סיכום/.test(label)) return find('summary') ?? 'var(--flame)';
-  if (/משחק|מתודה|מהלך|תרגיל/.test(label)) return find('game') ?? 'var(--flame)';
-  return 'var(--flame)';
+// החלק בשיטת שבעת החלקים לפי שם השלב (למשל "פתיחה" הוא חלק 2 וירוק, "משחק" הוא חלק 3 וכתום).
+// כל שלב מקבל את הצבע ואת מספר החלק שלו לפי התבנית, ולכן הצבעים אחידים בכל הפעולות.
+function partFor(label: string) {
+  const find = (key: string) => SEVEN_PARTS.find((p) => p.key === key);
+  if (/צ[׳']ופר/.test(label)) return SEVEN_BONUS;
+  if (/^פתיחה/.test(label)) return find('opening');
+  if (/דיון|שאלות/.test(label)) return find('discussion');
+  if (/קטע|סיפור|מקור|קריאה/.test(label)) return find('reading');
+  if (/הסבר|חיבור/.test(label)) return find('explanation');
+  if (/סיכום/.test(label)) return find('summary');
+  if (/משחק|מתודה|מהלך|תרגיל/.test(label)) return find('game');
+  return undefined;
 }
 
 function Section({ label, step, children }: { label: string; step?: number; children: React.ReactNode }) {
-  const color = partColor(label);
+  const part = partFor(label);
+  const color = part?.color ?? 'var(--flame)';
   return (
     <div style={{ marginBottom: 26 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
         {step ? (
           <span style={{
-            flex: 'none', width: 24, height: 24, borderRadius: '50%', background: color, color: '#FFF6EC',
-            fontSize: 12.5, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flex: 'none', width: 26, height: 26, borderRadius: '50%', background: color, color: '#FFF6EC',
+            fontSize: 13, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             {step}
           </span>
         ) : (
           <span style={{ width: 8, height: 8, borderRadius: 999, background: color }} />
         )}
-        <h3 style={{ fontSize: 15.5, fontWeight: 800 }}>{label}</h3>
+        <h3 style={{ fontSize: 16, fontWeight: 800, color: part ? color : undefined }}>{label}</h3>
+        {part && (
+          <span title="החלק בשיטת שבעת החלקים" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '1px 10px 1px 4px', borderRadius: 999, background: part.tint, border: `1.5px solid ${color}`, fontSize: 12, fontWeight: 800, color: 'var(--ink)' }}>
+            <span style={{ width: 17, height: 17, borderRadius: '50%', background: color, color: '#fff', fontSize: 10.5, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{part.n === 8 ? '+' : part.n}</span>
+            {part.name}
+          </span>
+        )}
       </div>
-      <div style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-soft)', paddingInlineStart: 16, borderInlineStart: `3px solid ${color}`, marginInlineStart: 11 }}>{children}</div>
+      <div style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-soft)', paddingInlineStart: 16, borderInlineStart: `3px solid ${color}`, marginInlineStart: 12 }}>{children}</div>
     </div>
   );
 }
