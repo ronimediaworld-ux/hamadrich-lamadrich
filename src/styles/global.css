@@ -190,6 +190,8 @@ a.card:hover, .card.is-hoverable:hover { transform: translate(-3px, -5px); box-s
 .header-burger { display: none; }
 .header-mobile-panel { display: none; }
 @media (max-width: 1480px) { .header-search-wrap { display: none !important; } }
+/* במסכים רחבים הסרגל מתרחב כדי שחיפוש + תפריט + כפתור הקלסר ייכנסו בלי להיחתך */
+@media (min-width: 1481px) { .site-header .wrap { max-width: 1480px; } }
 @media (max-width: 1240px) {
   .header-nav { display: none !important; }
   .header-search-wrap { display: none !important; }
