@@ -435,18 +435,6 @@ html, body { overflow-x: clip; }
 /* =====================================================================
    ניצוץ בתלת מימד ועוד תנועה באתר
    ===================================================================== */
-.m3d { position: relative; margin: 0 auto; perspective: 760px; display: block; }
-.m3d-body { position: relative; transform-style: preserve-3d; will-change: transform; margin: 0 auto; animation: m3dFloat 4.2s ease-in-out infinite; }
-.m3d-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; backface-visibility: visible; }
-.m3d-glow { position: absolute; inset: 8% 6% 4%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 170, 60, .75), rgba(255, 170, 60, 0) 68%); filter: blur(14px); transform: translateZ(-60px) scale(1.35); animation: m3dGlow 3.4s ease-in-out infinite; }
-.m3d-eyes { transform-origin: 50px 84px; animation: m3dBlink 5s infinite; }
-.m3d-shadow { position: absolute; inset-inline: 22%; bottom: 0; height: 16px; border-radius: 50%; background: radial-gradient(ellipse, rgba(36, 28, 17, .38), rgba(36, 28, 17, 0) 70%); animation: m3dShadow 4.2s ease-in-out infinite; }
-.m3d-spark { position: absolute; left: var(--x); bottom: 28%; width: 7px; height: 7px; border-radius: 50%; background: #FFC24A; box-shadow: 0 0 10px 3px rgba(255, 170, 60, .7); opacity: 0; animation: m3dSpark 4.4s ease-out infinite; animation-delay: var(--d); }
-@keyframes m3dFloat { 0%, 100% { margin-top: 0; } 50% { margin-top: -10px; } }
-@keyframes m3dGlow { 0%, 100% { opacity: .75; transform: translateZ(-60px) scale(1.3); } 50% { opacity: 1; transform: translateZ(-60px) scale(1.5); } }
-@keyframes m3dBlink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.08); } }
-@keyframes m3dShadow { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(.82); opacity: .6; } }
-@keyframes m3dSpark { 0% { transform: translateY(0) scale(.5); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-120px) scale(1.2); opacity: 0; } }
 
 /* מעבר בין עמודים */
 @keyframes pageIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -492,5 +480,136 @@ a.new-card:hover { transform: perspective(800px) translate(-3px, -5px) rotateX(v
 .btn-flame:hover::after { background-position: -50% 0; }
 @media (prefers-reduced-motion: reduce) {
   .reveal .stagger > * { opacity: 1 !important; }
-  .m3d-spark { display: none; }
+}
+
+
+/* הבזקי אור לצדדים של ניצוץ: קרניים מסתובבות, כוכבים מנצנצים וקווי אור */
+
+
+/* ניצוץ בדף הבית: ריחוף עדין, קרני אור דקות וכוכבים רכים בצדדים */
+.hm { position: relative; margin: 0 auto; }
+.hm-flame { position: relative; z-index: 1; width: 100%; transform-origin: 50% 92%; animation: bob 3.6s ease-in-out infinite; }
+.hm-flame svg { display: block; margin: 0 auto; filter: drop-shadow(0 6px 8px rgba(122, 55, 18, .18)); }
+.hm-rays { position: absolute; left: 50%; top: 46%; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 205, 110, .3) 0deg 3deg, rgba(255, 205, 110, 0) 3deg 24deg);
+  -webkit-mask-image: radial-gradient(circle, #000 10%, transparent 62%); mask-image: radial-gradient(circle, #000 10%, transparent 62%);
+  animation: hmRays 48s linear infinite; opacity: .55; }
+@keyframes hmRays { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.hm-star { position: absolute; opacity: 0; pointer-events: none; filter: drop-shadow(0 0 5px rgba(255, 190, 70, .7)); animation: hmTwinkle 3.8s ease-in-out infinite; }
+@keyframes hmTwinkle { 0%, 100% { opacity: 0; transform: scale(.2); } 50% { opacity: .75; transform: scale(1); } }
+.hm-shadow { position: absolute; inset-inline: 26%; bottom: 0; height: 12px; border-radius: 50%; background: radial-gradient(ellipse, rgba(36, 28, 17, .22), rgba(36, 28, 17, 0) 70%); animation: hmShadow 3.6s ease-in-out infinite; }
+@keyframes hmShadow { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(.82); opacity: .6; } }
+@media (prefers-reduced-motion: reduce) { .hm-rays, .hm-star { display: none; } }
+
+
+/* =====================================================================
+   המשך דף הבית: עוזר AI, כלים, צ'ופרים, מנוי, מנהלת האתר וקריאה לפעולה
+   ===================================================================== */
+.ai-panel { position: relative; overflow: hidden; display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 40px; align-items: center; background: var(--ink); color: #F3ECDD; border-radius: 30px; padding: 46px 48px; }
+.ai-panel:before { content: ''; position: absolute; inset-inline-end: -90px; top: -110px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgba(242, 184, 75, .55), rgba(217, 106, 43, .25) 55%, transparent 72%); animation: aiGlow 6s ease-in-out infinite; }
+@keyframes aiGlow { 0%, 100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.18); opacity: 1; } }
+.ai-copy { position: relative; }
+.ai-pill { display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px 5px 8px; border-radius: 999px; background: rgba(255, 255, 255, .1); font-size: 13.5px; font-weight: 800; margin-bottom: 18px; }
+.ai-copy h2 { font-size: clamp(26px, 3vw, 34px); font-weight: 900; line-height: 1.12; margin-bottom: 12px; }
+.ai-copy p { font-size: 15.5px; color: #CFC3AB; margin-bottom: 24px; max-width: 42ch; }
+.ai-win { position: relative; background: #FFFEFA; color: var(--ink); border-radius: 22px; box-shadow: 8px 10px 0 rgba(0, 0, 0, .35); overflow: hidden; transform: rotate(-1deg); transition: transform .3s var(--ease); }
+.ai-win:hover { transform: rotate(0deg) translateY(-4px); }
+.ai-head { display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: #FBE4D2; border-bottom: 2px solid var(--ink); font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+.ai-head b { font-family: 'Rubik', sans-serif; font-size: 17px; color: var(--ink); margin-inline-end: 6px; }
+.ai-dot { width: 9px; height: 9px; border-radius: 50%; background: #2F7A4B; box-shadow: 0 0 0 0 rgba(47, 122, 75, .6); animation: aiPing 2s infinite; }
+@keyframes aiPing { 0% { box-shadow: 0 0 0 0 rgba(47, 122, 75, .55); } 70%, 100% { box-shadow: 0 0 0 9px rgba(47, 122, 75, 0); } }
+.ai-body { padding: 18px; display: grid; gap: 10px; }
+.ai-me { justify-self: start; max-width: 80%; background: var(--marker); border: 2px solid var(--ink); border-radius: 16px 16px 16px 4px; padding: 10px 15px; font-weight: 600; font-size: 14.5px; }
+.ai-bot { justify-self: end; max-width: 92%; background: #fff; border: 2px solid var(--ink); border-radius: 16px 16px 4px 16px; padding: 12px 16px; font-size: 14.5px; }
+.ai-found { background: #E1F0E5; border: 1.5px solid var(--ink); border-radius: 10px; padding: 6px 12px; font-weight: 700; font-size: 14px; margin-top: 6px; }
+.ai-typing { justify-self: end; display: flex; gap: 5px; padding: 6px 12px; }
+.ai-typing i { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-faint); animation: typingDot 1.2s infinite; }
+.ai-typing i:nth-child(2) { animation-delay: .15s; } .ai-typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes typingDot { 0%, 80%, 100% { transform: translateY(0); opacity: .4; } 40% { transform: translateY(-5px); opacity: 1; } }
+
+.help-card { display: grid; grid-template-columns: 38% 1fr; align-items: stretch; background: var(--paper); border: 2px solid var(--ink); border-radius: 30px; box-shadow: 8px 8px 0 var(--ink); position: relative; overflow: hidden; }
+.help-copy { padding: 36px 42px; }
+.help-copy h2 { font-size: clamp(24px, 2.8vw, 32px); font-weight: 900; margin-bottom: 8px; }
+.help-copy p { font-size: 16px; color: var(--ink-soft); max-width: 54ch; margin-bottom: 18px; }
+.help-icons { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; padding: 30px 24px; background: var(--sky-tint); border-inline-end: 2px solid var(--ink); }
+.help-icons span { width: 84px; height: 84px; display: grid; place-items: center; background: var(--t); border: 2px solid var(--ink); border-radius: 24px; box-shadow: 4px 4px 0 var(--ink); transform: rotate(var(--r)); animation: floaty 5s ease-in-out infinite; }
+.help-icons span:nth-child(2) { animation-delay: -1.6s; margin-top: 22px; } .help-icons span:nth-child(3) { animation-delay: -3.2s; }
+.help-icons svg { width: 52px; height: 52px; }
+
+.chup-mini { position: relative; border-style: solid; transform: rotate(var(--rot, 0deg)); background-image: radial-gradient(circle at 0 50%, var(--bg) 9px, transparent 10px), radial-gradient(circle at 100% 50%, var(--bg) 9px, transparent 10px); }
+.chup-mini:after { content: ''; position: absolute; inset: 7px; border: 1.5px dashed var(--c); border-radius: 12px; opacity: .55; pointer-events: none; }
+.chup-ic { width: 46px; height: 46px; }
+
+.subscribe-box { position: relative; background: #FBF0CE; border: 2px solid var(--ink); border-radius: 28px; box-shadow: 8px 8px 0 var(--ink); padding: 32px 40px 34px; overflow: hidden; }
+.subscribe-box:before { content: ''; position: absolute; inset-inline-start: -50px; bottom: -60px; width: 190px; height: 190px; border-radius: 50%; background: rgba(242, 184, 75, .45); }
+.subscribe-box > * { position: relative; }
+.subscribe-env { position: absolute !important; inset-inline-end: 32px; top: 22px; width: 76px; height: 76px; animation: floaty 4.4s ease-in-out infinite; }
+.subscribe-env svg { width: 100%; height: 100%; }
+
+.manager-card { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; background: var(--flame-tint); border: 2px solid var(--ink); border-radius: 26px; padding: 22px 30px; transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+.manager-card:hover { transform: translate(-3px, -5px); box-shadow: 6px 8px 0 var(--ink); }
+.manager-avatar { flex: none; width: 72px; height: 72px; border-radius: 50%; background: #FFFEFA; border: 2px solid var(--ink); display: grid; place-items: center; box-shadow: 3px 3px 0 var(--ink); }
+.manager-link { font-weight: 800; color: var(--flame-ink); background: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 8px 18px; white-space: nowrap; }
+
+.cta-banner { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 28px; background: linear-gradient(135deg, var(--flame), var(--magenta)); border: 2px solid var(--ink); border-radius: 30px; box-shadow: 8px 8px 0 var(--ink); color: #FFF6EC; padding: 40px 48px; }
+.cta-banner:before, .cta-banner:after { content: ''; position: absolute; border-radius: 50%; background: rgba(255, 255, 255, .13); pointer-events: none; }
+.cta-banner:before { width: 220px; height: 220px; inset-inline-start: -60px; top: -90px; animation: floaty 7s ease-in-out infinite; }
+.cta-banner:after { width: 140px; height: 140px; inset-inline-start: 36%; bottom: -70px; animation: floaty 6s ease-in-out infinite reverse; }
+.cta-btn { position: relative; flex: none; background: #FFF6EC; color: var(--ink); font-family: 'Rubik', sans-serif; font-weight: 900; font-size: 17px; border: 2px solid var(--ink); border-radius: 999px; padding: 14px 32px; box-shadow: 4px 4px 0 var(--ink); transition: transform .2s var(--ease), box-shadow .2s var(--ease); }
+.cta-btn:hover { transform: translate(-2px, -3px); box-shadow: 6px 7px 0 var(--ink); }
+
+@media (max-width: 720px) {
+  .ai-panel { grid-template-columns: 1fr; padding: 28px 22px; gap: 26px; border-radius: 24px; }
+  .help-card { grid-template-columns: 1fr; border-radius: 24px; }
+  .help-icons { order: -1; border-inline-end: 0; border-bottom: 2px solid var(--ink); padding: 18px; gap: 10px; }
+  .help-copy { padding: 24px 22px 26px; }
+  .help-icons span { width: 62px; height: 62px; border-radius: 18px; } .help-icons svg { width: 38px; height: 38px; }
+  .subscribe-box { padding: 26px 22px 28px; border-radius: 24px; }
+  .subscribe-env { position: static !important; width: 56px; height: 56px; margin-bottom: 8px; }
+  .manager-card { padding: 18px 20px; }
+  .cta-banner { flex-direction: column; align-items: flex-start; padding: 30px 24px; border-radius: 24px; }
+  .cta-btn { width: 100%; text-align: center; }
+}
+
+/* ---- דף הבית: הקטעים מתחת לפרשת השבוע קטנים וקומפקטיים יותר ---- */
+.parsha-panel { border-radius: 24px; }
+.parsha-panel > div { padding: 26px 32px !important; }
+.parsha-panel h3 { font-size: clamp(26px, 3vw, 34px) !important; }
+.parsha-row { padding: 9px 14px !important; font-size: 14px !important; }
+.ai-panel { padding: 28px 34px; gap: 28px; border-radius: 24px; }
+.ai-panel:before { width: 220px; height: 220px; top: -80px; }
+.ai-copy h2 { font-size: clamp(21px, 2.3vw, 26px); margin-bottom: 8px; }
+.ai-copy p { font-size: 14.5px; margin-bottom: 16px; }
+.ai-pill { margin-bottom: 12px; font-size: 12.5px; }
+.ai-win { border-radius: 18px; box-shadow: 5px 6px 0 rgba(0, 0, 0, .35); max-width: 440px; }
+.ai-head { padding: 9px 14px; } .ai-head b { font-size: 15px; }
+.ai-body { padding: 13px; gap: 8px; }
+.ai-me, .ai-bot { font-size: 13.5px; padding: 8px 12px; }
+.help-card { border-radius: 24px; box-shadow: 5px 5px 0 var(--ink); }
+.help-copy { padding: 24px 30px; }
+.help-copy h2 { font-size: clamp(20px, 2.3vw, 25px); margin-bottom: 6px; }
+.help-copy p { font-size: 14.5px; margin-bottom: 14px; }
+.help-icons { padding: 18px; gap: 10px; }
+.help-icons span { width: 62px; height: 62px; border-radius: 18px; box-shadow: 3px 3px 0 var(--ink); }
+.help-icons svg { width: 38px; height: 38px; }
+.chup-mini { min-height: 112px; padding: 14px 12px; gap: 6px; }
+.chup-mini b { font-size: 15px !important; }
+.chup-ic { width: 34px; height: 34px; }
+.subscribe-box { padding: 22px 28px 24px; border-radius: 22px; box-shadow: 5px 5px 0 var(--ink); }
+.subscribe-box h2 { font-size: 20px !important; }
+.subscribe-box p { font-size: 14.5px !important; margin-bottom: 12px !important; }
+.subscribe-env { width: 54px; height: 54px; top: 16px; inset-inline-end: 24px; }
+.manager-card { padding: 14px 22px; border-radius: 20px; gap: 14px; }
+.manager-avatar { width: 54px; height: 54px; box-shadow: 2px 2px 0 var(--ink); }
+.manager-avatar svg { width: 36px; height: 36px; }
+.cta-banner { padding: 26px 34px; border-radius: 22px; box-shadow: 5px 5px 0 var(--ink); }
+.cta-banner h3 { font-size: clamp(20px, 2.4vw, 25px) !important; }
+.cta-banner p { font-size: 14px !important; }
+.cta-btn { font-size: 15px; padding: 11px 26px; }
+@media (max-width: 720px) {
+  .ai-panel { padding: 22px 18px; gap: 18px; }
+  .help-copy { padding: 18px 18px 20px; }
+  .parsha-panel > div { padding: 22px 20px !important; }
+  .subscribe-box { padding: 20px 18px 22px; }
+  .cta-banner { padding: 22px 20px; }
 }

@@ -31,6 +31,8 @@ export function CategoryIcon({ slug, className }: { slug: string; className?: st
       return (<svg {...common}><rect x="6" y="8" width="44" height="20" rx="5" fill={c} {...st} /><path d="M50 18h4v12H28v8" fill="none" stroke={INK} strokeWidth="2.6" strokeLinejoin="round" /><rect x="23" y="38" width="10" height="14" rx="3" fill="#F2B84B" {...st} /></svg>);
     case 'games':
       return (<svg {...common}><rect x="8" y="8" width="40" height="40" rx="9" fill={c} {...st} transform="rotate(-8 28 28)" /><g fill="#fff"><circle cx="19" cy="19" r="3.2" /><circle cx="37" cy="19" r="3.2" /><circle cx="28" cy="28" r="3.2" /><circle cx="19" cy="37" r="3.2" /><circle cx="37" cy="37" r="3.2" /></g></svg>);
+    case 'chuparim':
+      return (<svg {...common}><rect x="8" y="22" width="40" height="28" rx="5" fill="#C99411" {...st} /><rect x="5" y="15" width="46" height="10" rx="4" fill="#F2B84B" {...st} /><path d="M28 15v35" stroke={INK} strokeWidth="2.6" /><path d="M28 15c-8-12-18-4-10 0M28 15c8-12 18-4 10 0" fill="none" stroke={INK} strokeWidth="2.6" strokeLinecap="round" /></svg>);
     case 'methods':
       return (<svg {...common}><circle cx="28" cy="28" r="15" fill={c} {...st} /><circle cx="28" cy="28" r="5.5" fill="#FFFEFA" stroke={INK} strokeWidth="2.4" /><path d="M28 6v9M28 41v9M6 28h9M41 28h9M12.5 12.5l6 6M37.5 37.5l6 6M43.5 12.5l-6 6M18.5 37.5l-6 6" stroke={INK} strokeWidth="3.2" strokeLinecap="round" /></svg>);
     default:

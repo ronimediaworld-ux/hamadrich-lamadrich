@@ -94,31 +94,21 @@ export function MascotIcon({ size = 40, className }: { size?: number; className?
   return (
     <svg width={size} height={size} viewBox="0 0 80 80" className={className}>
       <defs>
-        <radialGradient id="sparkGrad" cx="36%" cy="40%" r="80%">
-          <stop offset="0%" stopColor="#FFD878" />
-          <stop offset="45%" stopColor="#F58D2F" />
-          <stop offset="100%" stopColor="#D2581A" />
-        </radialGradient>
-        <linearGradient id="sparkShade" x1="0.2" y1="0.1" x2="0.9" y2="1">
-          <stop offset="0%" stopColor="#5A1E00" stopOpacity="0" />
-          <stop offset="100%" stopColor="#5A1E00" stopOpacity=".4" />
+        <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#F2C85B" />
+          <stop offset="100%" stopColor="#D96A2B" />
         </linearGradient>
       </defs>
       <path
         d="M40 6c10 14 26 24 26 42a26 26 0 0 1-52 0c0-8 3-14 7-19 2 7 7 10 11 7-5-13 1-22 8-30z"
         fill="url(#sparkGrad)"
-        style={{ filter: 'drop-shadow(0 2px 3px rgba(122, 55, 18, .28))' }}
+        stroke="#241C11"
+        strokeWidth="2.4"
+        strokeLinejoin="round"
       />
-      <path
-        d="M40 6c10 14 26 24 26 42a26 26 0 0 1-52 0c0-8 3-14 7-19 2 7 7 10 11 7-5-13 1-22 8-30z"
-        fill="url(#sparkShade)"
-      />
-      <ellipse cx="27" cy="40" rx="3.4" ry="9" transform="rotate(-18 27 40)" fill="#fff" opacity=".5" />
-      <ellipse cx="32" cy="52" rx="3" ry="4" fill="#5A2A12" />
-      <ellipse cx="50" cy="52" rx="3" ry="4" fill="#5A2A12" />
-      <circle cx="33.2" cy="50.4" r="1.2" fill="#fff" />
-      <circle cx="51.2" cy="50.4" r="1.2" fill="#fff" />
-      <path d="M32 62c3 3 13 3 16 0" stroke="#5A2A12" strokeWidth="2" fill="none" strokeLinecap="round" />
+      <circle cx="32" cy="52" r="4" fill="#241C11" />
+      <circle cx="50" cy="52" r="4" fill="#241C11" />
+      <path d="M32 62c3 3 13 3 16 0" stroke="#241C11" strokeWidth="2.4" fill="none" strokeLinecap="round" />
     </svg>
   );
 }

@@ -4,7 +4,7 @@ import { Reveal } from '../components/Reveal';
 import { ActivityCard } from '../components/ActivityCard';
 import { MascotIcon } from '../components/TeenAvatar';
 import { CategoryIcon, CAT_STYLE } from '../components/CategoryIcon';
-import { Mascot3D } from '../components/Mascot3D';
+import { HeroMascot } from '../components/HeroMascot';
 import { quickGames } from '../data/quickGames';
 import { methods } from '../data/methods';
 import { movementNames } from '../data/movementNames';
@@ -84,7 +84,7 @@ export function Home() {
       <div className="wrap" style={{ paddingTop: 56, paddingBottom: 60, textAlign: 'center' }}>
         <Reveal>
           <div style={{ marginBottom: 6 }}>
-            <Mascot3D size={150} />
+            <HeroMascot size={112} />
             <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 20, letterSpacing: -0.3, marginTop: 8 }}>
               המדריך למדריך
             </div>
@@ -293,80 +293,73 @@ export function Home() {
       </div>
 
       {/* AI TEASER */}
-      <div className="wrap" style={{ paddingBottom: 50 }}>
+      <div className="wrap" style={{ paddingBottom: 56 }}>
         <Reveal>
-          <div className="home-split home-ai" style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 40, alignItems: 'center', background: '#241C11', color: '#F3ECDD', borderRadius: 24, padding: 46 }}>
-            <div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 999, background: 'rgba(255,255,255,0.1)', fontSize: 13, fontWeight: 700, marginBottom: 18 }}>
-                עוזר AI
-              </div>
-              <h2 style={{ fontSize: 30, fontWeight: 800, marginBottom: 12 }}>שאלו אותו כל דבר — הוא מכיר את המאגר וגם את ההדרכה</h2>
-              <p style={{ fontSize: 14.5, color: '#CBBFA6', marginBottom: 22, maxWidth: '42ch' }}>קודם מחפש במאגר הקיים, ואז עונה על כל שאלה — עצה בהדרכה, רעיון לצ׳ופר, או פעולה חדשה לגמרי.</p>
+          <div className="ai-panel home-split home-ai">
+            <div className="ai-copy">
+              <div className="ai-pill"><MascotIcon size={22} /> עוזר AI</div>
+              <h2>שאלו אותו כל דבר — הוא מכיר את המאגר וגם את ההדרכה</h2>
+              <p>קודם מחפש במאגר הקיים, ואז עונה על כל שאלה — עצה בהדרכה, רעיון לצ׳ופר, או פעולה חדשה לגמרי.</p>
               <Link to="/ai" className="btn btn-flame">פתחו את הצ׳אט</Link>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ alignSelf: 'flex-end', maxWidth: '78%', background: '#3A2E1C', borderRadius: '14px 14px 4px 14px', padding: '13px 16px', fontSize: 14 }}>
-                פעולה אמונית לכיתה ח׳ לשבת
-              </div>
-              <div style={{ alignSelf: 'flex-start', maxWidth: '88%', background: '#F3ECDD', color: '#241C11', borderRadius: '14px 14px 14px 4px', padding: '15px 18px' }}>
-                <div style={{ fontWeight: 700, marginBottom: 4 }}>מצאתי 2 פעולות מהמאגר שמתאימות:</div>
-                <div style={{ fontSize: 13.5, color: '#5B4E3C' }}>אמונה בזמן קושי · מעגל של תודה</div>
+            <div className="ai-win">
+              <div className="ai-head"><MascotIcon size={30} /><b>ניצוץ</b><span className="ai-dot" />מחובר</div>
+              <div className="ai-body">
+                <div className="ai-me">פעולה אמונית לכיתה ח׳ לשבת</div>
+                <div className="ai-typing" aria-hidden="true"><i /><i /><i /></div>
+                <div className="ai-bot">
+                  <div style={{ fontWeight: 800, marginBottom: 6 }}>מצאתי 2 פעולות מהמאגר שמתאימות:</div>
+                  <div className="ai-found"><span>אמונה בזמן קושי</span></div>
+                  <div className="ai-found"><span>מעגל של תודה</span></div>
+                </div>
               </div>
             </div>
           </div>
         </Reveal>
       </div>
 
-      {/* BUILD YOUR OWN */}
-      <div className="wrap" style={{ paddingBottom: 50 }}>
+      {/* BUILD YOUR OWN (tools) */}
+      <div className="wrap" style={{ paddingBottom: 56 }}>
         <Reveal>
-          <div
-            className="home-split"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 24,
-              flexWrap: 'wrap',
-              background: 'var(--sky-tint)',
-              border: '2px solid var(--ink)',
-              borderRadius: 26,
-              padding: '30px 36px',
-            }}
-          >
-            <div>
-              <h2 style={{ fontSize: 23, fontWeight: 800, marginBottom: 6 }}>רוצים לבנות פעולה בעצמכם?</h2>
-              <p style={{ fontSize: 14.5, color: 'var(--ink-soft)', maxWidth: '54ch' }}>
+          <div className="help-card home-split">
+            <div className="help-copy">
+              <h2>רוצים לבנות פעולה בעצמכם?</h2>
+              <p>
                 גם אם בא לכם לנסות לבד — יש לכם כלים. "נדבר ת׳כלס" מראה איך מרכיבים פעולה שלב־שלב,
                 ולצידו מאגר מתודות, קטעי קריאה ומשחקים מוכנים לשלוף.
               </p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <Link to="/how-to-build" className="btn btn-flame">נדבר ת׳כלס</Link>
+                <Link to="/category/methods" className="btn btn-outline">מתודות</Link>
+              </div>
             </div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <Link to="/how-to-build" className="btn btn-flame">נדבר ת׳כלס</Link>
-              <Link to="/category/methods" className="btn btn-outline">מתודות</Link>
+            <div className="help-icons" aria-hidden="true">
+              <span style={{ ['--t' as string]: '#FBF0CE', ['--r' as string]: '-6deg' }}><CategoryIcon slug="methods" /></span>
+              <span style={{ ['--t' as string]: '#ECE4F5', ['--r' as string]: '4deg' }}><CategoryIcon slug="readings" /></span>
+              <span style={{ ['--t' as string]: '#E1F0E5', ['--r' as string]: '-3deg' }}><CategoryIcon slug="games" /></span>
             </div>
           </div>
         </Reveal>
       </div>
 
       {/* CHUPARIM */}
-      <div style={{ paddingBottom: 50 }}>
+      <div style={{ paddingBottom: 56 }}>
         <div className="wrap">
           <Reveal>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h2 style={{ fontSize: 28, fontWeight: 800 }}>רעיונות לצ׳ופרים</h2>
-              <Link to="/chuparim" style={{ display: 'inline-block', padding: '8px 4px', fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>כל הצ׳ופרים ←</Link>
+              <h2 style={{ fontSize: 28, fontWeight: 900 }}>רעיונות לצ׳ופרים</h2>
+              <Link to="/chuparim" style={{ display: 'inline-block', padding: '8px 4px', fontSize: 14, fontWeight: 700, color: 'var(--ink-soft)' }}>כל הצ׳ופרים ←</Link>
             </div>
           </Reveal>
           <Reveal delay={40}>
-            <div className="stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16 }}>
+            <div className="stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 18 }}>
               {chuparim.slice(-4).reverse().map((c, i) => {
                 const pal = [['#F6DDE7', '#C24270'], ['#FBF0CE', '#C99411'], ['#E1F0E5', '#2F7A4B'], ['#DCEAF2', '#3E7EA6']][i % 4];
                 return (
-                  <Link key={c.id} to={`/chupar/${c.id}`} className="chup-mini" style={{ ['--t' as string]: pal[0], ['--c' as string]: pal[1] }}>
-                    <i />
-                    <b style={{ fontFamily: 'Rubik, sans-serif', fontSize: 17, lineHeight: 1.2 }}>{c.title}</b>
-                    <small style={{ fontWeight: 600, color: 'var(--ink-soft)' }}>{c.kind}</small>
+                  <Link key={c.id} to={`/chupar/${c.id}`} className="chup-mini" style={{ ['--t' as string]: pal[0], ['--c' as string]: pal[1], ['--rot' as string]: ['-1.6deg', '1.2deg', '-.8deg', '1.5deg'][i % 4] }}>
+                    <CategoryIcon slug="chuparim" className="chup-ic" />
+                    <b style={{ fontFamily: 'Rubik, sans-serif', fontSize: 17, lineHeight: 1.25 }}>{c.title}</b>
+                    <small style={{ fontWeight: 700, color: 'var(--ink-soft)' }}>{c.kind}</small>
                   </Link>
                 );
               })}
@@ -376,35 +369,33 @@ export function Home() {
       </div>
 
       {/* SUBSCRIBE */}
-      <div className="wrap" style={{ paddingBottom: 40 }}>
+      <div className="wrap" style={{ paddingBottom: 48 }}>
         <Reveal><SubscribeBox /></Reveal>
       </div>
 
       {/* THE MANAGER */}
-      <div className="wrap" style={{ paddingBottom: 40 }}>
+      <div className="wrap" style={{ paddingBottom: 48 }}>
         <Reveal>
-          <Link to="/about" className="card" style={{ display: 'flex', alignItems: 'center', gap: 18, padding: '18px 24px', flexWrap: 'wrap' }}>
-            <div style={{ flex: 'none', width: 56, height: 56, borderRadius: '50%', background: 'var(--flame-tint)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <MascotIcon size={38} />
-            </div>
+          <Link to="/about" className="manager-card">
+            <div className="manager-avatar"><MascotIcon size={46} /></div>
             <div style={{ flex: '1 1 260px' }}>
-              <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 18 }}>רוני גרוס, מנהלת האתר</div>
-              <div style={{ fontSize: 14, color: 'var(--ink-soft)' }}>שמיניסטית, הדרכתי שנתיים שכבת גדולות — ובניתי את המקום שהיה חסר לי.</div>
+              <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 20 }}>רוני גרוס, מנהלת האתר</div>
+              <div style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginTop: 2 }}>שמיניסטית, הדרכתי שנתיים שכבת גדולות — ובניתי את המקום שהיה חסר לי.</div>
             </div>
-            <span style={{ fontWeight: 800, color: 'var(--flame-ink)' }}>הסיפור שלי ←</span>
+            <span className="manager-link">הסיפור שלי ←</span>
           </Link>
         </Reveal>
       </div>
 
       {/* CTA */}
-      <div className="wrap" style={{ paddingBottom: 70 }}>
+      <div className="wrap" style={{ paddingBottom: 80 }}>
         <Reveal>
-          <div className="cta-banner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, background: 'linear-gradient(135deg, var(--flame), var(--magenta))', border: '2px solid var(--ink)', borderRadius: 24, color: '#FFF6EC' }}>
-            <div>
-              <h3 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6 }}>יש לכם פעולה מטורפת?</h3>
-              <p style={{ fontSize: 14.5, opacity: 0.92 }}>שתפו אותה, אפשר גם לצרף קובץ — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p>
+          <div className="cta-banner">
+            <div style={{ position: 'relative' }}>
+              <h3 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 900, marginBottom: 6 }}>יש לכם פעולה מטורפת?</h3>
+              <p style={{ fontSize: 15.5, opacity: 0.95, maxWidth: '52ch' }}>שתפו אותה, אפשר גם לצרף קובץ — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p>
             </div>
-            <Link to="/submit" className="btn" style={{ background: '#FFF6EC', color: '#241C11', flex: 'none' }}>שליחת פעולה</Link>
+            <Link to="/submit" className="cta-btn">שליחת פעולה</Link>
           </div>
         </Reveal>
       </div>
