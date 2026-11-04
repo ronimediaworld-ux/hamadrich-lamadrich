@@ -430,3 +430,67 @@ html, body { overflow-x: clip; }
   .marquee { overflow-x: auto; }
   .marquee-track { animation: none !important; }
 }
+
+
+/* =====================================================================
+   ניצוץ בתלת מימד ועוד תנועה באתר
+   ===================================================================== */
+.m3d { position: relative; margin: 0 auto; perspective: 760px; display: block; }
+.m3d-body { position: relative; transform-style: preserve-3d; will-change: transform; margin: 0 auto; animation: m3dFloat 4.2s ease-in-out infinite; }
+.m3d-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; backface-visibility: visible; }
+.m3d-glow { position: absolute; inset: 8% 6% 4%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 170, 60, .75), rgba(255, 170, 60, 0) 68%); filter: blur(14px); transform: translateZ(-60px) scale(1.35); animation: m3dGlow 3.4s ease-in-out infinite; }
+.m3d-eyes { transform-origin: 50px 84px; animation: m3dBlink 5s infinite; }
+.m3d-shadow { position: absolute; inset-inline: 22%; bottom: 0; height: 16px; border-radius: 50%; background: radial-gradient(ellipse, rgba(36, 28, 17, .38), rgba(36, 28, 17, 0) 70%); animation: m3dShadow 4.2s ease-in-out infinite; }
+.m3d-spark { position: absolute; left: var(--x); bottom: 28%; width: 7px; height: 7px; border-radius: 50%; background: #FFC24A; box-shadow: 0 0 10px 3px rgba(255, 170, 60, .7); opacity: 0; animation: m3dSpark 4.4s ease-out infinite; animation-delay: var(--d); }
+@keyframes m3dFloat { 0%, 100% { margin-top: 0; } 50% { margin-top: -10px; } }
+@keyframes m3dGlow { 0%, 100% { opacity: .75; transform: translateZ(-60px) scale(1.3); } 50% { opacity: 1; transform: translateZ(-60px) scale(1.5); } }
+@keyframes m3dBlink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.08); } }
+@keyframes m3dShadow { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(.82); opacity: .6; } }
+@keyframes m3dSpark { 0% { transform: translateY(0) scale(.5); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-120px) scale(1.2); opacity: 0; } }
+
+/* מעבר בין עמודים */
+@keyframes pageIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.page-enter { animation: pageIn .5s var(--ease) both; }
+
+/* כניסה מדורגת של רשתות */
+@keyframes popIn { from { opacity: 0; transform: translateY(22px) scale(.96); } to { opacity: 1; transform: none; } }
+.reveal .stagger > * { opacity: 0; }
+.reveal.is-visible .stagger > *, .stagger-now > * { animation: popIn .6s var(--ease) both; }
+.reveal.is-visible .stagger > :nth-child(1), .stagger-now > :nth-child(1) { animation-delay: .02s; }
+.reveal.is-visible .stagger > :nth-child(2), .stagger-now > :nth-child(2) { animation-delay: .08s; }
+.reveal.is-visible .stagger > :nth-child(3), .stagger-now > :nth-child(3) { animation-delay: .14s; }
+.reveal.is-visible .stagger > :nth-child(4), .stagger-now > :nth-child(4) { animation-delay: .2s; }
+.reveal.is-visible .stagger > :nth-child(5), .stagger-now > :nth-child(5) { animation-delay: .26s; }
+.reveal.is-visible .stagger > :nth-child(6), .stagger-now > :nth-child(6) { animation-delay: .32s; }
+.reveal.is-visible .stagger > :nth-child(7), .stagger-now > :nth-child(7) { animation-delay: .38s; }
+.reveal.is-visible .stagger > :nth-child(n+8), .stagger-now > :nth-child(n+8) { animation-delay: .44s; }
+
+/* הטיה לפי העכבר (משתנים מוגדרים על ידי PointerFX) */
+.cat-tile, .new-card, .chup-mini, .parsha-row { transform-style: preserve-3d; }
+.cat-tile:hover { transform: perspective(800px) translate(-3px, -5px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+a.new-card:hover { transform: perspective(800px) translate(-3px, -5px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+.chup-mini:hover { transform: perspective(800px) rotate(-2deg) translateY(-4px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+
+/* תנועה עדינה ברקע */
+@keyframes floaty { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(2deg); } }
+.cat-tile .cat-ic { animation: floaty 4.6s ease-in-out infinite; }
+.cat-tile:nth-child(2n) .cat-ic { animation-delay: -1.2s; }
+.cat-tile:nth-child(3n) .cat-ic { animation-delay: -2.4s; }
+.cat-tile:nth-child(4n) .cat-ic { animation-delay: -3.5s; }
+@keyframes dotWave { 0%, 60%, 100% { transform: translateY(0) scale(1); } 30% { transform: translateY(-6px) scale(1.12); } }
+.roadmap b { animation: dotWave 4.2s ease-in-out infinite; }
+.roadmap > div:nth-child(2) b { animation-delay: .25s; } .roadmap > div:nth-child(3) b { animation-delay: .5s; }
+.roadmap > div:nth-child(4) b { animation-delay: .75s; } .roadmap > div:nth-child(5) b { animation-delay: 1s; }
+.roadmap > div:nth-child(6) b { animation-delay: 1.25s; } .roadmap > div:nth-child(7) b { animation-delay: 1.5s; }
+.roadmap > div:nth-child(8) b { animation-delay: 1.75s; }
+@keyframes hintBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+.scroll-hint { animation: hintBounce 1.8s ease-in-out infinite; }
+@keyframes chipShine { 0% { background-position: 200% 0; } 100% { background-position: -100% 0; } }
+.hero-chip:first-child { background-image: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, .45) 50%, transparent 65%); background-size: 220% 100%; animation: chipShine 3.6s linear infinite; }
+.btn-flame::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, .3) 50%, transparent 65%); background-size: 250% 100%; background-position: 200% 0; pointer-events: none; transition: background-position .6s ease; }
+.btn-flame { position: relative; overflow: hidden; }
+.btn-flame:hover::after { background-position: -50% 0; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal .stagger > * { opacity: 1 !important; }
+  .m3d-spark { display: none; }
+}

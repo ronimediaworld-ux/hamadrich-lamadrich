@@ -56,7 +56,7 @@ export function WhatsNewHome() {
         <h2 style={{ fontSize: 28, fontWeight: 900 }}>מה חדש באתר</h2>
         <Link to="/whats-new" style={{ display: 'inline-block', padding: '8px 4px', fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>לכל החדשים ←</Link>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(215px, 1fr))', gap: 12 }}>
+      <div className="stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(215px, 1fr))', gap: 12 }}>
         {rows.map((r) => {
           const pal = KIND_PALETTE[r.kind] ?? KIND_PALETTE['פעולה'];
           return (

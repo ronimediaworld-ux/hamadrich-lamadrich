@@ -27,6 +27,7 @@ import { PersonalCopy } from './pages/PersonalCopy';
 import { Privacy, Terms, Accessibility } from './pages/Legal';
 import { trackVisit } from './lib/api';
 import { ScrollProgress } from './components/ScrollProgress';
+import { PointerFX } from './components/PointerFX';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -68,9 +69,11 @@ export default function App() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <ScrollToTop />
       <ScrollProgress />
+      <PointerFX />
       <a href="#main" className="skip-link">דלג לתוכן הראשי</a>
       <Header />
       <main id="main" tabIndex={-1} style={{ flex: 1, outline: 'none' }}>
+        <div key={location.pathname} className="page-enter">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/category/:slug" element={<CategoryPage />} />
@@ -98,6 +101,7 @@ export default function App() {
           {/* כל כתובת לא מוכרת (וגם פתיחה של האתר בתוך תצוגה מוטמעת) נוחתת על מסך הבית */}
           <Route path="*" element={<Home />} />
         </Routes>
+        </div>
       </main>
       {!isChat && <Footer />}
       <Mascot />

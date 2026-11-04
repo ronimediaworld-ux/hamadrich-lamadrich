@@ -373,7 +373,7 @@ export function CategoryPage() {
           {filtered.length === 0 ? (
             <p style={{ color: 'var(--ink-faint)' }}>אין כרגע פעולות שמתאימות לסינון הזה — נסו להסיר פילטר אחד.</p>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 18 }}>
+            <div className="stagger-now" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 18 }}>
               {filtered.map((a) => (
                 <ActivityCard key={a.id} activity={a} />
               ))}

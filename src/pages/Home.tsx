@@ -4,6 +4,7 @@ import { Reveal } from '../components/Reveal';
 import { ActivityCard } from '../components/ActivityCard';
 import { MascotIcon } from '../components/TeenAvatar';
 import { CategoryIcon, CAT_STYLE } from '../components/CategoryIcon';
+import { Mascot3D } from '../components/Mascot3D';
 import { quickGames } from '../data/quickGames';
 import { methods } from '../data/methods';
 import { movementNames } from '../data/movementNames';
@@ -83,7 +84,7 @@ export function Home() {
       <div className="wrap" style={{ paddingTop: 56, paddingBottom: 60, textAlign: 'center' }}>
         <Reveal>
           <div style={{ marginBottom: 6 }}>
-            <span className="hero-flame" style={{ width: 78, height: 78 }}><MascotIcon size={78} /></span>
+            <Mascot3D size={150} />
             <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 20, letterSpacing: -0.3, marginTop: 8 }}>
               המדריך למדריך
             </div>
@@ -140,7 +141,7 @@ export function Home() {
           </div>
         </Reveal>
 
-        <div style={{ marginTop: 34, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: 'var(--ink-faint)', fontSize: 12 }}>
+        <div className="scroll-hint" style={{ marginTop: 34, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: 'var(--ink-faint)', fontSize: 12 }}>
           גללו
           <ChevronDownIcon size={18} />
         </div>
@@ -149,7 +150,7 @@ export function Home() {
       {/* STATS */}
       <div className="wrap" style={{ paddingBottom: 44 }}>
         <Reveal>
-          <div className="stat-strip">
+          <div className="stat-strip stagger">
             {[
               ['פעולות ומערכים', activities.length],
               ['קטעי קריאה', readings.length],
@@ -215,7 +216,7 @@ export function Home() {
           </div>
         </Reveal>
         <Reveal delay={40}>
-          <div className="home-cats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: 16 }}>
+          <div className="home-cats stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: 16 }}>
             {categories.map((c) => {
               const st = CAT_STYLE[c.slug] ?? CAT_STYLE.activities;
               return (
@@ -358,7 +359,7 @@ export function Home() {
             </div>
           </Reveal>
           <Reveal delay={40}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16 }}>
+            <div className="stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16 }}>
               {chuparim.slice(-4).reverse().map((c, i) => {
                 const pal = [['#F6DDE7', '#C24270'], ['#FBF0CE', '#C99411'], ['#E1F0E5', '#2F7A4B'], ['#DCEAF2', '#3E7EA6']][i % 4];
                 return (
