@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Activity } from '../data/types';
 import { TeenAvatar } from './TeenAvatar';
-import { ClockIcon, StarIcon, EyeIcon } from './Icons';
+import { ClockIcon, UsersIcon, StarIcon, EyeIcon } from './Icons';
 import { getAllViews } from '../lib/api';
 import { getCategory, getActivityDomain } from '../data/categories';
 
@@ -34,49 +34,45 @@ export function ActivityCard({ activity, rotate = 0 }: { activity: Activity; rot
   const badgeLabel = domain ?? cat?.label ?? '';
   const colors = (domain ? domainColor[domain] : colorMap[cat?.color ?? 'flame']) ?? colorMap.flame;
 
-  const solid: Record<string, string> = { 'ערכים': 'var(--lime)', 'אמונה': 'var(--sky)', 'פרשת שבוע': 'var(--magenta)', 'כללי': 'var(--flame)' };
-  const tagColor = (domain ? solid[domain] : undefined) ?? `var(--${cat?.color ?? 'flame'})`;
-
   return (
     <Link
       to={`/activity/${activity.id}`}
-      className="card act-card"
+      className="card"
       style={{
+        display: 'block',
         flex: '0 0 270px',
+        padding: 20,
         transform: `rotate(${rotate}deg)`,
-        ['--t' as string]: colors.bg,
-        ['--c' as string]: tagColor,
+        borderTop: `8px solid ${colors.fg}`,
       }}
     >
-      <div className="act-top">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ flex: 'none', width: 40, height: 40, borderRadius: '50%', background: '#fff', border: '2px solid var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            <TeenAvatar character={activity.character} size={30} />
-          </div>
-          <span className="act-tag">{badgeLabel}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+        <div style={{ flex: 'none', width: 44, height: 44, borderRadius: '50%', background: colors.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+          <TeenAvatar character={activity.character} size={32} />
         </div>
-        <span className="act-age">{activity.ageLabel}</span>
-      </div>
-      <div className="act-body">
-        {activity.series && (
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--magenta-ink)', marginBottom: 4 }}>
-            מערך: {activity.series.title} · מפגש {activity.series.part}{activity.series.total ? `/${activity.series.total}` : ''}
-          </div>
-        )}
-        <h3 style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 18.5, marginBottom: 10, lineHeight: 1.3 }}>{activity.title}</h3>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 14px', fontSize: 13.5, fontWeight: 600, color: 'var(--ink-soft)' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><ClockIcon size={14} />{activity.duration} דק׳</span>
-          {views !== null && views > 0 && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }} title="כמה פעמים נצפתה הפעולה"><EyeIcon size={14} />{views.toLocaleString('he-IL')}</span>
-          )}
-        </div>
-      </div>
-      <div className="act-foot">
-        <span style={{ fontSize: 12.5, fontWeight: 700, padding: '1px 11px', borderRadius: 999, background: 'var(--lime-tint)', border: '1.5px solid var(--ink)' }}>
-          {activity.shabbat === 'שניהם' ? 'שבת וחול' : `מתאים ל${activity.shabbat}`}
+        <span style={{ padding: '4px 11px', borderRadius: 999, background: colors.bg, color: colors.fg, fontSize: 11.5, fontWeight: 700 }}>
+          {badgeLabel}
         </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, fontWeight: 800 }}>
-          <StarIcon size={14} />{activity.rating.toFixed(1)}
+      </div>
+      {activity.series && (
+        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--magenta-ink)', marginBottom: 4 }}>
+          מערך: {activity.series.title} · מפגש {activity.series.part}{activity.series.total ? `/${activity.series.total}` : ''}
+        </div>
+      )}
+      <h3 style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 17.5, marginBottom: 10, lineHeight: 1.35 }}>{activity.title}</h3>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 14px', fontSize: 13, color: 'var(--ink-soft)', marginBottom: 12 }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><UsersIcon size={14} />{activity.ageLabel}</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><ClockIcon size={14} />{activity.duration} דק׳</span>
+        {views !== null && views > 0 && (
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }} title="כמה פעמים נצפתה הפעולה"><EyeIcon size={14} />{views.toLocaleString('he-IL')}</span>
+        )}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13.5, fontWeight: 700 }}>
+          <StarIcon size={13} />{activity.rating.toFixed(1)}
+        </span>
+        <span style={{ fontSize: 12, padding: '3px 10px', borderRadius: 999, background: 'var(--bg)', border: '1px solid var(--line)' }}>
+          {activity.shabbat === 'שניהם' ? 'שבת וחול' : `מתאים ל${activity.shabbat}`}
         </span>
       </div>
     </Link>
