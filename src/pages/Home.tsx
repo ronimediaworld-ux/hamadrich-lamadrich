@@ -292,110 +292,43 @@ export function Home() {
         </Reveal>
       </div>
 
-      {/* AI TEASER */}
-      <div className="wrap" style={{ paddingBottom: 56 }}>
+      {/* שורה אחת של אריחים צבעוניים: עוזר AI, כלים לבנייה, צ'ופרים, מנוי, רוני ושליחת פעולה */}
+      <div className="wrap" style={{ paddingBottom: 70 }}>
         <Reveal>
-          <div className="ai-panel home-split home-ai">
-            <div className="ai-copy">
-              <div className="ai-pill"><MascotIcon size={22} /> עוזר AI</div>
-              <h2>שאלו אותו כל דבר — הוא מכיר את המאגר וגם את ההדרכה</h2>
+          <div className="mini-tiles stagger">
+            <Link to="/ai" className="mt" style={{ ['--t' as string]: '#DCEAF2', ['--c' as string]: '#3E7EA6' }}>
+              <span className="mt-ic"><MascotIcon size={40} /></span>
+              <h3>עוזר AI</h3>
+              <b className="mt-sub">שאלו אותו כל דבר — הוא מכיר את המאגר וגם את ההדרכה</b>
               <p>קודם מחפש במאגר הקיים, ואז עונה על כל שאלה — עצה בהדרכה, רעיון לצ׳ופר, או פעולה חדשה לגמרי.</p>
-              <Link to="/ai" className="btn btn-flame">פתחו את הצ׳אט</Link>
+              <span className="mt-go">פתחו את הצ׳אט ←</span>
+            </Link>
+            <Link to="/how-to-build" className="mt" style={{ ['--t' as string]: '#FBF0CE', ['--c' as string]: '#C99411' }}>
+              <span className="mt-ic"><CategoryIcon slug="methods" /></span>
+              <h3>רוצים לבנות פעולה בעצמכם?</h3>
+              <p>גם אם בא לכם לנסות לבד — יש לכם כלים. "נדבר ת׳כלס" מראה איך מרכיבים פעולה שלב־שלב, ולצידו מאגר מתודות, קטעי קריאה ומשחקים מוכנים לשלוף.</p>
+              <span className="mt-go">נדבר ת׳כלס ←</span>
+            </Link>
+            <Link to="/chuparim" className="mt" style={{ ['--t' as string]: '#F6DDE7', ['--c' as string]: '#C24270' }}>
+              <span className="mt-ic"><CategoryIcon slug="chuparim" /></span>
+              <h3>רעיונות לצ׳ופרים</h3>
+              <span className="mt-go">כל הצ׳ופרים ←</span>
+            </Link>
+            <div className="mt" style={{ ['--t' as string]: '#E7EFD6', ['--c' as string]: '#5E7F2A' }}>
+              <SubscribeBox compact />
             </div>
-            <div className="ai-win">
-              <div className="ai-head"><MascotIcon size={30} /><b>ניצוץ</b><span className="ai-dot" />מחובר</div>
-              <div className="ai-body">
-                <div className="ai-me">פעולה אמונית לכיתה ח׳ לשבת</div>
-                <div className="ai-typing" aria-hidden="true"><i /><i /><i /></div>
-                <div className="ai-bot">
-                  <div style={{ fontWeight: 800, marginBottom: 6 }}>מצאתי 2 פעולות מהמאגר שמתאימות:</div>
-                  <div className="ai-found"><span>אמונה בזמן קושי</span></div>
-                  <div className="ai-found"><span>מעגל של תודה</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-      </div>
-
-      {/* BUILD YOUR OWN (tools) */}
-      <div className="wrap" style={{ paddingBottom: 56 }}>
-        <Reveal>
-          <div className="help-card home-split">
-            <div className="help-copy">
-              <h2>רוצים לבנות פעולה בעצמכם?</h2>
-              <p>
-                גם אם בא לכם לנסות לבד — יש לכם כלים. "נדבר ת׳כלס" מראה איך מרכיבים פעולה שלב־שלב,
-                ולצידו מאגר מתודות, קטעי קריאה ומשחקים מוכנים לשלוף.
-              </p>
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <Link to="/how-to-build" className="btn btn-flame">נדבר ת׳כלס</Link>
-                <Link to="/category/methods" className="btn btn-outline">מתודות</Link>
-              </div>
-            </div>
-            <div className="help-icons" aria-hidden="true">
-              <span style={{ ['--t' as string]: '#FBF0CE', ['--r' as string]: '-6deg' }}><CategoryIcon slug="methods" /></span>
-              <span style={{ ['--t' as string]: '#ECE4F5', ['--r' as string]: '4deg' }}><CategoryIcon slug="readings" /></span>
-              <span style={{ ['--t' as string]: '#E1F0E5', ['--r' as string]: '-3deg' }}><CategoryIcon slug="games" /></span>
-            </div>
-          </div>
-        </Reveal>
-      </div>
-
-      {/* CHUPARIM */}
-      <div style={{ paddingBottom: 56 }}>
-        <div className="wrap">
-          <Reveal>
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h2 style={{ fontSize: 28, fontWeight: 900 }}>רעיונות לצ׳ופרים</h2>
-              <Link to="/chuparim" style={{ display: 'inline-block', padding: '8px 4px', fontSize: 14, fontWeight: 700, color: 'var(--ink-soft)' }}>כל הצ׳ופרים ←</Link>
-            </div>
-          </Reveal>
-          <Reveal delay={40}>
-            <div className="stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 18 }}>
-              {chuparim.slice(-4).reverse().map((c, i) => {
-                const pal = [['#F6DDE7', '#C24270'], ['#FBF0CE', '#C99411'], ['#E1F0E5', '#2F7A4B'], ['#DCEAF2', '#3E7EA6']][i % 4];
-                return (
-                  <Link key={c.id} to={`/chupar/${c.id}`} className="chup-mini" style={{ ['--t' as string]: pal[0], ['--c' as string]: pal[1], ['--rot' as string]: ['-1.6deg', '1.2deg', '-.8deg', '1.5deg'][i % 4] }}>
-                    <CategoryIcon slug="chuparim" className="chup-ic" />
-                    <b style={{ fontFamily: 'Rubik, sans-serif', fontSize: 17, lineHeight: 1.25 }}>{c.title}</b>
-                    <small style={{ fontWeight: 700, color: 'var(--ink-soft)' }}>{c.kind}</small>
-                  </Link>
-                );
-              })}
-            </div>
-          </Reveal>
-        </div>
-      </div>
-
-      {/* SUBSCRIBE */}
-      <div className="wrap" style={{ paddingBottom: 48 }}>
-        <Reveal><SubscribeBox /></Reveal>
-      </div>
-
-      {/* THE MANAGER */}
-      <div className="wrap" style={{ paddingBottom: 48 }}>
-        <Reveal>
-          <Link to="/about" className="manager-card">
-            <div className="manager-avatar"><MascotIcon size={46} /></div>
-            <div style={{ flex: '1 1 260px' }}>
-              <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 20 }}>רוני גרוס, מנהלת האתר</div>
-              <div style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginTop: 2 }}>שמיניסטית, הדרכתי שנתיים שכבת גדולות — ובניתי את המקום שהיה חסר לי.</div>
-            </div>
-            <span className="manager-link">הסיפור שלי ←</span>
-          </Link>
-        </Reveal>
-      </div>
-
-      {/* CTA */}
-      <div className="wrap" style={{ paddingBottom: 80 }}>
-        <Reveal>
-          <div className="cta-banner">
-            <div style={{ position: 'relative' }}>
-              <h3 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 900, marginBottom: 6 }}>יש לכם פעולה מטורפת?</h3>
-              <p style={{ fontSize: 15.5, opacity: 0.95, maxWidth: '52ch' }}>שתפו אותה, אפשר גם לצרף קובץ — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p>
-            </div>
-            <Link to="/submit" className="cta-btn">שליחת פעולה</Link>
+            <Link to="/about" className="mt" style={{ ['--t' as string]: '#FBE4D2', ['--c' as string]: '#D96A2B' }}>
+              <span className="mt-ic"><MascotIcon size={40} /></span>
+              <h3>רוני גרוס, מנהלת האתר</h3>
+              <p>שמיניסטית, הדרכתי שנתיים שכבת גדולות — ובניתי את המקום שהיה חסר לי.</p>
+              <span className="mt-go">הסיפור שלי ←</span>
+            </Link>
+            <Link to="/submit" className="mt mt-solid" style={{ ['--t' as string]: '#D96A2B', ['--c' as string]: '#7A3712' }}>
+              <span className="mt-ic"><CategoryIcon slug="activities" /></span>
+              <h3>יש לכם פעולה מטורפת?</h3>
+              <p>שתפו אותה, אפשר גם לצרף קובץ — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p>
+              <span className="mt-go">שליחת פעולה ←</span>
+            </Link>
           </div>
         </Reveal>
       </div>
