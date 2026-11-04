@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>דמה: המדריך למדריך כקלסר</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@400;500;600;700&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #241C11; --ink-soft: #5B4E3C; --ink-faint: #7C6F5B;
+  --paper: #FFFEFA; --bg: #F7F2E5; --dot: #DCD1B8;
+  --flame: #D96A2B; --flame-ink: #7A3712; --flame-tint: #FBE4D2; --amber: #F2B84B;
+  --marker: #FFD84D;
+  --c-act: #D96A2B; --t-act: #FBE4D2;
+  --c-night: #C24270; --t-night: #F6DDE7;
+  --c-staff: #3E7EA6; --t-staff: #DCEAF2;
+  --c-sit: #5E7F2A; --t-sit: #E7EFD6;
+  --c-read: #6B4A9B; --t-read: #ECE4F5;
+  --c-chup: #C99411; --t-chup: #FBF0CE;
+  --c-wall: #176B6B; --t-wall: #D6EDED;
+  --c-game: #2F7A4B; --t-game: #E1F0E5;
+  --s2: #2F7A4B; --s3: #B34E14; --s4: #6B4A9B; --s5: #A63D6B; --s6: #7A5B00; --s7: #176B6B;
+  --shadow: 5px 5px 0 var(--ink);
+}
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html { background: #E9E2D0 }
+body { font-family: 'Heebo', sans-serif; color: var(--ink); line-height: 1.55; padding: 28px 18px 80px }
+.disp { font-family: 'Secular One', 'Rubik', sans-serif; font-weight: 400; letter-spacing: -.01em }
+.rub { font-family: 'Rubik', sans-serif }
+.wrap { max-width: 1240px; margin: 0 auto }
+.intro { max-width: 940px; margin-bottom: 26px }
+.intro h1 { font-family: 'Secular One'; font-size: 34px; line-height: 1.15; margin-bottom: 8px }
+.intro p { color: var(--ink-soft); font-size: 15.5px }
+.intro ul { margin: 10px 0 0; padding-inline-start: 20px; display: grid; gap: 4px; font-size: 14.5px }
+.label { margin: 38px 0 10px; font-family: 'Rubik'; font-weight: 800; font-size: 14px; color: var(--ink-faint); letter-spacing: .04em }
+
+/* ===== מסך ===== */
+.screen { background-color: var(--bg); background-image: radial-gradient(var(--dot) 1.3px, transparent 1.4px); background-size: 22px 22px; border: 2px solid var(--ink); border-radius: 22px; overflow: hidden; box-shadow: 10px 10px 0 rgba(36,28,17,.2) }
+
+/* כותרת עליונה */
+.bar { display: flex; align-items: center; gap: 18px; padding: 14px 34px; background: var(--paper); border-bottom: 2px solid var(--ink) }
+.logo { display: flex; align-items: center; gap: 10px; font-family: 'Secular One'; font-size: 24px; white-space: nowrap }
+.logo svg { width: 34px; height: 40px }
+.menu { display: flex; gap: 6px; margin-inline-start: 14px; white-space: nowrap }
+.menu span { font-weight: 700; font-size: 15px; padding: 6px 14px; border-radius: 999px }
+.menu .on { background: var(--ink); color: #fff }
+.menu .ai { color: var(--flame-ink); background: var(--flame-tint); border: 2px solid var(--ink) }
+.barend { margin-inline-start: auto; display: flex; gap: 10px; align-items: center }
+.iconbtn { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--ink); background: #fff; display: grid; place-items: center; font-weight: 800 }
+.binderbtn { display: flex; align-items: center; gap: 8px; border: 2px solid var(--ink); background: var(--marker); border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 14.5px; box-shadow: 3px 3px 0 var(--ink); white-space: nowrap }
+.binderbtn b { background: var(--ink); color: #fff; border-radius: 999px; padding: 0 8px; font-size: 12.5px }
+
+/* סימון מרקר */
+.mark { background: linear-gradient(transparent 58%, var(--marker) 58% 90%, transparent 90%); padding: 0 .12em; -webkit-box-decoration-break: clone; box-decoration-break: clone }
+
+/* כפתורים */
+.btn { font-family: 'Rubik'; font-weight: 800; font-size: 15px; border: 2px solid var(--ink); border-radius: 999px; padding: 11px 24px; background: #fff; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; transition: transform .12s, box-shadow .12s }
+.btn:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--ink) }
+.btn.main { background: var(--flame); color: #fff; box-shadow: 4px 4px 0 var(--ink) }
+.btn.main:hover { box-shadow: 6px 6px 0 var(--ink) }
+
+/* ===== בית ===== */
+.hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 30px; padding: 44px 44px 30px; align-items: center }
+.hero h1 { font-family: 'Secular One'; font-size: 74px; line-height: 1.02; letter-spacing: -.02em }
+.hero p.sub { font-size: 19px; color: var(--ink-soft); max-width: 520px; margin-top: 14px; line-height: 1.6 }
+.search { margin-top: 22px; display: flex; border: 2px solid var(--ink); border-radius: 18px; background: #fff; box-shadow: var(--shadow); overflow: hidden; max-width: 560px }
+.search span { flex: 1; padding: 15px 20px; color: var(--ink-faint); font-size: 16px }
+.search b { background: var(--ink); color: #fff; padding: 15px 26px; font-family: 'Rubik'; font-size: 15px; display: grid; place-items: center }
+.notes { display: flex; gap: 14px; margin-top: 26px; flex-wrap: wrap }
+.note { --r: -2deg; background: var(--n); border: 2px solid var(--ink); padding: 12px 16px 14px; transform: rotate(var(--r)); box-shadow: 3px 4px 0 var(--ink); font-family: 'Secular One'; font-size: 17px; line-height: 1.2; min-width: 118px; transition: transform .15s }
+.note:hover { transform: rotate(0) translateY(-3px) }
+.note small { display: block; font-family: 'Heebo'; font-weight: 600; font-size: 12.5px; color: var(--ink-soft); margin-top: 2px }
+.stage { position: relative; height: 430px }
+.stack { position: absolute; inset: 0 }
+.ic { position: absolute; background: #fff; border: 2px solid var(--ink); border-radius: 16px; box-shadow: var(--shadow); padding: 16px 18px 16px; width: 330px }
+.ic .stripe { position: absolute; inset-inline: -2px; top: -2px; height: 26px; border-radius: 16px 16px 0 0; background: var(--c); border: 2px solid var(--ink) }
+.ic .stripe i { position: absolute; top: 4px; inset-inline-end: 12px; font-style: normal; color: #fff; font-weight: 800; font-size: 12.5px }
+.ic h4 { margin-top: 18px; font-family: 'Secular One'; font-size: 22px; line-height: 1.15; font-weight: 400 }
+.ic .row { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap }
+.pillm { border: 1.5px solid var(--ink); border-radius: 999px; padding: 1px 11px; font-size: 12.5px; font-weight: 700; background: var(--t, #fff) }
+.tape { position: absolute; top: -13px; left: 50%; width: 80px; height: 24px; background: rgba(255,216,77,.75); transform: translateX(-50%) rotate(-3deg); border: 1px solid rgba(36,28,17,.15) }
+.mascot { position: absolute; width: 108px; height: 128px; filter: drop-shadow(4px 4px 0 var(--ink)) }
+
+/* קלסר: לשוניות */
+.binder { padding: 10px 44px 8px }
+.tabs { display: flex; gap: 6px; align-items: flex-end; padding-inline-start: 18px }
+.tab { background: var(--t); border: 2px solid var(--ink); border-bottom: 0; border-radius: 14px 14px 0 0; padding: 9px 18px 7px; font-weight: 800; font-size: 14.5px; position: relative; top: 2px; white-space: nowrap }
+.tab.on { background: var(--t); padding-top: 13px; padding-bottom: 9px; z-index: 2; border-top: 8px solid var(--c); font-size: 15.5px }
+.panel { background: var(--t); border: 2px solid var(--ink); border-radius: 0 20px 20px 20px; padding: 26px 26px 24px; display: grid; grid-template-columns: 1.05fr 2fr; gap: 26px; align-items: stretch; box-shadow: 8px 8px 0 var(--ink) }
+.panel h3 { font-family: 'Secular One'; font-size: 34px; font-weight: 400; line-height: 1.1 }
+.panel p { margin-top: 8px; font-size: 16px; color: var(--ink-soft) }
+.panel .count { font-family: 'Rubik'; font-weight: 900; font-size: 58px; color: var(--c); line-height: 1; margin-top: 18px }
+.panel .count small { font-family: 'Heebo'; font-size: 15px; font-weight: 700; color: var(--ink); margin-inline-start: 6px }
+.mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: start; align-content: center }
+.mc { background: #fff; border: 2px solid var(--ink); border-radius: 14px; padding: 12px 14px; display: grid; gap: 7px; align-content: start; transition: transform .15s, box-shadow .15s }
+.mc:hover { transform: translate(-3px,-3px); box-shadow: 5px 5px 0 var(--ink) }
+.mc .age { font-weight: 800; font-size: 12.5px; color: var(--c); font-family: 'Rubik' }
+.mc h5 { font-size: 16.5px; font-weight: 800; line-height: 1.3 }
+.mc small { color: var(--ink-faint); font-size: 13px; font-weight: 600 }
+
+/* מפת שבעת השלבים */
+.method { padding: 40px 44px 14px }
+.method h2 { font-family: 'Secular One'; font-size: 40px; font-weight: 400; line-height: 1.1 }
+.method p { color: var(--ink-soft); font-size: 17px; margin-top: 6px; max-width: 620px }
+.road { margin-top: 28px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; position: relative }
+.road:before { content: ''; position: absolute; inset-inline: 7%; top: 31px; border-top: 3px dashed var(--ink); z-index: 0 }
+.rs { text-align: center; position: relative; z-index: 1 }
+.rs i { display: grid; place-items: center; width: 62px; height: 62px; margin: 0 auto; border-radius: 50%; background: var(--c); color: #fff; font-family: 'Secular One'; font-style: normal; font-size: 26px; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink) }
+.rs b { display: block; margin-top: 10px; font-family: 'Rubik'; font-size: 16px }
+.rs small { color: var(--ink-faint); font-size: 12.5px; font-weight: 600 }
+.roadcta { margin-top: 28px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap }
+
+/* מה חדש */
+.news { padding: 26px 44px 44px }
+.newshead { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px }
+.newshead h2 { font-family: 'Secular One'; font-size: 38px; font-weight: 400 }
+.newshead span { font-weight: 700; color: var(--ink-soft) }
+.ngrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px }
+.nc { background: #fff; border: 2px solid var(--ink); border-radius: 14px; padding: 20px 16px 14px; position: relative; box-shadow: 4px 4px 0 var(--ink); display: grid; gap: 8px; align-content: start }
+.nc:nth-child(1) { transform: rotate(-1.2deg) } .nc:nth-child(2) { transform: rotate(.8deg) } .nc:nth-child(3) { transform: rotate(-.6deg) } .nc:nth-child(4) { transform: rotate(1.1deg) }
+.nc .kind { justify-self: start; font-weight: 800; font-size: 12.5px; padding: 1px 12px; border-radius: 999px; background: var(--c); color: #fff }
+.nc h4 { font-size: 18px; font-weight: 800; line-height: 1.3 }
+.nc small { color: var(--ink-faint); font-weight: 600; font-size: 13px }
+
+/* ===== פעולה ===== */
+.apage { padding: 28px 44px 44px }
+.crumbs { font-size: 13px; color: var(--ink-faint); font-weight: 600; margin-bottom: 16px }
+.ahead { display: grid; grid-template-columns: 1fr 330px; gap: 34px; align-items: start }
+.kind2 { display: inline-flex; align-items: center; gap: 8px; background: var(--t-act); border: 2px solid var(--ink); border-radius: 999px; padding: 2px 14px 2px 6px; font-weight: 800; font-size: 13.5px }
+.kind2 i { width: 18px; height: 18px; border-radius: 50%; background: var(--c-act); border: 2px solid var(--ink) }
+.ahead h1 { font-family: 'Secular One'; font-size: 58px; line-height: 1.04; font-weight: 400; margin-top: 12px; letter-spacing: -.015em }
+.lead { font-size: 19px; line-height: 1.7; margin-top: 14px; max-width: 700px }
+.lead b { background: var(--marker); padding: 0 6px; border-radius: 4px }
+.card2 { background: #fff; border: 2px solid var(--ink); border-radius: 18px; padding: 18px; box-shadow: var(--shadow); position: relative }
+.stamp { position: absolute; top: -18px; inset-inline-start: -14px; border: 3px solid var(--c-game); color: var(--c-game); background: var(--paper); border-radius: 10px; padding: 3px 14px; font-family: 'Secular One'; font-size: 16px; transform: rotate(-6deg); letter-spacing: .03em }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px }
+.fact { border: 2px solid var(--ink); border-radius: 12px; padding: 8px 10px; background: var(--t) }
+.fact small { display: block; font-size: 12px; font-weight: 700; color: var(--ink-soft) }
+.fact b { font-family: 'Rubik'; font-size: 19px; font-weight: 800 }
+.card2 .btn { width: 100%; justify-content: center; margin-top: 10px }
+.row2 { display: flex; gap: 8px; margin-top: 10px }
+.row2 .btn { margin-top: 0; padding: 8px 6px; font-size: 13px }
+
+.ruler { margin-top: 30px; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 14px 18px 12px }
+.ruler h3 { font-family: 'Secular One'; font-size: 20px; font-weight: 400; display: flex; justify-content: space-between; align-items: baseline }
+.ruler h3 span { font-family: 'Heebo'; font-size: 13.5px; color: var(--ink-soft); font-weight: 600 }
+.rbar { display: flex; margin-top: 12px; height: 46px; border: 2px solid var(--ink); border-radius: 10px; overflow: hidden }
+.rbar i { display: grid; place-items: center; color: #fff; font-style: normal; font-family: 'Rubik'; font-weight: 800; font-size: 14px; border-inline-start: 2px solid var(--ink); background: var(--c) }
+.rbar i:first-child { border-inline-start: 0 }
+.rbar i.skip { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 5px, transparent 5px 11px) }
+.ticks { display: flex; justify-content: space-between; margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--ink-faint); font-family: 'Rubik' }
+
+.steps { margin-top: 34px; display: grid; gap: 22px }
+.step { position: relative; background: #fff; border: 2px solid var(--ink); border-radius: 18px; box-shadow: var(--shadow); padding: 20px 30px 22px 22px; display: grid; grid-template-columns: 74px 1fr; gap: 18px }
+.step:before { content: ''; position: absolute; inset-inline-start: 9px; top: 24px; bottom: 24px; width: 10px; background: radial-gradient(circle, var(--bg) 4px, var(--ink) 4px 5.2px, transparent 5.4px) center/10px 46px repeat-y; opacity: .9 }
+.num { width: 64px; height: 64px; border-radius: 18px; background: var(--c); color: #fff; font-family: 'Secular One'; font-size: 36px; display: grid; place-items: center; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: rotate(-4deg) }
+.step h3 { font-family: 'Secular One'; font-size: 28px; font-weight: 400; line-height: 1.15; display: flex; gap: 12px; align-items: center; flex-wrap: wrap }
+.step h3 em { font-style: normal; font-family: 'Rubik'; font-weight: 800; font-size: 13px; padding: 3px 12px; border-radius: 999px; background: var(--t); border: 2px solid var(--ink); color: var(--ink) }
+.step h3 em.t { background: var(--ink); color: #fff }
+.step p { font-size: 18px; line-height: 1.75; margin-top: 8px; max-width: 64ch }
+.say { position: relative; margin-top: 16px; background: var(--t); border: 2px solid var(--ink); border-radius: 16px 16px 16px 4px; padding: 12px 18px; font-size: 20px; font-weight: 700; max-width: 520px }
+.say small { display: block; font-size: 12.5px; font-weight: 800; letter-spacing: .06em; color: var(--c); margin-bottom: 2px }
+
+.chips { display: grid; gap: 8px; margin-top: 14px }
+.chips div { background: var(--t); border: 2px solid var(--ink); border-radius: 12px; padding: 7px 14px; font-size: 16.5px; font-weight: 500; display: flex; gap: 10px; align-items: center }
+.chips div:before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--c); border: 2px solid var(--ink); flex: none }
+.skipnote { font-size: 12.5px; font-weight: 700; border: 2px dashed var(--ink); border-radius: 999px; padding: 1px 12px; background: #fff }
+
+/* ===== טלפונים ===== */
+.phones { display: grid; grid-template-columns: repeat(2, 330px); gap: 30px; justify-content: center }
+@media (max-width: 800px) { .phones { grid-template-columns: 330px } }
+.ph { border: 2px solid var(--ink); border-radius: 36px; overflow: hidden; box-shadow: 10px 10px 0 rgba(36,28,17,.2); background-color: var(--bg); background-image: radial-gradient(var(--dot) 1.3px, transparent 1.4px); background-size: 20px 20px; height: 720px; display: flex; flex-direction: column }
+.ph .bar { padding: 10px 14px; gap: 8px }
+.ph .logo { font-size: 18px } .ph .logo svg { width: 24px; height: 28px }
+.ph .iconbtn { width: 34px; height: 34px }
+.phbody { padding: 18px 16px 12px; flex: 1; overflow: hidden }
+.ph h1 { font-family: 'Secular One'; font-size: 42px; line-height: 1.04; font-weight: 400 }
+.ph .sub { font-size: 15px; color: var(--ink-soft); margin-top: 8px }
+.ph .search { margin-top: 14px; box-shadow: 3px 3px 0 var(--ink); border-radius: 14px }
+.ph .search span { padding: 11px 14px; font-size: 14px } .ph .search b { padding: 11px 16px; font-size: 14px }
+.ph .notes { gap: 10px; margin-top: 18px }
+.ph .note { min-width: 0; flex: 1 1 42%; font-size: 15px; padding: 10px 12px }
+.ph .tabs { padding-inline-start: 0; margin-top: 18px; overflow: hidden }
+.ph .tab { font-size: 12.5px; padding: 7px 11px 6px }
+.ph .tab.on { padding-top: 9px; border-top-width: 6px; font-size: 13.5px }
+.ph .panel { grid-template-columns: 1fr; padding: 14px; border-radius: 0 16px 16px 16px; box-shadow: 5px 5px 0 var(--ink); gap: 10px }
+.ph .panel h3 { font-size: 24px } .ph .panel .count { font-size: 36px; margin-top: 8px } .ph .panel p { font-size: 14px }
+.dock { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid var(--ink); background: var(--paper) }
+.dock span { text-align: center; padding: 8px 0 12px; font-size: 12px; font-weight: 800; display: grid; gap: 3px; justify-items: center }
+.dock i { width: 22px; height: 22px; border-radius: 7px; background: var(--dot); border: 2px solid var(--ink-faint) }
+.dock .on i { background: var(--flame); border-color: var(--ink) } .dock .on { color: var(--flame-ink) }
+.ph .step { grid-template-columns: 1fr; padding: 16px 28px 16px 14px; box-shadow: 4px 4px 0 var(--ink); gap: 8px; margin-top: 14px }
+.ph .num { width: 44px; height: 44px; font-size: 24px; border-radius: 12px }
+.ph .step h3 { font-size: 21px } .ph .step p { font-size: 15.5px }
+.ph .say { font-size: 16.5px; padding: 9px 14px }
+.ph .step:before { top: 18px; bottom: 18px }
+.ph .kind2 { font-size: 12.5px }
+.ph .ahead h1 { font-size: 30px }
+.ph .stampline { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px }
+.ph .fixedbar { display: grid; grid-template-columns: 1fr 52px 52px; gap: 8px; padding: 10px 12px; background: var(--paper); border-top: 2px solid var(--ink) }
+.ph .fixedbar .btn { padding: 10px 6px; justify-content: center; font-size: 14.5px }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="flame" viewBox="0 0 100 120"><path d="M50 4C53 26 88 42 88 78c0 24-18 38-38 38S12 102 12 78c0-22 18-30 24-50 4 12 10 8 14-24Z" fill="#D96A2B" stroke="#241C11" stroke-width="5" stroke-linejoin="round"/><path d="M50 52c3 12 22 20 22 36 0 13-10 21-22 21S28 101 28 88c0-12 12-18 22-36Z" fill="#F2B84B"/><circle cx="39" cy="84" r="4.2" fill="#241C11"/><circle cx="61" cy="84" r="4.2" fill="#241C11"/><path d="M41 95q9 9 18 0" fill="none" stroke="#241C11" stroke-width="4" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<div class="wrap">
+<div class="intro">
+  <h1>המדריך למדריך: הקלסר שלך</h1>
+  <p>רעיון העיצוב: האתר הוא קלסר של מדריך. יש בו לשוניות צבעוניות, כרטיסי אינדקס, מרקר, חותמות ופתקים. זה מתאים למה שהאתר באמת עושה (בונים קלסר, מדפיסים, שומרים), ואפשר להבין אותו בלי הסבר.</p>
+  <ul>
+    <li><b>כתב:</b> כותרות גדולות וחזקות ב-Secular One (פונט שכבר נטען באתר), גוף ב-Heebo בגודל 18.</li>
+    <li><b>צבע:</b> אותם צבעים של היום. הצבע של כל קטגוריה, וצבע של כל שלב, חוזרים בלשוניות, במספרים ובתגיות.</li>
+    <li><b>צורה:</b> קווי מתאר כהים וצל קשיח (כמו חותמת), כרטיסים שמתרוממים בריחוף, ומרקר צהוב רק על המילה החשובה.</li>
+  </ul>
+</div>
+
+<div class="label">דף הבית</div>
+<div class="screen">
+  <div class="bar">
+    <div class="logo"><svg><use href="#flame"/></svg>המדריך למדריך</div>
+    <div class="menu"><span class="on">בית</span><span>פעולות</span><span>ערבי גיבוש</span><span>לימוד צוות</span><span>סיטואציות</span><span class="ai">עוזר AI</span></div>
+    <div class="barend"><div class="iconbtn">⌕</div><div class="binderbtn">הקלסר שלי <b>3</b></div></div>
+  </div>
+
+  <div class="hero">
+    <div>
+      <h1>מה מעבירים <span class="mark">היום</span>?</h1>
+      <p class="sub">354 פעולות בנויות שלב אחרי שלב, מוכנות להדפסה. בוחרים, שומרים בקלסר ועולים לפעולה בביטחון.</p>
+      <div class="search"><span>לדוגמה: פעולה אמונית לכיתה ח' לשבת</span><b>חיפוש</b></div>
+      <div class="notes">
+        <div class="note" style="--n:#FFE27A;--r:-2.5deg">אני צריך פעולה עכשיו<small>5 דקות הכנה</small></div>
+        <div class="note" style="--n:#BFE3D0;--r:1.8deg">משחק מהיר<small>בלי ציוד</small></div>
+        <div class="note" style="--n:#F8C9DA;--r:-1.2deg">פעולה לשבת<small>בעל פה</small></div>
+        <div class="note" style="--n:#C9DFF0;--r:2.4deg">פרשת השבוע<small>וירא</small></div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stack">
+        <div class="ic" style="--c:var(--c-night);inset-inline-start: 4%; top: 6%; transform: rotate(-5deg); width: 300px"><div class="stripe"><i>ערב גיבוש</i></div><h4>לילה לבן בסניף</h4><div class="row"><span class="pillm">כיתות ו'-ט'</span><span class="pillm">120 דק'</span></div></div>
+        <div class="ic" style="--c:var(--c-read);inset-inline-start: 22%; top: 30%; transform: rotate(3deg); width: 300px"><div class="stripe"><i>קטע קריאה</i></div><h4>בגדי המלך החדשים</h4><div class="row"><span class="pillm">כיתות ג'-ו'</span></div></div>
+        <div class="ic" style="--c:var(--c-act);inset-inline-start: 0; top: 48%; transform: rotate(-2deg); width: 345px"><div class="tape"></div><div class="stripe"><i>פעולה</i></div><h4>לחץ חברתי: לשים לב מתי זה אמיתי</h4><div class="row"><span class="pillm" style="--t:var(--t-staff)">כיתות ז'-י'</span><span class="pillm" style="--t:var(--t-act)">69 דק'</span><span class="pillm" style="--t:var(--t-game)">גם לשבת</span></div></div>
+        <svg class="mascot" style="inset-inline-end: 0; top: -6px; transform: rotate(8deg)"><use href="#flame"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="binder">
+    <div class="tabs">
+      <div class="tab on" style="--t:var(--t-act);--c:var(--c-act)">פעולות</div>
+      <div class="tab" style="--t:var(--t-night)">ערבי גיבוש</div>
+      <div class="tab" style="--t:var(--t-staff)">לימוד צוות</div>
+      <div class="tab" style="--t:var(--t-sit)">סיטואציות</div>
+      <div class="tab" style="--t:var(--t-read)">קריאה</div>
+      <div class="tab" style="--t:var(--t-chup)">צ'ופרים</div>
+      <div class="tab" style="--t:var(--t-wall)">גלופות</div>
+      <div class="tab" style="--t:var(--t-game)">משחקים</div>
+    </div>
+    <div class="panel" style="--t:var(--t-act);--c:var(--c-act)">
+      <div>
+        <h3>פעולות ומערכים</h3>
+        <p>ערכים, אמונה, פרשת שבוע וכללי. כל פעולה עם משחק, קטע קריאה, דיון וסיכום.</p>
+        <div class="count">354<small>פעולות</small></div>
+        <span class="btn main" style="margin-top:16px">לכל הפעולות ←</span>
+      </div>
+      <div class="mini">
+        <div class="mc" style="--c:var(--c-staff)"><span class="age">כיתות ז'-י'</span><h5>לחץ חברתי: לשים לב מתי זה אמיתי</h5><small>69 דק' · גם לשבת</small></div>
+        <div class="mc" style="--c:var(--c-game)"><span class="age">כיתות ג'-ו'</span><h5>כולם אומרים? אני בוחר</h5><small>62 דק' · שבת</small></div>
+        <div class="mc" style="--c:var(--c-staff)"><span class="age">כיתות ז'-ט'</span><h5>וירא: להתווכח עם הצדק</h5><small>63 דק' · שבת</small></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="method">
+    <h2>כל פעולה בנויה באותו <span class="mark">סדר</span></h2>
+    <p>שבעה חלקים שחוזרים תמיד, כך שתמיד אפשר לדעת איפה אתם בפעולה ומה בא אחר כך.</p>
+    <div class="road">
+      <div class="rs" style="--c:var(--s1,#2F5F95)"><i>1</i><b>נושא</b><small>על מה</small></div>
+      <div class="rs" style="--c:var(--s2)"><i>2</i><b>פתיחה</b><small>5 דק'</small></div>
+      <div class="rs" style="--c:var(--s3)"><i>3</i><b>משחק</b><small>10 דק'</small></div>
+      <div class="rs" style="--c:var(--s4)"><i>4</i><b>דיון</b><small>10 דק'</small></div>
+      <div class="rs" style="--c:var(--s5)"><i>5</i><b>קטע קריאה</b><small>5 דק'</small></div>
+      <div class="rs" style="--c:var(--s6)"><i>6</i><b>הסבר</b><small>5 דק'</small></div>
+      <div class="rs" style="--c:var(--s7)"><i>7</i><b>סיכום</b><small>5 דק'</small></div>
+    </div>
+    <div class="roadcta"><span class="btn main">לבניית פעולה מאפס ←</span><span class="btn">איך זה עובד</span></div>
+  </div>
+
+  <div class="news">
+    <div class="newshead"><h2>מה חדש <span class="mark">השבוע</span></h2><span>לכל החדשים ←</span></div>
+    <div class="ngrid">
+      <div class="nc" style="--c:var(--c-act)"><div class="tape"></div><span class="kind">פעולה</span><h4>לחץ חברתי: לשים לב מתי זה אמיתי</h4><small>כיתות ז'-י' · 69 דק'</small></div>
+      <div class="nc" style="--c:var(--c-act)"><div class="tape"></div><span class="kind">פעולה</span><h4>כולם אומרים? אני בוחר</h4><small>כיתות ג'-ו' · 62 דק'</small></div>
+      <div class="nc" style="--c:var(--c-staff)"><div class="tape"></div><span class="kind">לימוד צוות</span><h4>וירא: תפילה מתוך הצרה</h4><small>פרשת וירא · 25 דק'</small></div>
+      <div class="nc" style="--c:var(--c-wall)"><div class="tape"></div><span class="kind">גלופה</span><h4>נ(י)צנ(צ)ים - כל אחד יהלום</h4><small>ניצנים</small></div>
+    </div>
+  </div>
+</div>
+
+<div class="label">דף פעולה</div>
+<div class="screen">
+  <div class="bar">
+    <div class="logo"><svg><use href="#flame"/></svg>המדריך למדריך</div>
+    <div class="menu"><span>בית</span><span class="on">פעולות</span><span>ערבי גיבוש</span><span>לימוד צוות</span><span>סיטואציות</span><span class="ai">עוזר AI</span></div>
+    <div class="barend"><div class="iconbtn">⌕</div><div class="binderbtn">הקלסר שלי <b>3</b></div></div>
+  </div>
+  <div class="apage">
+    <div class="crumbs">בית › פעולות ומערכים › לחץ חברתי</div>
+    <div class="ahead">
+      <div>
+        <span class="kind2"><i></i>פעולה · ערכים</span>
+        <h1>לחץ חברתי: לשים לב מתי זה <span class="mark">אמיתי</span></h1>
+        <p class="lead"><b>הערך: בחירה עצמאית.</b> לחץ חברתי הוא דבר נפוץ, והוא יכול לקחת אותנו למקום טוב או פחות טוב. ניסוי מחיאות כפיים, משחק הזדהות בשקט, הסיפור של נועם ותרגול של איך אומרים "לא" בלי לריב.</p>
+      </div>
+      <div class="card2">
+        <div class="stamp">מתאים גם לשבת</div>
+        <div class="facts">
+          <div class="fact" style="--t:var(--t-staff)"><small>כיתות</small><b>ז'-י'</b></div>
+          <div class="fact" style="--t:var(--t-act)"><small>משך</small><b>69 דק'</b></div>
+          <div class="fact" style="--t:var(--t-chup)"><small>מקום</small><b>פנים</b></div>
+          <div class="fact" style="--t:var(--t-game)"><small>ציוד</small><b>ללא</b></div>
+        </div>
+        <span class="btn main">▶ מצב "בפעולה"</span>
+        <span class="btn">הורדה להדפסה</span>
+        <div class="row2"><span class="btn">♡ לקלסר</span><span class="btn">העתקה</span><span class="btn">שיתוף</span></div>
+      </div>
+    </div>
+
+    <div class="ruler">
+      <h3>הפעולה על ציר הזמן <span>המקווקו הוא שלב שאפשר לדלג עליו</span></h3>
+      <div class="rbar">
+        <i style="flex:9;--c:var(--s2)">1</i><i style="flex:7;--c:var(--s3)">2</i><i class="skip" style="flex:8;--c:var(--s3)">3</i><i style="flex:6;--c:var(--s5)">4</i><i style="flex:4;--c:var(--s6)">5</i><i style="flex:12;--c:var(--s3)">6</i><i style="flex:15;--c:var(--s4)">7</i><i style="flex:6;--c:var(--s7)">8</i>
+      </div>
+      <div class="ticks"><span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span><span>69 דק'</span></div>
+    </div>
+
+    <div class="steps">
+      <div class="step" style="--c:var(--s2);--t:#E1F0E5">
+        <div class="num">1</div>
+        <div><h3>פתיחה: הניסוי <em>פתיחה</em><em class="t">4 דק'</em></h3>
+          <p>המדריך מתחיל למחוא כפיים ולא מפסיק, עד שכולם מצטרפים. אחר כך עוצרים ושואלים. אם מישהו לא הצטרף, מציינים אותו ומשבחים אותו.</p>
+          <div class="say"><small>מה אומרים</small>"למה הצטרפתם אליי?"</div></div>
+      </div>
+      <div class="step" style="--c:var(--s3);--t:#FBE4D2">
+        <div class="num">2</div>
+        <div><h3>משחק: מי מזדהה <em>משחק</em><em class="t">7 דק'</em></h3>
+          <p>כולם עוצמים עיניים. המדריך מקריא סיטואציות, וכל מי שמזדהה מוחא כף פעם אחת. כך שומעים שלא לבד.</p>
+          <div class="chips"><div>לפעמים אני עושה דברים רק כי כולם עושים.</div><div>העתקתי במבחן כי כולם ככה.</div><div>הברזתי משיעור כי החברים שלי גם.</div></div></div>
+      </div>
+      <div class="step" style="--c:var(--s3);--t:#FBE4D2">
+        <div class="num">3</div>
+        <div><h3>משחק פעיל: מי עומד אם... <em>משחק</em><em class="t">8 דק'</em><span class="skipnote">אפשר לדלג</span></h3>
+          <p>שני סבבים: עיניים פתוחות ועיניים עצומות. משווים איך הרגיש להחליט כשרואים את כולם.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="label">בטלפון</div>
+<div class="phones">
+  <div class="ph">
+    <div class="bar"><div class="logo"><svg><use href="#flame"/></svg>המדריך</div><div class="barend"><div class="binderbtn" style="padding:5px 12px;font-size:13px">קלסר <b>3</b></div><div class="iconbtn">☰</div></div></div>
+    <div class="phbody">
+      <h1>מה מעבירים <span class="mark">היום</span>?</h1>
+      <p class="sub">354 פעולות מוכנות, שלב אחרי שלב.</p>
+      <div class="search"><span>חיפוש בכל האתר</span><b>חיפוש</b></div>
+      <div class="notes">
+        <div class="note" style="--n:#FFE27A;--r:-2deg">פעולה עכשיו<small>5 דק' הכנה</small></div>
+        <div class="note" style="--n:#BFE3D0;--r:1.6deg">משחק מהיר<small>בלי ציוד</small></div>
+        <div class="note" style="--n:#F8C9DA;--r:-1deg">לשבת<small>בעל פה</small></div>
+        <div class="note" style="--n:#C9DFF0;--r:2deg">פרשת השבוע<small>וירא</small></div>
+      </div>
+      <div class="tabs">
+        <div class="tab on" style="--t:var(--t-act);--c:var(--c-act)">פעולות</div><div class="tab" style="--t:var(--t-night)">ערבים</div><div class="tab" style="--t:var(--t-staff)">צוות</div><div class="tab" style="--t:var(--t-read)">קריאה</div>
+      </div>
+      <div class="panel" style="--t:var(--t-act);--c:var(--c-act)"><div><h3>פעולות ומערכים</h3><div class="count">354<small>פעולות</small></div></div><div class="mini" style="grid-template-columns:1fr"><div class="mc" style="--c:var(--c-staff)"><span class="age">כיתות ז'-י'</span><h5>לחץ חברתי: לשים לב מתי זה אמיתי</h5><small>69 דק' · גם לשבת</small></div><div class="mc" style="--c:var(--c-game)"><span class="age">כיתות ג'-ו'</span><h5>כולם אומרים? אני בוחר</h5><small>62 דק' · שבת</small></div></div></div>
+    </div>
+    <div class="dock"><span class="on"><i></i>בית</span><span><i></i>פעולות</span><span><i></i>חיפוש</span><span><i></i>קלסר</span></div>
+  </div>
+
+  <div class="ph">
+    <div class="bar"><div class="logo"><svg><use href="#flame"/></svg>המדריך</div><div class="barend"><div class="binderbtn" style="padding:5px 12px;font-size:13px">קלסר <b>3</b></div><div class="iconbtn">☰</div></div></div>
+    <div class="phbody">
+      <span class="kind2"><i></i>פעולה · ערכים</span>
+      <h1 style="font-size:34px;margin-top:10px">לחץ חברתי: לשים לב מתי זה <span class="mark">אמיתי</span></h1>
+      <div class="stampline"><span class="pillm" style="--t:var(--t-staff);font-size:13.5px">כיתות ז'-י'</span><span class="pillm" style="--t:var(--t-act);font-size:13.5px">69 דק'</span><span class="pillm" style="--t:var(--t-game);font-size:13.5px">גם לשבת</span></div>
+      <div class="step" style="--c:var(--s2);--t:#E1F0E5"><div class="num">1</div><div><h3>פתיחה: הניסוי <em class="t">4 דק'</em></h3><p>מתחילים למחוא כפיים ולא מפסיקים, עד שכולם מצטרפים.</p><div class="say"><small>מה אומרים</small>"למה הצטרפתם אליי?"</div></div></div>
+      <div class="step" style="--c:var(--s3);--t:#FBE4D2"><div class="num">2</div><div><h3>משחק: מי מזדהה <em class="t">7 דק'</em></h3><p>עיניים עצומות, מקריאים, ומי שמזדהה מוחא כף.</p></div></div>
+    </div>
+    <div class="fixedbar"><span class="btn main">▶ בפעולה</span><span class="btn">♡</span><span class="btn">⎙</span></div>
+  </div>
+</div>
+</div>
+</body>
+</html>

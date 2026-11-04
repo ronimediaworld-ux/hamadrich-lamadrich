@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>המדריך למדריך: אב טיפוס כל העמודים</title>
+<script>document.documentElement.classList.add('js')</script>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #241C11; --ink2: #5B4E3C; --ink3: #85786A;
+  --bg: #FBF9F2; --paper: #FFFEFA; --dot: #E5DCC6; --line: #E4DBC8;
+  --flame: #D96A2B; --flame-d: #7A3712; --flame-t: #FBE4D2; --amber: #F2B84B; --marker: #FFD84D;
+  --c-act: #D96A2B; --t-act: #FBE4D2;
+  --c-night: #C24270; --t-night: #F6DDE7;
+  --c-staff: #3E7EA6; --t-staff: #DCEAF2;
+  --c-sit: #5E7F2A; --t-sit: #E7EFD6;
+  --c-read: #6B4A9B; --t-read: #ECE4F5;
+  --c-chup: #C99411; --t-chup: #FBF0CE;
+  --c-wall: #176B6B; --t-wall: #D6EDED;
+  --c-game: #2F7A4B; --t-game: #E1F0E5;
+  --s1: #2F5F95; --s2: #2F7A4B; --s3: #B34E14; --s4: #6B4A9B; --s5: #A63D6B; --s6: #7A5B00; --s7: #176B6B;
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --sp1: 8px; --sp2: 16px; --sp3: 24px; --sp4: 40px; --sp5: 64px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html { scroll-behavior: smooth }
+body { overflow-x: clip; font-family: 'Heebo', sans-serif; color: var(--ink); background-color: var(--bg); background-image: radial-gradient(var(--dot) 1.2px, transparent 1.3px); background-size: 24px 24px; line-height: 1.6; font-size: 17px; min-height: 100vh; padding-bottom: 84px }
+h1, h2, h3, h4, .rub { font-family: 'Rubik', sans-serif }
+a { color: inherit; text-decoration: none }
+.wrap { width: min(1160px, 100% - 40px); margin-inline: auto }
+
+/* תנועה */
+@keyframes up { from { opacity: 0; transform: translateY(18px) } to { opacity: 1; transform: none } }
+@keyframes draw { to { stroke-dashoffset: 0 } }
+@keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg) } 50% { transform: translateY(-7px) rotate(2deg) } }
+@keyframes blink { 0%,92%,100% { transform: scaleY(1) } 95% { transform: scaleY(.1) } }
+@keyframes grow { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes pop { 0% { transform: scale(.6); opacity: 0 } 70% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
+@keyframes dotsb { 0%,80%,100% { transform: translateY(0); opacity: .4 } 40% { transform: translateY(-5px); opacity: 1 } }
+.js .rv { opacity: 0; transform: translateY(20px); transition: opacity .6s var(--ease), transform .6s var(--ease); transition-delay: var(--d, 0s) }
+.js .rv.in { opacity: 1; transform: none }
+.js.static .rv, .static .rv { opacity: 1; transform: none; transition: none }
+.static * { animation-duration: 0s !important; animation-delay: 0s !important }
+@media (prefers-reduced-motion: reduce) { .js .rv { opacity: 1; transform: none; transition: none } * { animation: none !important } html { scroll-behavior: auto } }
+
+/* כותרת עליונה */
+header { position: sticky; top: 0; z-index: 20; background: rgba(255,254,250,.94); backdrop-filter: blur(8px); border-bottom: 2px solid var(--ink) }
+.hbar { display: flex; align-items: center; gap: 20px; height: 68px }
+.logo { display: flex; align-items: center; gap: 10px; font-family: 'Rubik'; font-weight: 900; font-size: 22px; white-space: nowrap; cursor: pointer }
+.logo svg { width: 30px; height: 36px; transform-origin: 50% 90%; animation: bob 3.4s ease-in-out infinite }
+nav { display: flex; gap: 2px; margin-inline-start: 8px }
+nav a { font-weight: 600; font-size: 15.5px; padding: 8px 14px; border-radius: 999px; color: var(--ink2); transition: background .2s, color .2s; cursor: pointer; white-space: nowrap }
+nav a:hover { background: var(--flame-t); color: var(--ink) }
+nav a.on { background: var(--ink); color: #fff }
+.hend { margin-inline-start: auto; display: flex; gap: 10px; align-items: center }
+.ibtn { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--ink); background: #fff; display: grid; place-items: center; cursor: pointer; transition: transform .2s var(--ease), background .2s }
+.ibtn:hover { transform: scale(1.08); background: var(--marker) }
+.ibtn svg { width: 20px; height: 20px }
+.kbtn { display: flex; align-items: center; gap: 8px; border: 2px solid var(--ink); background: var(--marker); border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 14.5px; cursor: pointer; transition: transform .2s var(--ease), box-shadow .2s; white-space: nowrap }
+.kbtn:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--ink) }
+.kbtn b { background: var(--ink); color: #fff; border-radius: 999px; padding: 0 8px; font-size: 12.5px }
+.burger { display: none }
+
+/* רכיבים */
+.btn { font-family: 'Rubik'; font-weight: 800; font-size: 16px; border: 2px solid var(--ink); border-radius: 999px; padding: 12px 26px; background: #fff; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; white-space: nowrap; transition: transform .2s var(--ease), box-shadow .2s var(--ease), background .2s }
+.btn:hover { transform: translate(-2px,-3px); box-shadow: 4px 5px 0 var(--ink) }
+.btn:active { transform: translate(1px,1px); box-shadow: 0 0 0 var(--ink) }
+.btn.main { background: var(--flame); color: #fff; box-shadow: 4px 4px 0 var(--ink) }
+.btn.main:hover { box-shadow: 6px 7px 0 var(--ink) }
+.btn.soft { background: var(--flame-t) }
+.btn.sm { padding: 8px 18px; font-size: 14.5px }
+.chip { display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--ink); border-radius: 999px; padding: 3px 14px; font-weight: 700; font-size: 14px; background: var(--t, #fff); white-space: nowrap }
+.chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--ink)); border: 1.5px solid var(--ink) }
+.fchip { border: 2px solid var(--ink); border-radius: 999px; padding: 5px 16px; font-weight: 700; font-size: 14.5px; background: #fff; cursor: pointer; transition: transform .2s var(--ease), background .2s; white-space: nowrap }
+.fchip:hover { transform: translateY(-2px) }
+.fchip.on { background: var(--c, var(--flame)); color: #fff }
+.squig { position: relative; display: inline-block }
+.squig svg { position: absolute; inset-inline: -4%; bottom: -.16em; width: 108%; height: .34em; overflow: visible }
+.squig path { fill: none; stroke: var(--flame); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 260; stroke-dashoffset: 260; animation: draw 1s .5s var(--ease) forwards }
+.static .squig path { stroke-dashoffset: 0 }
+.view { display: none }
+.view.on { display: block; animation: up .55s var(--ease) both }
+.static .view.on { animation: none }
+.crumbs { padding: var(--sp3) 0 var(--sp2); font-size: 14px; color: var(--ink3); font-weight: 600 }
+.crumbs a { cursor: pointer } .crumbs a:hover { color: var(--flame) }
+section.block { padding: var(--sp4) 0 }
+.shead { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp3); gap: 16px }
+.shead h2 { font-weight: 900; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.1; letter-spacing: -.02em }
+.shead a { font-weight: 700; color: var(--ink2); cursor: pointer; white-space: nowrap }
+.shead a:hover { color: var(--flame) }
+.pagehead { display: flex; align-items: center; gap: 20px; padding: var(--sp2) 0 var(--sp3) }
+.pagehead .ic { width: 76px; height: 76px; flex: none }
+.pagehead h1 { font-weight: 900; font-size: clamp(32px, 4.6vw, 54px); line-height: 1.05; letter-spacing: -.025em }
+.pagehead p { color: var(--ink2); font-size: 18px; margin-top: 4px }
+.card { background: var(--paper); border: 2px solid var(--ink); border-radius: 24px; padding: 22px 26px }
+
+/* ===== בית: גיבור (קרוב למקור) ===== */
+.hero { text-align: center; padding: var(--sp5) 0 var(--sp3) }
+.hflame { width: 74px; height: 88px; margin: 0 auto; display: block; transform-origin: 50% 92%; animation: bob 3.4s ease-in-out infinite; filter: drop-shadow(3px 4px 0 var(--ink)) }
+.hero h1 { font-weight: 900; font-size: clamp(42px, 6.6vw, 80px); line-height: 1.02; letter-spacing: -.028em; margin-top: 14px }
+.hero p { font-size: 20px; color: var(--ink2); max-width: 600px; margin: 14px auto 0 }
+.sbox { margin: var(--sp3) auto 0; display: flex; max-width: 680px; background: #fff; border: 2px solid var(--ink); border-radius: 22px; box-shadow: 5px 5px 0 var(--ink); overflow: hidden; transition: box-shadow .2s, transform .2s }
+.sbox:focus-within, .sbox:hover { transform: translate(-1px,-1px); box-shadow: 7px 7px 0 var(--flame) }
+.sbox input { flex: 1; border: 0; outline: 0; padding: 18px 22px; font: 500 18px 'Heebo'; background: transparent; min-width: 0 }
+.sbox button { border: 0; background: var(--ink); color: #fff; font: 800 17px 'Rubik'; padding: 0 32px; cursor: pointer; transition: background .2s }
+.sbox button:hover { background: var(--flame) }
+.nitzotz { margin: 18px auto 0; display: inline-flex; align-items: center; gap: 12px; background: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 6px 20px 6px 8px; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform .2s var(--ease), box-shadow .2s }
+.nitzotz:hover { transform: translateY(-2px); box-shadow: 3px 3px 0 var(--ink) }
+.nitzotz svg { width: 30px; height: 36px }
+.nitzotz b { color: var(--flame-d) }
+.chips { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; max-width: 820px; margin-inline: auto }
+.chips .hc { border: 2px solid var(--ink); border-radius: 999px; padding: 6px 18px; font-weight: 700; font-size: 15px; background: var(--t); cursor: pointer; transition: transform .2s var(--ease), box-shadow .2s }
+.chips .hc:hover { transform: translate(-2px,-3px); box-shadow: 3px 4px 0 var(--ink) }
+.chips .hc.main { background: var(--flame); color: #fff }
+.stats { display: flex; justify-content: center; gap: 12px; margin-top: var(--sp4); flex-wrap: wrap }
+.stat { background: var(--paper); border: 2px solid var(--ink); border-radius: 18px; padding: 10px 22px; text-align: center; min-width: 150px }
+.stat b { display: block; font: 900 30px 'Rubik'; color: var(--c) }
+.stat span { font-weight: 600; font-size: 13.5px; color: var(--ink2) }
+.scrollhint { text-align: center; margin-top: 18px; font-weight: 700; color: var(--ink3); font-size: 14px }
+
+/* חדש: קטן */
+.newsrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp2) }
+.nc { background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 14px 16px 12px; display: grid; gap: 6px; cursor: pointer; position: relative; overflow: hidden; transition: transform .25s var(--ease), box-shadow .25s var(--ease) }
+.nc:before { content: ''; position: absolute; inset-inline: 0; top: 0; height: 6px; background: var(--c) }
+.nc:hover { transform: translate(-2px,-4px); box-shadow: 4px 6px 0 var(--ink) }
+.nc .k { justify-self: start; margin-top: 4px; background: var(--t); font-weight: 800; font-size: 12px; padding: 0 10px; border-radius: 999px; border: 1.5px solid var(--ink) }
+.nc h3 { font-weight: 800; font-size: 16.5px; line-height: 1.25 }
+.nc .m { color: var(--ink2); font-weight: 600; font-size: 13px }
+
+/* קטגוריות ושיטה (אהובים: נשמרו) */
+.cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp2) }
+.cat { background: var(--t); border: 2px solid var(--ink); border-radius: 22px; padding: 20px; display: grid; gap: 14px; cursor: pointer; transition: transform .25s var(--ease), box-shadow .25s var(--ease); position: relative }
+.cat:hover { transform: translate(-3px,-5px); box-shadow: 6px 8px 0 var(--ink) }
+.cat .ic { width: 56px; height: 56px; transition: transform .35s var(--ease) }
+.cat:hover .ic { transform: rotate(-8deg) scale(1.1) }
+.cat h3 { font-weight: 800; font-size: 20px; line-height: 1.15 }
+.cat small { display: block; font-weight: 600; color: var(--ink2); font-size: 14px; margin-top: 2px }
+.cat .n { position: absolute; inset-inline-end: 18px; top: 16px; font-family: 'Rubik'; font-weight: 900; font-size: 22px; color: var(--c) }
+.method { background: var(--paper); border: 2px solid var(--ink); border-radius: 28px; padding: var(--sp4); display: grid; grid-template-columns: .8fr 1.2fr; gap: var(--sp4); align-items: center }
+.method h2 { font-weight: 900; font-size: clamp(28px, 3.4vw, 38px); line-height: 1.1; letter-spacing: -.02em }
+.method p { color: var(--ink2); margin-top: 10px }
+.dots { display: flex; justify-content: space-between; position: relative }
+.dots:before { content: ''; position: absolute; inset-inline: 22px; top: 22px; border-top: 3px dashed var(--ink); opacity: .35 }
+.dots div { position: relative; text-align: center; font-weight: 700; font-size: 13.5px }
+.dots b { display: grid; place-items: center; width: 46px; height: 46px; margin: 0 auto 6px; border-radius: 50%; background: var(--c); color: #fff; border: 2px solid var(--ink); font-family: 'Rubik'; font-weight: 900; font-size: 18px; transition: transform .3s var(--ease) }
+.dots div:hover b { transform: translateY(-6px) scale(1.1) }
+
+/* המשך הבית: מומלצים */
+.recs { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp2) }
+.pcard { background: var(--paper); border: 2px solid var(--ink); border-radius: 20px; overflow: hidden; cursor: pointer; display: grid; grid-template-rows: auto 1fr auto; transition: transform .25s var(--ease), box-shadow .25s var(--ease) }
+.pcard:hover { transform: translate(-3px,-5px); box-shadow: 6px 8px 0 var(--ink) }
+.pcard .top { background: var(--t); border-bottom: 2px solid var(--ink); padding: 9px 14px; display: flex; justify-content: space-between; align-items: center }
+.pcard .tg { font: 800 12.5px 'Rubik'; color: #fff; background: var(--c); border-radius: 999px; padding: 1px 12px }
+.pcard .age { font-weight: 800; font-size: 13px }
+.pcard .bd { padding: 14px 16px 8px }
+.pcard h3 { font-weight: 800; font-size: 19px; line-height: 1.25 }
+.pcard .meta { margin-top: 8px; color: var(--ink2); font-weight: 600; font-size: 14px; display: flex; gap: 12px }
+.pcard .ft { padding: 8px 16px 14px; display: flex; justify-content: space-between; align-items: center }
+.pill { font-weight: 700; font-size: 12.5px; border: 1.5px solid var(--ink); border-radius: 999px; padding: 1px 11px; background: var(--t-game) }
+.star { font-weight: 800; font-size: 14.5px } .star:before { content: '★ '; color: var(--c-chup) }
+
+/* פרשת שבוע */
+.parsha { background: var(--ink); color: #fff; border-radius: 30px; padding: var(--sp4); display: grid; grid-template-columns: .9fr 1.1fr; gap: var(--sp4); align-items: center; position: relative; overflow: hidden }
+.parsha:before { content: ''; position: absolute; inset-inline-start: -60px; bottom: -70px; width: 240px; height: 240px; border-radius: 50%; background: var(--flame); opacity: .9 }
+.parsha small { font: 800 13px 'Rubik'; color: var(--amber); letter-spacing: .08em }
+.parsha h2 { font-weight: 900; font-size: clamp(34px, 4.6vw, 56px); line-height: 1.04; letter-spacing: -.025em; margin-top: 6px }
+.parsha p { color: #D8CFC1; margin-top: 10px; max-width: 420px }
+.plist { display: grid; gap: 10px; position: relative }
+.plist div { background: #fff; color: var(--ink); border-radius: 16px; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-weight: 700; cursor: pointer; transition: transform .2s var(--ease) }
+.plist div:hover { transform: translateX(-6px) }
+.plist span { font-size: 13.5px; color: var(--ink2); font-weight: 600; white-space: nowrap }
+
+/* עוזר AI */
+.aiband { background: var(--t-staff); border: 2px solid var(--ink); border-radius: 30px; padding: var(--sp4); display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp4); align-items: center }
+.aiband h2 { font-weight: 900; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; letter-spacing: -.02em }
+.aiband p { color: var(--ink2); margin-top: 10px; max-width: 460px }
+.demo { display: grid; gap: 10px }
+.msg { max-width: 88%; padding: 10px 16px; border: 2px solid var(--ink); border-radius: 18px; font-weight: 600; font-size: 16px; line-height: 1.45 }
+.msg.me { background: var(--marker); border-radius: 18px 18px 4px 18px; justify-self: start }
+.msg.bot { background: #fff; border-radius: 18px 18px 18px 4px; justify-self: end }
+.msg.bot small { display: block; color: var(--ink3); margin-top: 4px; font-weight: 600; font-size: 13.5px }
+
+/* בנייה, צ'ופרים, מנוי, אודות, שליחה */
+.build { background: var(--flame-t); border: 2px solid var(--ink); border-radius: 28px; padding: 30px var(--sp4); display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; box-shadow: 6px 6px 0 var(--flame) }
+.build h2 { font-weight: 900; font-size: clamp(24px, 3vw, 34px); line-height: 1.12 }
+.build p { color: var(--ink2); margin-top: 6px; max-width: 520px }
+.build .links { display: flex; gap: 10px; flex-wrap: wrap }
+.mini-ch { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp2) }
+.chcard { background: var(--t); border: 2px solid var(--ink); border-radius: 16px; padding: 18px 16px; display: grid; gap: 10px; justify-items: center; text-align: center; cursor: pointer; position: relative; transition: transform .25s var(--ease), box-shadow .25s var(--ease); min-height: 150px; align-content: center }
+.chcard:hover { transform: rotate(-2deg) translateY(-4px); box-shadow: 5px 6px 0 var(--ink) }
+.chcard i { width: 38px; height: 38px; border-radius: 50%; background: var(--c); border: 2px solid var(--ink) }
+.chcard b { font: 800 18px 'Rubik'; line-height: 1.15 }
+.chcard small { font-weight: 600; color: var(--ink2); font-size: 13px }
+.news-l { background: var(--t-chup); border: 2px solid var(--ink); border-radius: 28px; padding: var(--sp4); display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp4); align-items: center }
+.news-l h2 { font-weight: 900; font-size: clamp(26px, 3.2vw, 36px); line-height: 1.1 }
+.news-l p { color: var(--ink2); margin-top: 8px }
+.about { display: grid; grid-template-columns: auto 1fr auto; gap: var(--sp3); align-items: center }
+.avatar { width: 96px; height: 96px; border-radius: 50%; background: var(--flame-t); border: 2px solid var(--ink); display: grid; place-items: center; box-shadow: 4px 4px 0 var(--ink) }
+.avatar svg { width: 44px; height: 52px }
+.about q { font: 700 22px 'Rubik'; line-height: 1.4; quotes: '״' '״' }
+.about small { display: block; margin-top: 6px; color: var(--ink2); font-weight: 600 }
+.submit { border: 3px dashed var(--ink); border-radius: 28px; padding: 30px var(--sp4); display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; background: rgba(255,255,255,.6) }
+.submit h2 { font-weight: 900; font-size: clamp(24px, 3vw, 34px) }
+.submit p { color: var(--ink2); margin-top: 4px }
+footer.site { margin-top: var(--sp5); border-top: 2px solid var(--ink); background: var(--paper); padding: var(--sp4) 0 var(--sp3) }
+.fcols { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: var(--sp4) }
+.fcols h4 { font-weight: 800; font-size: 15px; margin-bottom: 10px }
+.fcols a { display: block; color: var(--ink2); font-weight: 600; font-size: 15px; padding: 3px 0; cursor: pointer } .fcols a:hover { color: var(--flame) }
+.fcols p { color: var(--ink2); font-size: 15px; max-width: 300px; margin-top: 8px }
+.small { margin-top: var(--sp3); color: var(--ink3); font-size: 13.5px; font-weight: 600; text-align: center }
+
+/* ===== רשימה ===== */
+.filters { display: grid; gap: 12px; margin: var(--sp2) 0 var(--sp3); background: var(--paper); border: 2px solid var(--ink); border-radius: 22px; padding: 18px 22px }
+.frow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap }
+.frow label { font: 800 14px 'Rubik'; color: var(--ink2); min-width: 54px }
+.lsearch { display: flex; align-items: center; gap: 10px; border: 2px solid var(--ink); border-radius: 16px; background: #fff; padding: 12px 18px; color: var(--ink3); font-weight: 500 }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp3) }
+.count { margin: 0 4px 14px; color: var(--ink2); font-weight: 700; font-size: 15px }
+.more { text-align: center; margin-top: var(--sp4) }
+
+/* ===== פעולה ===== */
+.ahead h1 { font-weight: 900; font-size: clamp(34px, 5vw, 60px); line-height: 1.05; letter-spacing: -.025em; margin-top: 14px; max-width: 880px }
+.lead { font-size: 20px; line-height: 1.7; max-width: 720px; margin-top: var(--sp2) }
+.lead b { background: linear-gradient(transparent 55%, var(--marker) 55% 92%, transparent 92%); padding: 0 4px }
+.acts { display: flex; gap: 12px; margin-top: var(--sp3); flex-wrap: wrap }
+.time { margin-top: var(--sp4) }
+.time h3 { font-weight: 800; font-size: 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap }
+.time h3 span { font: 600 14px 'Heebo'; color: var(--ink2) }
+.tbar { display: flex; gap: 4px; margin-top: 16px; height: 46px }
+.tbar i { display: grid; place-items: center; background: var(--c); color: #fff; font: 800 15px 'Rubik'; font-style: normal; border-radius: 10px; border: 2px solid var(--ink); transition: opacity .3s, filter .3s; animation: grow .8s var(--ease) both; transform-origin: 100% 50% }
+.tbar i.skip { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.4) 0 5px, transparent 5px 11px) }
+.tbar i.off { opacity: .25; filter: grayscale(1) }
+.fit { margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-weight: 600 }
+.fit input { flex: 1; min-width: 180px; accent-color: var(--flame); height: 6px }
+.fit output { font: 900 22px 'Rubik'; color: var(--flame-d); min-width: 90px }
+.fit .m { flex-basis: 100%; font-size: 14.5px; color: var(--ink2) }
+.layout { display: grid; grid-template-columns: 1fr 320px; gap: var(--sp4); margin-top: var(--sp4); align-items: start }
+.steps { display: grid; gap: var(--sp3) }
+.step { background: var(--paper); border: 2px solid var(--ink); border-radius: 24px; padding: 24px 26px 26px; display: grid; grid-template-columns: 62px 1fr; gap: 18px; transition: transform .25s var(--ease), box-shadow .25s var(--ease), opacity .3s, filter .3s }
+.step:hover { transform: translate(-2px,-3px); box-shadow: 5px 6px 0 var(--ink) }
+.step.off { opacity: .35; filter: grayscale(.8) }
+.num { width: 56px; height: 56px; border-radius: 18px; background: var(--c); color: #fff; display: grid; place-items: center; font: 900 28px 'Rubik'; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: rotate(-4deg); transition: transform .3s var(--ease) }
+.step:hover .num { transform: rotate(4deg) scale(1.08) }
+.step h3 { font-weight: 800; font-size: 25px; line-height: 1.2; display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+.step h3 em { font: 700 13px 'Rubik'; font-style: normal; padding: 3px 12px; border-radius: 999px; background: var(--t); border: 1.5px solid var(--ink) }
+.step h3 em.t { background: var(--ink); color: #fff }
+.step p { font-size: 18px; line-height: 1.75; margin-top: 8px; max-width: 64ch }
+.say { margin-top: 14px; background: var(--t); border: 2px solid var(--ink); border-radius: 18px 18px 18px 4px; padding: 12px 20px; font: 700 20px 'Heebo'; max-width: 540px }
+.say small { display: block; font: 800 12px 'Rubik'; letter-spacing: .06em; color: var(--c); margin-bottom: 2px }
+details { margin-top: 12px }
+summary { cursor: pointer; font-weight: 800; color: var(--flame-d); list-style: none; display: inline-flex; gap: 8px; align-items: center; border-bottom: 2px solid var(--flame); padding-bottom: 1px }
+summary::-webkit-details-marker { display: none }
+summary:after { content: '+'; font-size: 20px; line-height: 1; transition: transform .3s var(--ease) }
+details[open] summary:after { transform: rotate(45deg) }
+details .items { display: grid; gap: 8px; margin-top: 12px; animation: up .4s var(--ease) both }
+details .items div { background: var(--t); border-radius: 12px; border: 1.5px solid var(--ink); padding: 8px 16px; font-size: 16.5px }
+.side { position: sticky; top: 90px; display: grid; gap: 14px }
+.sidecard { background: var(--paper); border: 2px solid var(--ink); border-radius: 24px; padding: 20px; box-shadow: 5px 5px 0 var(--ink); position: relative }
+.stamp { position: absolute; top: -16px; inset-inline-start: -12px; border: 3px solid var(--c-game); color: var(--c-game); background: var(--paper); border-radius: 10px; padding: 3px 14px; font: 800 17px 'Rubik'; transform: rotate(-6deg); animation: pop .5s .6s var(--ease) both }
+.sidecard dl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px }
+.sidecard dl div { background: var(--t); border: 2px solid var(--ink); border-radius: 14px; padding: 8px 12px }
+.sidecard dt { font-size: 12.5px; font-weight: 700; color: var(--ink2) }
+.sidecard dd { font: 800 20px 'Rubik' }
+.sidecard .btn { width: 100%; justify-content: center; margin-top: 12px }
+.fixedbar { display: none }
+
+/* ===== קטע קריאה ===== */
+.rhead h1 { font-weight: 900; font-size: clamp(34px, 5vw, 58px); line-height: 1.05; letter-spacing: -.025em; margin-top: 14px }
+.rmeta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: var(--sp2) }
+.rlayout { display: grid; grid-template-columns: 1fr 300px; gap: var(--sp4); margin-top: var(--sp3); align-items: start }
+.paper { background: var(--paper); border: 2px solid var(--ink); border-radius: 28px; padding: 40px clamp(24px, 5vw, 64px); box-shadow: 6px 6px 0 var(--ink) }
+.tools { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-weight: 700; color: var(--ink2); font-size: 14px }
+.tools .fchip { padding: 2px 12px }
+.story { font-size: var(--fs, 21px); line-height: 1.95; max-width: 60ch; margin-inline: auto }
+.story p + p { margin-top: .9em }
+.story p:first-child:first-letter { font: 900 3.2em/.8 'Rubik'; float: inline-start; color: var(--c-read); margin-inline-end: 10px; margin-top: .1em }
+.howto { background: var(--t-read); border: 2px solid var(--ink); border-radius: 20px; padding: 18px 20px }
+.howto h3 { font-weight: 800; font-size: 17px; margin-bottom: 6px }
+.howto p { font-size: 15.5px }
+.rel { display: grid; gap: 8px; margin-top: 8px }
+.rel div { background: #fff; border: 2px solid var(--ink); border-radius: 14px; padding: 9px 14px; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform .2s var(--ease) } .rel div:hover { transform: translateX(-4px) }
+
+/* ===== לימוד צוות ===== */
+.goalsl { display: grid; gap: 10px; margin-top: 12px }
+.goalsl div { display: flex; gap: 12px; align-items: flex-start; font-size: 18px }
+.goalsl i { width: 26px; height: 26px; border-radius: 50%; background: var(--c-staff); color: #fff; font: 800 14px 'Rubik'; font-style: normal; display: grid; place-items: center; flex: none; margin-top: 2px }
+.qs { display: grid; gap: 12px; counter-reset: q; margin-top: 14px }
+.qs div { counter-increment: q; background: var(--t-staff); border: 2px solid var(--ink); border-radius: 18px; padding: 14px 20px 14px 20px; font: 600 19px 'Heebo'; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center }
+.qs div:before { content: counter(q); width: 36px; height: 36px; border-radius: 50%; background: var(--c-staff); color: #fff; display: grid; place-items: center; font: 900 17px 'Rubik' }
+.take { background: var(--marker); border: 2px solid var(--ink); border-radius: 22px; padding: 18px 24px; margin-top: var(--sp3); box-shadow: 5px 5px 0 var(--ink) }
+.take small { font: 800 12.5px 'Rubik'; letter-spacing: .08em }
+.take p { font: 800 21px 'Rubik'; margin-top: 2px }
+
+/* ===== צ'ופרים ===== */
+.cgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp3) }
+.cc { background: var(--paper); border: 2px solid var(--ink); border-radius: 20px; overflow: hidden; cursor: pointer; transition: transform .25s var(--ease), box-shadow .25s var(--ease) }
+.cc:hover { transform: translate(-3px,-5px); box-shadow: 6px 8px 0 var(--ink) }
+.cc .art { height: 150px; background: var(--t); display: grid; place-items: center; border-bottom: 2px solid var(--ink); position: relative }
+.cc .art .tk { background: #fff; border: 2px solid var(--ink); border-radius: 12px; padding: 12px 18px; font: 800 18px 'Rubik'; text-align: center; transform: rotate(var(--r, -3deg)); box-shadow: 3px 3px 0 var(--ink); line-height: 1.2; max-width: 80% }
+.cc .art .tk small { display: block; font: 600 12px 'Heebo'; color: var(--ink2); margin-top: 2px }
+.cc .bd { padding: 14px 16px 16px }
+.cc h3 { font-weight: 800; font-size: 18px; line-height: 1.25 }
+.cc .tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap }
+
+/* ===== צ'אט ===== */
+.chat { max-width: 820px; margin: 0 auto; background: var(--paper); border: 2px solid var(--ink); border-radius: 28px; overflow: hidden; box-shadow: 6px 6px 0 var(--ink); display: grid; grid-template-rows: auto 1fr auto }
+.chat .chead { display: flex; align-items: center; gap: 14px; padding: 16px 22px; background: var(--t-staff); border-bottom: 2px solid var(--ink) }
+.chat .chead svg { width: 40px; height: 48px }
+.chat .chead b { font: 800 19px 'Rubik' } .chat .chead small { display: block; color: var(--ink2); font-weight: 600; font-size: 13.5px }
+.cbody { padding: 24px; display: grid; gap: 14px; min-height: 380px; align-content: start; background-image: radial-gradient(var(--dot) 1.2px, transparent 1.3px); background-size: 22px 22px }
+.cbody .msg { animation: up .4s var(--ease) both }
+.typing { justify-self: end; background: #fff; border: 2px solid var(--ink); border-radius: 18px 18px 18px 4px; padding: 12px 18px; display: flex; gap: 5px }
+.typing i { width: 8px; height: 8px; border-radius: 50%; background: var(--ink); animation: dotsb 1.2s infinite } .typing i:nth-child(2) { animation-delay: .15s } .typing i:nth-child(3) { animation-delay: .3s }
+.found { display: grid; gap: 8px; margin-top: 8px }
+.found div { background: var(--t-act); border: 2px solid var(--ink); border-radius: 12px; padding: 8px 12px; font-weight: 700; font-size: 15px; display: flex; justify-content: space-between; gap: 10px }
+.found span { font-weight: 600; color: var(--ink2); font-size: 13px; white-space: nowrap }
+.cfoot { border-top: 2px solid var(--ink); padding: 14px 18px; background: #fff }
+.sugg { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px }
+.cinput { display: flex; gap: 10px } .cinput input { flex: 1; border: 2px solid var(--ink); border-radius: 14px; padding: 12px 16px; font: 500 16px 'Heebo'; outline: 0 } .cinput input:focus { box-shadow: 3px 3px 0 var(--flame) }
+
+/* ===== קלסר ===== */
+.bgrid { display: grid; grid-template-columns: 1fr 320px; gap: var(--sp4); align-items: start }
+.bitem { display: grid; grid-template-columns: 34px 8px 1fr auto; gap: 14px; align-items: center; background: var(--paper); border: 2px solid var(--ink); border-radius: 18px; padding: 14px 18px; margin-bottom: 12px; transition: transform .2s var(--ease), box-shadow .2s var(--ease) }
+.bitem:hover { transform: translate(-2px,-3px); box-shadow: 4px 5px 0 var(--ink) }
+.bitem .bar { width: 8px; height: 44px; border-radius: 4px; background: var(--c) }
+.bitem h3 { font-weight: 800; font-size: 19px; line-height: 1.25 } .bitem small { color: var(--ink2); font-weight: 600; font-size: 14px }
+.chk { width: 28px; height: 28px; border: 2px solid var(--ink); border-radius: 8px; background: #fff; display: grid; place-items: center; font-weight: 900; cursor: pointer; transition: background .2s }
+.chk.on { background: var(--flame); color: #fff }
+.bside { position: sticky; top: 90px }
+.bside h3 { font-weight: 900; font-size: 22px } .bside p { color: var(--ink2); margin: 6px 0 14px; font-size: 15.5px }
+.bside .btn { width: 100%; justify-content: center; margin-top: 10px }
+.tag-p { background: var(--t-read); border: 1.5px solid var(--ink); border-radius: 999px; padding: 0 10px; font-weight: 700; font-size: 12px; margin-inline-start: 8px }
+
+/* ===== בונים מאפס ===== */
+.prog { display: flex; gap: 8px; margin: var(--sp2) 0 var(--sp3); flex-wrap: wrap }
+.prog div { flex: 1; min-width: 96px; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 10px 12px; font-weight: 700; font-size: 14px; display: flex; gap: 10px; align-items: center; opacity: .65 }
+.prog div b { width: 30px; height: 30px; border-radius: 50%; background: var(--c); color: #fff; font: 900 15px 'Rubik'; display: grid; place-items: center; border: 2px solid var(--ink); flex: none }
+.prog div.done { opacity: 1; background: var(--t) } .prog div.cur { opacity: 1; box-shadow: 4px 4px 0 var(--ink); transform: translateY(-3px); background: #fff }
+.bform { display: grid; grid-template-columns: 1fr 340px; gap: var(--sp4); align-items: start }
+.field label { display: block; font: 800 15px 'Rubik'; margin: 14px 0 6px }
+.field input, .field textarea { width: 100%; border: 2px solid var(--ink); border-radius: 14px; padding: 12px 16px; font: 500 17px 'Heebo'; background: #fff; outline: 0; resize: vertical }
+.field input:focus, .field textarea:focus { box-shadow: 3px 3px 0 var(--s3) }
+.field .hint { color: var(--ink2); font-size: 14px; margin-top: 4px }
+.stepper { display: inline-flex; align-items: center; border: 2px solid var(--ink); border-radius: 14px; overflow: hidden; background: #fff }
+.stepper b { padding: 8px 18px; font: 900 20px 'Rubik'; cursor: pointer } .stepper b:hover { background: var(--marker) } .stepper span { padding: 8px 14px; font: 800 18px 'Rubik'; border-inline: 2px solid var(--ink) }
+.nav2 { display: flex; justify-content: space-between; margin-top: var(--sp3) }
+.prev { position: sticky; top: 90px; background: var(--t-act); border: 2px solid var(--ink); border-radius: 24px; padding: 20px }
+.prev h3 { font-weight: 900; font-size: 20px; margin-bottom: 10px }
+.prev div { background: #fff; border: 2px solid var(--ink); border-radius: 12px; padding: 7px 12px; margin-top: 8px; font-weight: 700; font-size: 14.5px; display: flex; justify-content: space-between; border-inline-start: 8px solid var(--c) }
+.prev .tot { background: var(--ink); color: #fff; border-color: var(--ink) }
+
+/* ===== גלופות ===== */
+.wall { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp3); margin-top: var(--sp3) }
+.slogan { background: var(--bgc); border: 2px solid var(--ink); border-radius: 18px; padding: 28px 22px 18px; box-shadow: 5px 5px 0 var(--ink); transform: rotate(var(--r)); transition: transform .25s var(--ease); cursor: pointer; position: relative; min-height: 150px; display: grid; align-content: space-between; gap: 14px }
+.slogan:hover { transform: rotate(0) translateY(-5px) }
+.slogan q { font: 800 23px/1.3 'Rubik'; quotes: none }
+.slogan small { font-weight: 700; font-size: 13px; color: var(--ink2) }
+.slogan .grp { position: absolute; top: -13px; inset-inline-start: 18px; background: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 0 12px; font: 800 12.5px 'Rubik' }
+
+/* ===== אודות ===== */
+.abouthero { display: grid; grid-template-columns: 1fr auto; gap: var(--sp4); align-items: center; padding: var(--sp3) 0 }
+.abouthero h1 { font-weight: 900; font-size: clamp(36px, 5.2vw, 64px); line-height: 1.05; letter-spacing: -.025em }
+.abouthero p { font-size: 20px; line-height: 1.75; color: var(--ink); max-width: 640px; margin-top: var(--sp2) }
+.portrait { width: 240px; height: 240px; border-radius: 50%; border: 2px solid var(--ink); background: var(--flame-t); display: grid; place-items: center; box-shadow: 8px 8px 0 var(--ink); position: relative }
+.portrait svg { width: 110px; height: 132px; animation: bob 3.4s ease-in-out infinite }
+.pr3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp3); margin-top: var(--sp4) }
+.pr3 div { background: var(--t); border: 2px solid var(--ink); border-radius: 22px; padding: 22px }
+.pr3 b { font: 900 38px 'Rubik'; color: var(--c) } .pr3 h3 { font-weight: 800; font-size: 20px; margin-top: 4px } .pr3 p { color: var(--ink2); font-size: 16px; margin-top: 6px }
+
+/* ===== מחליף העמודים (לבדיקה בלבד) ===== */
+.dock { position: fixed; bottom: 12px; inset-inline: 0; display: flex; justify-content: center; z-index: 50; pointer-events: none }
+.dock div { pointer-events: auto; background: var(--ink); border-radius: 999px; padding: 8px 10px; display: flex; gap: 4px; max-width: calc(100% - 24px); overflow-x: auto; box-shadow: 0 10px 30px -10px rgba(0,0,0,.5) }
+.dock a { color: #fff; font: 700 13.5px 'Rubik'; padding: 6px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; opacity: .75 }
+.dock a:hover { opacity: 1 } .dock a.on { background: var(--flame); opacity: 1 }
+.static .dock { display: none }
+
+@media (max-width: 960px) {
+  nav { display: none } .burger { display: grid } .kbtn span { display: none }
+  .newsrow, .recs, .cgrid { grid-template-columns: 1fr 1fr } .cats { grid-template-columns: 1fr 1fr }
+  .method, .parsha, .aiband, .news-l, .rlayout, .layout, .bgrid, .bform, .abouthero, .about { grid-template-columns: 1fr }
+  .grid3, .wall, .pr3, .mini-ch { grid-template-columns: 1fr } .fcols { grid-template-columns: 1fr 1fr }
+  .side, .bside, .prev { position: static; order: -1 }
+  .step { grid-template-columns: 1fr; gap: 10px; padding: 20px } .num { width: 48px; height: 48px; font-size: 24px }
+  .portrait { width: 160px; height: 160px; justify-self: center } .portrait svg { width: 74px; height: 88px }
+  .pagehead .ic { width: 56px; height: 56px } .hero { padding-top: var(--sp4) }
+  .bitem { grid-template-columns: 28px 6px 1fr } .bitem .acts2 { display: none }
+}
+@media (max-width: 560px) { .newsrow, .recs, .cgrid { grid-template-columns: 1fr } .cats { grid-template-columns: 1fr 1fr } .stat { min-width: 44% } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="flame" viewBox="0 0 100 120"><path d="M50 4C53 26 88 42 88 78c0 24-18 38-38 38S12 102 12 78c0-22 18-30 24-50 4 12 10 8 14-24Z" fill="#D96A2B" stroke="#241C11" stroke-width="5" stroke-linejoin="round"/><path d="M50 52c3 12 22 20 22 36 0 13-10 21-22 21S28 101 28 88c0-12 12-18 22-36Z" fill="#F2B84B"/><circle cx="39" cy="84" r="4.4" fill="#241C11"/><circle cx="61" cy="84" r="4.4" fill="#241C11"/><path d="M41 95q9 9 18 0" fill="none" stroke="#241C11" stroke-width="4" stroke-linecap="round"/></symbol>
+  <symbol id="ic-act" viewBox="0 0 56 56"><rect x="10" y="9" width="36" height="42" rx="6" fill="#D96A2B" stroke="#241C11" stroke-width="2.6"/><rect x="19" y="4" width="18" height="10" rx="4" fill="#FFFEFA" stroke="#241C11" stroke-width="2.6"/><path d="M18 26h20M18 33h20M18 40h12" stroke="#fff" stroke-width="3" stroke-linecap="round"/></symbol>
+  <symbol id="ic-night" viewBox="0 0 56 56"><path d="M38 8a22 22 0 1 0 12 32 18 18 0 0 1-12-32Z" fill="#C24270" stroke="#241C11" stroke-width="2.6" stroke-linejoin="round"/><circle cx="40" cy="14" r="2.6" fill="#F2B84B" stroke="#241C11" stroke-width="1.6"/><circle cx="48" cy="26" r="2" fill="#F2B84B" stroke="#241C11" stroke-width="1.4"/></symbol>
+  <symbol id="ic-staff" viewBox="0 0 56 56"><path d="M8 12h18c3 0 4 2 4 4v32c0-2-1-4-4-4H8Z M48 12H30c-3 0-4 2-4 4v32c0-2 1-4 4-4h18Z" fill="#3E7EA6" stroke="#241C11" stroke-width="2.6" stroke-linejoin="round"/><path d="M13 20h10M13 27h10M35 20h8M35 27h8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="ic-sit" viewBox="0 0 56 56"><path d="M8 10h40a4 4 0 0 1 4 4v22a4 4 0 0 1-4 4H26l-10 9v-9H8a4 4 0 0 1-4-4V14a4 4 0 0 1 4-4Z" fill="#5E7F2A" stroke="#241C11" stroke-width="2.6" stroke-linejoin="round"/><circle cx="18" cy="25" r="2.8" fill="#fff"/><circle cx="28" cy="25" r="2.8" fill="#fff"/><circle cx="38" cy="25" r="2.8" fill="#fff"/></symbol>
+  <symbol id="ic-read" viewBox="0 0 56 56"><path d="M10 8h28a6 6 0 0 1 6 6v34H16a6 6 0 0 1-6-6Z" fill="#6B4A9B" stroke="#241C11" stroke-width="2.6" stroke-linejoin="round"/><path d="M16 48a6 6 0 0 1-6-6" fill="none" stroke="#241C11" stroke-width="2.6"/><path d="M18 18h18M18 25h18M18 32h10" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></symbol>
+  <symbol id="ic-chup" viewBox="0 0 56 56"><rect x="8" y="22" width="40" height="28" rx="5" fill="#C99411" stroke="#241C11" stroke-width="2.6"/><rect x="5" y="15" width="46" height="10" rx="4" fill="#F2B84B" stroke="#241C11" stroke-width="2.6"/><path d="M28 15v35" stroke="#241C11" stroke-width="2.6"/><path d="M28 15c-8-12-18-4-10 0M28 15c8-12 18-4 10 0" fill="none" stroke="#241C11" stroke-width="2.6" stroke-linecap="round"/></symbol>
+  <symbol id="ic-wall" viewBox="0 0 56 56"><rect x="6" y="8" width="44" height="20" rx="5" fill="#176B6B" stroke="#241C11" stroke-width="2.6"/><path d="M50 18h4v12H28v8" fill="none" stroke="#241C11" stroke-width="2.6" stroke-linejoin="round"/><rect x="23" y="38" width="10" height="14" rx="3" fill="#F2B84B" stroke="#241C11" stroke-width="2.6"/></symbol>
+  <symbol id="ic-game" viewBox="0 0 56 56"><rect x="8" y="8" width="40" height="40" rx="9" fill="#2F7A4B" stroke="#241C11" stroke-width="2.6" transform="rotate(-8 28 28)"/><g fill="#fff"><circle cx="19" cy="19" r="3.2"/><circle cx="37" cy="19" r="3.2"/><circle cx="28" cy="28" r="3.2"/><circle cx="19" cy="37" r="3.2"/><circle cx="37" cy="37" r="3.2"/></g></symbol>
+</defs></svg>
+
+<header>
+  <div class="wrap hbar">
+    <div class="logo" data-go="home"><svg><use href="#flame"/></svg>המדריך למדריך</div>
+    <nav id="nav"><a data-go="home" data-nav="home">בית</a><a data-go="list" data-nav="list">פעולות</a><a>ערבי גיבוש</a><a data-go="staff" data-nav="staff">לימוד צוות</a><a data-go="read" data-nav="read">קריאה</a><a data-go="chup" data-nav="chup">צ'ופרים</a><a data-go="ai" data-nav="ai">עוזר AI</a></nav>
+    <div class="hend">
+      <div class="ibtn" title="חיפוש"><svg viewBox="0 0 24 24" fill="none" stroke="#241C11" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></div>
+      <div class="kbtn" data-go="binder"><span>הקלסר שלי</span> <b>3</b></div>
+      <div class="ibtn burger"><svg viewBox="0 0 24 24" fill="none" stroke="#241C11" stroke-width="2.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= בית ================= -->
+<main id="v-home" class="view on">
+  <div class="wrap">
+    <section class="hero">
+      <svg class="hflame" viewBox="0 0 100 120"><use href="#flame"/></svg>
+      <h1>מה אתם צריכים<br>להעביר <span class="squig">היום<svg viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M3 12C25 2 40 18 62 9s38 9 60 0 38 9 60 1 15-2 15-2"/></svg></span>?</h1>
+      <p>מאגר פעולות איכותי, בנוי שלב־שלב ומוכן להעברה. בוחרים, מדפיסים, ועולים לפעולה בביטחון.</p>
+      <div class="sbox"><input placeholder="חיפוש בכל האתר, למשל: פעולה אמונית לכיתה ח' לשבת"><button>חיפוש</button></div>
+      <div class="nitzotz" data-go="ai"><svg viewBox="0 0 100 120"><use href="#flame"/></svg><span>היי, אני <b>ניצוץ</b>. לחצו כדי לשוחח איתי בצ'אט</span></div>
+      <div class="chips">
+        <span class="hc main" data-go="act">אני צריך פעולה</span>
+        <span class="hc" style="--t:var(--t-game)">משחק מהיר</span>
+        <span class="hc" style="--t:var(--t-staff)">פרשת השבוע</span>
+        <span class="hc" style="--t:var(--t-night)">פעולה לשבת</span>
+        <span class="hc" style="--t:var(--t-chup)">משהו בלי ציוד</span>
+        <span class="hc" style="--t:var(--t-read)">פעולה אמונית</span>
+        <span class="hc" style="--t:var(--t-wall)">20 דקות פנויות</span>
+        <span class="hc" style="--t:var(--t-sit)">הפתיעו אותי</span>
+      </div>
+      <div class="stats">
+        <div class="stat" style="--c:var(--c-act)"><b data-n="354">354</b><span>פעולות ומערכים</span></div>
+        <div class="stat" style="--c:var(--c-read)"><b data-n="149">149</b><span>קטעי קריאה</span></div>
+        <div class="stat" style="--c:var(--c-chup)"><b data-n="74">74</b><span>רעיונות לצ'ופרים</span></div>
+        <div class="stat" style="--c:var(--c-staff)"><b data-n="84">84</b><span>מפגשי לימוד צוות</span></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="shead rv"><h2>מה חדש השבוע</h2><a>לכל החדשים ←</a></div>
+      <div class="newsrow">
+        <article class="nc rv" style="--c:var(--c-act);--t:var(--t-act);--d:.04s" data-go="act"><span class="k">פעולה</span><h3>לחץ חברתי: לשים לב מתי זה אמיתי</h3><div class="m">ז'-י' · 69 דק'</div></article>
+        <article class="nc rv" style="--c:var(--c-act);--t:var(--t-act);--d:.1s"><span class="k">פעולה</span><h3>כולם אומרים? אני בוחר</h3><div class="m">ג'-ו' · 62 דק'</div></article>
+        <article class="nc rv" style="--c:var(--c-read);--t:var(--t-read);--d:.16s" data-go="read"><span class="k">קטע קריאה</span><h3>בגדי המלך החדשים</h3><div class="m">ג'-ו'</div></article>
+        <article class="nc rv" style="--c:var(--c-staff);--t:var(--t-staff);--d:.22s" data-go="staff"><span class="k">לימוד צוות</span><h3>וירא: תפילה מתוך הצרה</h3><div class="m">פרשת וירא · 25 דק'</div></article>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="shead rv"><h2>מחפשים משהו אחר?</h2></div>
+      <div class="cats">
+        <div class="cat rv" style="--c:var(--c-act);--t:var(--t-act)" data-go="list"><svg class="ic"><use href="#ic-act"/></svg><div><h3>פעולות ומערכים<small>ערכים, אמונה, פרשת שבוע</small></h3></div><span class="n">354</span></div>
+        <div class="cat rv" style="--c:var(--c-night);--t:var(--t-night);--d:.05s"><svg class="ic"><use href="#ic-night"/></svg><div><h3>ערבי גיבוש<small>לילות ותחרויות</small></h3></div><span class="n">87</span></div>
+        <div class="cat rv" style="--c:var(--c-staff);--t:var(--t-staff);--d:.1s" data-go="staff"><svg class="ic"><use href="#ic-staff"/></svg><div><h3>לימוד צוות<small>מפגשים למדריכים</small></h3></div><span class="n">84</span></div>
+        <div class="cat rv" style="--c:var(--c-sit);--t:var(--t-sit);--d:.15s"><svg class="ic"><use href="#ic-sit"/></svg><div><h3>סיטואציות<small>מה עושים כשזה קורה</small></h3></div><span class="n">33</span></div>
+        <div class="cat rv" style="--c:var(--c-read);--t:var(--t-read);--d:.2s" data-go="read"><svg class="ic"><use href="#ic-read"/></svg><div><h3>קטעי קריאה<small>סיפורים ומשלים</small></h3></div><span class="n">149</span></div>
+        <div class="cat rv" style="--c:var(--c-chup);--t:var(--t-chup);--d:.25s" data-go="chup"><svg class="ic"><use href="#ic-chup"/></svg><div><h3>צ'ופרים<small>כרטיסים להדפסה</small></h3></div><span class="n">74</span></div>
+        <div class="cat rv" style="--c:var(--c-wall);--t:var(--t-wall);--d:.3s" data-go="wall"><svg class="ic"><use href="#ic-wall"/></svg><div><h3>קירות וגלופות<small>חודש ארגון</small></h3></div><span class="n">43</span></div>
+        <div class="cat rv" style="--c:var(--c-game);--t:var(--t-game);--d:.35s"><svg class="ic"><use href="#ic-game"/></svg><div><h3>משחקים<small>ומתודות</small></h3></div><span class="n">274</span></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="method rv">
+        <div><h2>כל פעולה בנויה באותו סדר</h2><p>שבעה חלקים שחוזרים תמיד. תמיד יודעים איפה אתם ומה בא אחר כך.</p><span class="btn soft" style="margin-top:18px" data-go="build">לבניית פעולה מאפס ←</span></div>
+        <div class="dots">
+          <div style="--c:var(--s1)"><b>1</b>נושא</div><div style="--c:var(--s2)"><b>2</b>פתיחה</div><div style="--c:var(--s3)"><b>3</b>משחק</div><div style="--c:var(--s4)"><b>4</b>דיון</div><div style="--c:var(--s5)"><b>5</b>קריאה</div><div style="--c:var(--s6)"><b>6</b>הסבר</div><div style="--c:var(--s7)"><b>7</b>סיכום</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="shead rv"><h2>תוכן מומלץ השבוע</h2><a data-go="list">לכל הפעולות ←</a></div>
+      <div class="recs">
+        <div class="pcard rv" style="--c:var(--c-act);--t:var(--t-act)"><div class="top"><span class="tg">ערכים</span><span class="age">ז'-ח'</span></div><div class="bd"><h3>מעגל ערכים: מה זה להיות חבר?</h3><div class="meta"><span>39 דק'</span></div></div><div class="ft"><span class="pill">שבת וחול</span><span class="star">4.7</span></div></div>
+        <div class="pcard rv" style="--c:var(--c-read);--t:var(--t-read);--d:.06s"><div class="top"><span class="tg">אמונה</span><span class="age">כיתה ח'</span></div><div class="bd"><h3>אמונה בזמן קושי</h3><div class="meta"><span>38 דק'</span></div></div><div class="ft"><span class="pill">מתאים לשבת</span><span class="star">4.8</span></div></div>
+        <div class="pcard rv" style="--c:var(--c-staff);--t:var(--t-staff);--d:.12s"><div class="top"><span class="tg">פרשת שבוע</span><span class="age">ז'-י'</span></div><div class="bd"><h3>פרשת נח: כוחו של אדם אחד</h3><div class="meta"><span>50 דק'</span></div></div><div class="ft"><span class="pill">מתאים לשבת</span><span class="star">4.9</span></div></div>
+        <div class="pcard rv" style="--c:var(--c-night);--t:var(--t-night);--d:.18s"><div class="top"><span class="tg">ערב גיבוש</span><span class="age">ט"ז-י"ח</span></div><div class="bd"><h3>לילה לבן בשטח</h3><div class="meta"><span>180 דק'</span></div></div><div class="ft"><span class="pill" style="background:#fff">חול</span><span class="star">4.9</span></div></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="parsha rv">
+        <div><small>השבוע בפרשת השבוע</small><h2>פרשת חיי שרה</h2><p>לא רק ללמד את הפרשה. לקחת ממנה רעיון אחד ולהפוך אותו לפעולה.</p><span class="btn main" style="margin-top:20px">לכל פעולות הפרשה ←</span></div>
+        <div class="plist">
+          <div>חיי שרה: החסד של רבקה <span>ד'-ז'</span></div>
+          <div>חיי שרה: מה עושה חיים ל"חיים" <span>ט'-י"ב</span></div>
+          <div>חיי שרה: לא לפחד להיכשל <span>ח'-י"ב</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="aiband rv">
+        <div><h2>שאלו את ניצוץ כל דבר</h2><p>העוזר מכיר את כל המאגר וגם את ההדרכה. קודם מחפש בפעולות הקיימות, ואז עונה על כל שאלה: עצה, רעיון לצ'ופר או פעולה חדשה.</p><span class="btn main" style="margin-top:18px" data-go="ai">פתחו את הצ'אט ←</span></div>
+        <div class="demo"><div class="msg me">פעולה אמונית לכיתה ח' לשבת</div><div class="msg bot">מצאתי 2 פעולות מהמאגר שמתאימות<small>אמונה בזמן קושי · מעגל של תודה</small></div></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="build rv">
+        <div><h2>רוצים לבנות פעולה בעצמכם?</h2><p>גם אם בא לכם לנסות לבד, יש לכם כלים: "נדבר ת'כלס" מראה איך מרכיבים פעולה שלב־שלב, ולצידו מתודות, קטעי קריאה ומשחקים מוכנים לשלוף.</p></div>
+        <div class="links"><span class="btn" data-go="build">נדבר ת'כלס</span><span class="btn">מתודות</span><span class="btn">צ'ופרים</span></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="shead rv"><h2>רעיונות לצ'ופרים</h2><a data-go="chup">כל הצ'ופרים ←</a></div>
+      <div class="mini-ch">
+        <div class="chcard rv" style="--c:var(--c-night);--t:var(--t-night)"><i></i><b>"הכי באהבה"</b><small>כרטיס זיכרון</small></div>
+        <div class="chcard rv" style="--c:var(--c-chup);--t:var(--t-chup);--d:.06s"><i></i><b>קפה על חשבוני</b><small>חוויה, חינם</small></div>
+        <div class="chcard rv" style="--c:var(--c-game);--t:var(--t-game);--d:.12s"><i></i><b>שעת שקט</b><small>מתנה מוחשית</small></div>
+        <div class="chcard rv" style="--c:var(--c-staff);--t:var(--t-staff);--d:.18s"><i></i><b>תודה ביד</b><small>DIY</small></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="news-l rv">
+        <div><h2>פעולות פרשת השבוע, ישר למייל</h2><p>פעם בשבוע, לפני שבת: הפעולות של הפרשה וקטע אחד חדש מהמאגר. בלי ספאם, אפשר לבטל בכל רגע.</p></div>
+        <div class="sbox" style="margin:0;box-shadow:4px 4px 0 var(--ink)"><input placeholder="האימייל שלכם"><button>הרשמה</button></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="card about rv"><div class="avatar"><svg viewBox="0 0 100 120"><use href="#flame"/></svg></div><div><q>שמיניסטית, הדרכתי שנתיים שכבת גדולות, ובניתי את המקום שהיה חסר לי.</q><small>רוני גרוס, מנהלת האתר</small></div><span class="btn" data-go="about">הסיפור שלי ←</span></div>
+    </section>
+
+    <section class="block" style="padding-top:0">
+      <div class="submit rv"><div><h2>יש לכם פעולה מטורפת?</h2><p>שתפו אותה, אפשר גם לצרף קובץ. כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p></div><span class="btn main">שליחת פעולה</span></div>
+    </section>
+  </div>
+</main>
+
+<!-- ================= רשימת פעולות ================= -->
+<main id="v-list" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › פעולות ומערכים</div>
+    <div class="pagehead"><svg class="ic"><use href="#ic-act"/></svg><div><h1>פעולות ומערכים</h1><p>354 פעולות במאגר: ערכים וחברה, אמונה וזהות, פרשת שבוע ותכנים כלליים.</p></div></div>
+    <div class="filters">
+      <div class="lsearch">חיפוש בפעולות ומערכים...</div>
+      <div class="frow"><label>נושא</label><span class="fchip on">הכל</span><span class="fchip">ערכים</span><span class="fchip">אמונה</span><span class="fchip">פרשת שבוע</span><span class="fchip">כללי</span></div>
+      <div class="frow"><label>גיל</label><span class="fchip on">כל הגילאים</span><span class="fchip" style="--c:var(--c-chup)">א'-ב'</span><span class="fchip" style="--c:var(--c-game)">ג'-ו'</span><span class="fchip" style="--c:var(--c-staff)">ז'-ט'</span><span class="fchip" style="--c:var(--c-read)">י'-י"ב</span><span class="fchip" style="margin-inline-start:12px;background:var(--t-game)">מתאים לשבת</span></div>
+    </div>
+    <div class="count">354 פעולות מתאימות</div>
+    <div class="grid3">
+      <div class="pcard" style="--c:var(--c-act);--t:var(--t-game)" data-go="act"><div class="top"><span class="tg">ערכים</span><span class="age">כיתות ג'-ו'</span></div><div class="bd"><h3>כולם אומרים? אני בוחר</h3><div class="meta"><span>62 דק'</span><span>פנים</span></div></div><div class="ft"><span class="pill">מתאים לשבת</span><span class="star">4.6</span></div></div>
+      <div class="pcard" style="--c:var(--c-act);--t:var(--t-staff)" data-go="act"><div class="top"><span class="tg">ערכים</span><span class="age">כיתות ז'-י'</span></div><div class="bd"><h3>לחץ חברתי: לשים לב מתי זה אמיתי</h3><div class="meta"><span>69 דק'</span><span>פנים</span></div></div><div class="ft"><span class="pill">שבת וחול</span><span class="star">4.6</span></div></div>
+      <div class="pcard" style="--c:var(--c-staff);--t:var(--t-staff)"><div class="top"><span class="tg">פרשת שבוע</span><span class="age">כיתות ז'-ט'</span></div><div class="bd"><h3>וירא: להתווכח עם הצדק</h3><div class="meta"><span>63 דק'</span><span>פנים</span></div></div><div class="ft"><span class="pill">מתאים לשבת</span><span class="star">4.6</span></div></div>
+      <div class="pcard" style="--c:var(--c-staff);--t:var(--t-game)"><div class="top"><span class="tg">פרשת שבוע</span><span class="age">כיתות ג'-ו'</span></div><div class="bd"><h3>פרשת וירא: הכנסת אורחים כערך מכונן</h3><div class="meta"><span>61 דק'</span><span>פנים</span></div></div><div class="ft"><span class="pill">מתאים לשבת</span><span class="star">4.6</span></div></div>
+      <div class="pcard" style="--c:var(--c-read);--t:var(--t-staff)"><div class="top"><span class="tg">אמונה</span><span class="age">כיתה ח'</span></div><div class="bd"><h3>אמונה בזמן קושי</h3><div class="meta"><span>38 דק'</span><span>פנים</span></div></div><div class="ft"><span class="pill">מתאים לשבת</span><span class="star">4.8</span></div></div>
+      <div class="pcard" style="--c:var(--c-act);--t:var(--t-staff)"><div class="top"><span class="tg">ערכים</span><span class="age">כיתות ז'-ח'</span></div><div class="bd"><h3>מעגל ערכים: מה זה להיות חבר?</h3><div class="meta"><span>39 דק'</span><span>פנים</span></div></div><div class="ft"><span class="pill">שבת וחול</span><span class="star">4.7</span></div></div>
+    </div>
+    <div class="more"><span class="btn">טעינת עוד פעולות</span></div>
+  </div>
+</main>
+
+<!-- ================= דף פעולה ================= -->
+<main id="v-act" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › <a data-go="list">פעולות ומערכים</a> › לחץ חברתי</div>
+    <div class="ahead">
+      <span class="chip" style="--c:var(--c-act);--t:var(--t-act)"><i></i>פעולה · ערכים</span>
+      <h1>לחץ חברתי: לשים לב מתי זה <span class="squig">אמיתי<svg viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M3 12C25 2 40 18 62 9s38 9 60 0 38 9 60 1 15-2 15-2"/></svg></span></h1>
+      <p class="lead"><b>הערך: בחירה עצמאית.</b> לחץ חברתי הוא דבר נפוץ, והוא יכול לקחת אותנו למקום טוב או פחות טוב. ניסוי, משחק הזדהות, סיפור ותרגול של איך אומרים "לא" בלי לריב.</p>
+      <div class="acts"><span class="btn main">▶ מצב "בפעולה"</span><span class="btn">הדפסה</span><span class="btn">♡ לקלסר</span></div>
+    </div>
+    <div class="card time rv">
+      <h3>כמה זמן יש לכם? <span>הפעולה מתקצרת אוטומטית בלי לפגוע בליבה</span></h3>
+      <div class="tbar" id="tbar"><i style="flex:9;--c:var(--s2)">1</i><i style="flex:7;--c:var(--s3)">2</i><i class="skip" data-opt="1" style="flex:8;--c:var(--s3)">3</i><i style="flex:6;--c:var(--s5)">4</i><i style="flex:4;--c:var(--s6)">5</i><i style="flex:12;--c:var(--s3)">6</i><i style="flex:15;--c:var(--s4)">7</i><i style="flex:6;--c:var(--s7)">8</i></div>
+      <div class="fit"><span>יש לי</span><output id="out">69 דק'</output><input type="range" id="rng" min="55" max="69" value="69"><span class="m" id="msg">הפעולה המלאה, כולל המשחק הפעיל.</span></div>
+    </div>
+    <div class="layout">
+      <div class="steps">
+        <article class="step rv" style="--c:var(--s2);--t:#E1F0E5"><div class="num">1</div><div><h3>פתיחה: הניסוי <em>פתיחה</em><em class="t">4 דק'</em></h3><p>המדריך מתחיל למחוא כפיים ולא מפסיק, עד שכולם מצטרפים. אחר כך עוצרים ושואלים. אם מישהו לא הצטרף, מציינים אותו ומשבחים אותו.</p><div class="say"><small>מה אומרים</small>"למה הצטרפתם אליי?"</div></div></article>
+        <article class="step rv" style="--c:var(--s3);--t:#FBE4D2"><div class="num">2</div><div><h3>משחק: מי מזדהה <em>משחק</em><em class="t">7 דק'</em></h3><p>כולם עוצמים עיניים. המדריך מקריא, וכל מי שמזדהה מוחא כף פעם אחת. כך שומעים שלא לבד.</p><details><summary>עשר הסיטואציות להקראה</summary><div class="items"><div>לפעמים אני עושה דברים רק כי כולם עושים.</div><div>העתקתי במבחן כי כולם ככה.</div><div>הברזתי משיעור כי החברים שלי גם.</div><div>צחקתי עם כולם למרות שידעתי שזה פוגע במישהו.</div></div></details></div></article>
+        <article class="step rv" id="optstep" style="--c:var(--s3);--t:#FBE4D2"><div class="num">3</div><div><h3>משחק פעיל: מי עומד אם... <em>משחק</em><em class="t">8 דק'</em><em>אפשר לדלג</em></h3><p>שני סבבים: עיניים פתוחות ועיניים עצומות. משווים איך הרגיש להחליט כשרואים את כולם.</p></div></article>
+        <article class="step rv" style="--c:var(--s5);--t:#F6DDE7"><div class="num">4</div><div><h3>קטע קריאה: הסיפור של נועם <em>קריאה</em><em class="t">6 דק'</em></h3><p>קוראים בקול. לא מפרטים את ה"משחק" המסוכן, ושואלים מה אפשר לעשות ברגע שמציעים.</p></div></article>
+      </div>
+      <aside class="side"><div class="sidecard rv"><span class="stamp">מתאים גם לשבת</span>
+        <dl><div style="--t:var(--t-staff)"><dt>כיתות</dt><dd>ז'-י'</dd></div><div style="--t:var(--t-act)"><dt>משך</dt><dd id="dur">69 דק'</dd></div><div style="--t:var(--t-chup)"><dt>מקום</dt><dd>פנים</dd></div><div style="--t:var(--t-game)"><dt>ציוד</dt><dd>ללא</dd></div></dl>
+        <span class="btn main">▶ מצב "בפעולה"</span><span class="btn">הורדה להדפסה</span></div></aside>
+    </div>
+  </div>
+  <div class="fixedbar"><span class="btn main" style="justify-content:center">▶ בפעולה</span><span class="btn">♡</span><span class="btn">⎙</span></div>
+</main>
+
+<!-- ================= קטע קריאה ================= -->
+<main id="v-read" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › קטעי קריאה › בגדי המלך החדשים</div>
+    <div class="rhead"><span class="chip" style="--c:var(--c-read);--t:var(--t-read)"><i></i>קטע קריאה</span><h1>בגדי המלך החדשים</h1>
+      <div class="rmeta"><span class="chip" style="--t:var(--t-game)">כיתות ג'-ו'</span><span class="chip">3 דקות הקראה</span><span class="chip" style="--t:var(--t-chup)">לחץ חברתי</span><span class="chip">על פי אנדרסן</span></div></div>
+    <div class="rlayout">
+      <div class="paper rv"><div class="tools">גודל כתב: <span class="fchip" data-fs="-1">א-</span><span class="fchip" data-fs="1">א+</span></div>
+        <div class="story" id="story"><p>היה פעם מלך שאהב בגדים חדשים יותר מכל דבר אחר.</p><p>יום אחד באו אליו שני נוכלים ואמרו: "אנחנו אורגים בד קסום. מי שטיפש, או לא ראוי לתפקידו, לא יכול לראות אותו."</p><p>המלך שמח והזמין אותם לארוג לו בגדים. הנוכלים ישבו מול נולים ריקים והעמידו פנים שהם עובדים.</p><p>ביום המצעד הלך המלך ברחוב עם "הבגדים החדשים", ובעצם בלי בגדים בכלל. כל האנשים בצדי הדרך קראו: "איזה בגדים יפים!" כי כל אחד פחד להיות היחיד שלא רואה.</p><p>ואז ילד קטן אחד אמר בקול: "אבל המלך הולך בלי בגדים!"</p></div></div>
+      <aside class="side">
+        <div class="howto rv"><h3>איך משתמשים בקטע</h3><p>מתאים לפעולה על לחץ חברתי בגיל צעיר. לעצור לפני המשפט של הילד ולשאול: מה לדעתכם יקרה עכשיו, ולמה אף אחד לא אמר קודם?</p></div>
+        <div class="card rv" style="padding:16px 18px"><b class="rub" style="font-size:16px">מתאים לפעולות</b><div class="rel"><div data-go="act">כולם אומרים? אני בוחר</div><div>הכל בידיים שלנו</div></div></div>
+        <span class="btn main" style="justify-content:center">הדפסה</span><span class="btn" style="justify-content:center">♡ שמירה בקלסר</span>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<!-- ================= לימוד צוות ================= -->
+<main id="v-staff" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › לימוד צוות › וירא: תפילה מתוך הצרה</div>
+    <div class="rhead"><span class="chip" style="--c:var(--c-staff);--t:var(--t-staff)"><i></i>לימוד צוות</span><h1>וירא: תפילה מתוך הצרה</h1>
+      <div class="rmeta"><span class="chip" style="--t:var(--t-act)">25 דקות</span><span class="chip" style="--t:var(--t-staff)">פרשת וירא</span><span class="chip" style="--t:var(--t-game)">חניכים וצוות · מתאים לשבת</span></div></div>
+    <div class="rlayout">
+      <div style="display:grid;gap:22px">
+        <div class="card rv"><h3 class="rub" style="font-weight:800;font-size:20px">על מה הלימוד</h3><p style="font-size:19px;margin-top:6px">אברהם התפלל על סדום ולא נענה, ולוט התפלל על צוער ונענה מיד. לימוד על כוחה של תפילה שיוצאת מתוך הצרה.</p>
+          <div class="goalsl"><div><i>1</i>להכיר את התמיהה: למה תפילת לוט התקבלה ותפילת אברהם על סדום לא</div><div><i>2</i>להבין מה מיוחד בתפילה שנאמרת מתוך הצרה</div><div><i>3</i>לחשוב על דבר אחד שמבקשים מהלב</div></div></div>
+        <div class="paper rv" style="padding:32px clamp(22px,4vw,48px)"><div class="story" style="--fs:19px;line-height:1.9"><p>השבת פרשת וירא. הקב"ה מתגלה לאברהם באלוני ממרא, כאשר הוא יושב בפתח האוהל בחום היום. אברהם רואה שלושה אנשים, רץ לקראתם ומזמין אותם להתארח אצלו.</p><p>לאחר מכן, הקב"ה מודיע לאברהם שהוא עומד להשמיד את סדום, בעקבות מעשיהם הרעים של אנשיה. אברהם מתפלל לקב"ה ומבקש ממנו שלא להשמיד את העיר אם יימצאו בה צדיקים.</p></div></div>
+        <div class="rv"><h3 class="rub" style="font-weight:900;font-size:24px">שאלות לשיחה</h3>
+          <div class="qs"><div>למה לדעתכם הקב"ה נענה ללוט ולא לאברהם? מה ההבדל בין שתי התפילות?</div><div>מה זה אומר להתפלל "מתוך הצרה"? במה זה שונה מבקשה על משהו שנוח לנו שיהיה?</div><div>איך אפשר לעזור לחבר שנמצא בצרה, גם כשאי אפשר לפתור לו אותה?</div></div></div>
+        <div class="take rv"><small>לקחת הביתה</small><p>לחשוב על דבר אחד שמבקשים מהלב, ולהתפלל עליו השבוע בשיחה קצרה.</p></div>
+      </div>
+      <aside class="side"><div class="sidecard rv"><dl><div style="--t:var(--t-act)"><dt>משך</dt><dd>25 דק'</dd></div><div style="--t:var(--t-staff)"><dt>פרשה</dt><dd>וירא</dd></div></dl><span class="btn main">הדפסה</span><span class="btn">♡ לקלסר</span></div></aside>
+    </div>
+  </div>
+</main>
+
+<!-- ================= צ'ופרים ================= -->
+<main id="v-chup" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › צ'ופרים</div>
+    <div class="pagehead"><svg class="ic"><use href="#ic-chup"/></svg><div><h1>רעיונות לצ'ופרים</h1><p>74 כרטיסים מוכנים להדפסה, עם השם שלכם. בוחרים, מקלידים שם ומדפיסים.</p></div></div>
+    <div class="filters"><div class="frow"><label>סוג</label><span class="fchip on">הכל</span><span class="fchip" style="--c:var(--c-night)">אכיל</span><span class="fchip" style="--c:var(--c-chup)">מתנה מוחשית</span><span class="fchip" style="--c:var(--c-game)">חוויה</span><span class="fchip" style="--c:var(--c-staff)">DIY</span></div>
+      <div class="frow"><label>תקציב</label><span class="fchip on">הכל</span><span class="fchip">חינם</span><span class="fchip">₪</span><span class="fchip">₪₪</span></div></div>
+    <div class="cgrid">
+      <div class="cc rv" style="--t:var(--t-night)"><div class="art"><div class="tk" style="--r:-4deg">"הכי באהבה"<small>כרטיס זיכרון</small></div></div><div class="bd"><h3>"הכי באהבה": כרטיס זיכרון</h3><div class="tags"><span class="chip" style="--t:var(--t-chup)">מתנה מוחשית</span><span class="chip">₪</span></div></div></div>
+      <div class="cc rv" style="--t:var(--t-chup);--d:.05s"><div class="art"><div class="tk" style="--r:3deg">קפה על חשבוני<small>מוגש עם חיוך</small></div></div><div class="bd"><h3>קפה על חשבוני</h3><div class="tags"><span class="chip" style="--t:var(--t-game)">חוויה</span><span class="chip">חינם</span></div></div></div>
+      <div class="cc rv" style="--t:var(--t-game);--d:.1s"><div class="art"><div class="tk" style="--r:-2deg">שעת שקט<small>לשימוש בכל עת</small></div></div><div class="bd"><h3>שעת שקט</h3><div class="tags"><span class="chip" style="--t:var(--t-chup)">מתנה מוחשית</span><span class="chip">חינם</span></div></div></div>
+      <div class="cc rv" style="--t:var(--t-staff);--d:.15s"><div class="art"><div class="tk" style="--r:4deg">תודה ביד<small>כתוב ביד</small></div></div><div class="bd"><h3>תודה ביד</h3><div class="tags"><span class="chip" style="--t:var(--t-staff)">DIY</span><span class="chip">חינם</span></div></div></div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= עוזר AI ================= -->
+<main id="v-ai" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › עוזר AI</div>
+    <div class="pagehead"><svg class="ic" viewBox="0 0 100 120" style="width:64px;height:76px"><use href="#flame"/></svg><div><h1>ניצוץ, העוזר שלכם</h1><p>שאלו כל דבר. הוא מחפש קודם במאגר, ואז עונה.</p></div></div>
+    <div class="chat">
+      <div class="chead"><svg viewBox="0 0 100 120"><use href="#flame"/></svg><div><b>ניצוץ</b><small>מכיר את כל המאגר</small></div></div>
+      <div class="cbody" id="cbody"><div class="msg bot">שלום! אני ניצוץ. אפשר לבקש ממני פעולה, משחק, עצה בהדרכה או רעיון לצ'ופר.</div></div>
+      <div class="cfoot"><div class="sugg"><span class="fchip" data-q="פעולה אמונית לכיתה ח' לשבת">פעולה אמונית לשבת</span><span class="fchip" data-q="משחק קרחונים בלי ציוד">משחק קרחונים</span><span class="fchip" data-q="חניך חדש לא משתלב, מה עושים?">חניך חדש לא משתלב</span></div>
+        <div class="cinput"><input id="cin" placeholder="כתבו כאן..."><span class="btn main sm" id="csend">שליחה</span></div></div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= קלסר ================= -->
+<main id="v-binder" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › הקלסר שלי</div>
+    <div class="pagehead"><svg class="ic" viewBox="0 0 56 56"><rect x="8" y="6" width="40" height="44" rx="6" fill="#F2B84B" stroke="#241C11" stroke-width="2.6"/><path d="M16 6v44" stroke="#241C11" stroke-width="2.6"/><circle cx="12" cy="16" r="2" fill="#241C11"/><circle cx="12" cy="28" r="2" fill="#241C11"/><circle cx="12" cy="40" r="2" fill="#241C11"/></svg><div><h1>הקלסר שלי</h1><p>3 פריטים שמורים. מסמנים מה להדפיס ומדפיסים הכול בבת אחת.</p></div></div>
+    <div class="bgrid">
+      <div>
+        <div class="bitem" style="--c:var(--c-act)"><span class="chk on" data-chk>✓</span><span class="bar"></span><div><h3>לחץ חברתי: לשים לב מתי זה אמיתי</h3><small>פעולה · ז'-י' · 69 דק'</small></div><span class="acts2 chip" style="--t:var(--t-read)">עותק אישי</span></div>
+        <div class="bitem" style="--c:var(--c-read)"><span class="chk on" data-chk>✓</span><span class="bar"></span><div><h3>בגדי המלך החדשים</h3><small>קטע קריאה · ג'-ו'</small></div><span></span></div>
+        <div class="bitem" style="--c:var(--c-staff)"><span class="chk" data-chk></span><span class="bar"></span><div><h3>וירא: תפילה מתוך הצרה</h3><small>לימוד צוות · 25 דק'</small></div><span></span></div>
+      </div>
+      <aside class="bside"><div class="sidecard"><h3>מוכנים להדפסה</h3><p id="bcount">נבחרו 2 מתוך 3 פריטים.</p><span class="btn main">הדפסת הנבחרים</span><span class="btn">תבנית ריקה להדפסה</span><span class="btn soft">פעולה חדשה מאפס</span></div></aside>
+    </div>
+  </div>
+</main>
+
+<!-- ================= בנייה מאפס ================= -->
+<main id="v-build" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › בונים פעולה מאפס</div>
+    <div class="pagehead"><div><h1>בונים פעולה מאפס</h1><p>שבעה חלקים בסדר קבוע. ממלאים שלב אחר שלב, והכול נשמר בדפדפן.</p></div></div>
+    <div class="prog"><div class="done" style="--c:var(--s1);--t:#DCEAF2"><b>1</b>נושא</div><div class="done" style="--c:var(--s2);--t:#E1F0E5"><b>2</b>פתיחה</div><div class="cur" style="--c:var(--s3)"><b>3</b>משחק</div><div style="--c:var(--s4)"><b>4</b>דיון</div><div style="--c:var(--s5)"><b>5</b>קריאה</div><div style="--c:var(--s6)"><b>6</b>הסבר</div><div style="--c:var(--s7)"><b>7</b>סיכום</div></div>
+    <div class="bform">
+      <div class="card"><h2 class="rub" style="font-weight:900;font-size:28px">שלב 3: משחק</h2><p style="color:var(--ink2);margin-top:4px">משחק קצר שמחמם את הקבוצה ומוביל לנושא, בלי להסביר את הקשר.</p>
+        <div class="field"><label>שם המשחק</label><input value="הרצל אמר"><div class="hint">בחרו משחק מוכר מהמאגר, או כתבו משלכם.</div></div>
+        <div class="field"><label>איך משחקים</label><textarea rows="4">המדריך נותן הוראות. עושים רק כשהוא אמר קודם "הרצל אמר".</textarea></div>
+        <div class="field"><label>כמה דקות</label><div class="stepper"><b>−</b><span>8</span><b>+</b></div></div>
+        <div class="nav2"><span class="btn">→ חזרה</span><span class="btn main">השלב הבא ←</span></div></div>
+      <aside class="prev"><h3>הפעולה שלי עד עכשיו</h3><div style="--c:var(--s1)">נושא: לחץ חברתי <span>-</span></div><div style="--c:var(--s2)">פתיחה: ניסוי <span>5 דק'</span></div><div style="--c:var(--s3)">משחק: הרצל אמר <span>8 דק'</span></div><div class="tot" style="--c:var(--amber)">סה"כ עד כה <span>13 דק'</span></div></aside>
+    </div>
+  </div>
+</main>
+
+<!-- ================= קירות וגלופות ================= -->
+<main id="v-wall" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › קירות וגלופות</div>
+    <div class="pagehead"><svg class="ic"><use href="#ic-wall"/></svg><div><h1>קירות וגלופות</h1><p>משפטים לחודש ארגון, לפי שמות השכבות. לוחצים על משפט כדי להעתיק.</p></div></div>
+    <div class="frow" style="margin-bottom:6px"><span class="fchip on" style="--c:var(--c-wall)">בני עקיבא</span><span class="fchip">עזרא</span><span class="fchip">אריאל</span><span class="fchip">לכל השכבות</span></div>
+    <div class="wall">
+      <div class="slogan rv" style="--bgc:var(--t-chup);--r:-1.5deg"><span class="grp">ניצנים</span><q>נ(י)צנ(צ)ים - כל אחד יהלום</q><small>לחצו להעתקה</small></div>
+      <div class="slogan rv" style="--bgc:var(--t-night);--r:1.2deg;--d:.06s"><span class="grp">ניצנים</span><q>קטנים כמו טימון, מסריחים כמו פומבה ואריות כמו סימבה</q><small>לחצו להעתקה</small></div>
+      <div class="slogan rv" style="--bgc:var(--t-game);--r:-.8deg;--d:.12s"><span class="grp">מעלות</span><q>אין חוות בלי פרות ואין שבט בלי מעלות</q><small>לחצו להעתקה</small></div>
+      <div class="slogan rv" style="--bgc:var(--t-staff);--r:1.6deg"><span class="grp">נחלים</span><q>אמרו שאנחנו חולות נפש אבל אנחנו עוד נחלים</q><small>לחצו להעתקה</small></div>
+      <div class="slogan rv" style="--bgc:var(--t-read);--r:-1.2deg;--d:.06s"><span class="grp">נבטים</span><q>שבט נבטים מעל כל הציפיות</q><small>לחצו להעתקה</small></div>
+      <div class="slogan rv" style="--bgc:var(--t-wall);--r:.9deg;--d:.12s"><span class="grp">הרא"ה</span><q>הראה לא רואה ממטר אבל את זה מקילומטר</q><small>לחצו להעתקה</small></div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= אודות ================= -->
+<main id="v-about" class="view">
+  <div class="wrap">
+    <div class="crumbs"><a data-go="home">בית</a> › אודות</div>
+    <div class="abouthero">
+      <div><span class="chip" style="--c:var(--c-act);--t:var(--t-act)"><i></i>אודות</span><h1>המקום שהיה חסר <span class="squig">לי<svg viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M3 12C25 2 40 18 62 9s38 9 60 0 38 9 60 1 15-2 15-2"/></svg></span></h1>
+        <p>שמיניסטית, הדרכתי שנתיים שכבת גדולות, ובניתי את המקום שהיה חסר לי: פעולות איכותיות שכבר בנויות שלב אחרי שלב, עם מה להגיד ומה לעשות.</p>
+        <div class="acts"><span class="btn main">שליחת פעולה</span><span class="btn">יצירת קשר</span></div></div>
+      <div class="portrait"><svg viewBox="0 0 100 120"><use href="#flame"/></svg></div>
+    </div>
+    <div class="pr3">
+      <div style="--t:var(--t-act);--c:var(--c-act)"><b>7</b><h3>חלקים בכל פעולה</h3><p>אותו סדר תמיד, כדי שתמיד תדעו איפה אתם.</p></div>
+      <div style="--t:var(--t-game);--c:var(--c-game)"><b>1</b><h3>מקום אחד</h3><p>פעולות, קטעי קריאה, צ'ופרים ולימוד צוות, הכול בקלסר אחד.</p></div>
+      <div style="--t:var(--t-staff);--c:var(--c-staff)"><b>0</b><h3>דקות הכנה מיותרות</h3><p>בוחרים, מדפיסים ועולים. את השאר אנחנו כבר בנינו.</p></div>
+    </div>
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="fcols">
+      <div><div class="logo"><svg><use href="#flame"/></svg>המדריך למדריך</div><p>המקום של מדריכים ומדריכות לפעולות איכותיות, בנויות שלב אחרי שלב.</p></div>
+      <div><h4>תוכן</h4><a data-go="list">פעולות ומערכים</a><a data-go="read">קטעי קריאה</a><a data-go="staff">לימוד צוות</a><a data-go="chup">צ'ופרים</a></div>
+      <div><h4>כלים</h4><a data-go="build">בונים פעולה מאפס</a><a data-go="binder">הקלסר שלי</a><a data-go="ai">עוזר AI</a><a data-go="wall">קירות וגלופות</a></div>
+      <div><h4>האתר</h4><a data-go="about">אודות</a><a>יצירת קשר</a><a>שליחת פעולה</a><a>פרטיות ונגישות</a></div>
+    </div>
+    <div class="small">המדריך למדריך · נבנה באהבה למדריכים</div>
+  </div>
+</footer>
+
+<div class="dock"><div id="dock">
+  <a data-go="home">בית</a><a data-go="list">רשימה</a><a data-go="act">פעולה</a><a data-go="read">קריאה</a><a data-go="staff">לימוד צוות</a><a data-go="chup">צ'ופרים</a><a data-go="ai">צ'אט</a><a data-go="binder">קלסר</a><a data-go="build">בנייה</a><a data-go="wall">גלופות</a><a data-go="about">אודות</a>
+</div></div>
+
+<script>
+(function () {
+  var body = document.body, views = ['home','list','act','read','staff','chup','ai','binder','build','wall','about'];
+  var hash = location.hash.replace('#', '');
+  var staticMode = /static/.test(hash) || matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (staticMode) body.classList.add('static');
+
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: .1 }) : null;
+  function watch() { document.querySelectorAll('.view.on .rv:not(.in)').forEach(function (el) { io ? io.observe(el) : el.classList.add('in'); }); }
+  function countUp() {
+    document.querySelectorAll('#v-home [data-n]').forEach(function (el) {
+      var to = +el.dataset.n, t0 = performance.now();
+      if (staticMode) return;
+      (function tick(t) { var p = Math.min(1, (t - t0) / 900); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(tick); })(t0);
+    });
+  }
+  function go(name) {
+    if (views.indexOf(name) < 0) name = 'home';
+    views.forEach(function (v) { document.getElementById('v-' + v).classList.toggle('on', v === name); });
+    document.querySelectorAll('#nav a').forEach(function (a) { a.classList.toggle('on', a.dataset.nav === name || (name === 'act' && a.dataset.nav === 'list') || (name === 'build' && false)); });
+    document.querySelectorAll('#dock a').forEach(function (a) { a.classList.toggle('on', a.dataset.go === name); });
+    window.scrollTo({ top: 0 });
+    watch();
+    if (name === 'home') countUp();
+    if (name === 'act') document.querySelectorAll('#tbar i').forEach(function (i, n) { i.style.animation = 'none'; i.offsetHeight; i.style.animation = 'grow .8s ' + (n * .06) + 's var(--ease) both'; });
+  }
+  document.addEventListener('click', function (e) { var t = e.target.closest('[data-go]'); if (t) go(t.dataset.go); });
+  var start = views.filter(function (v) { return new RegExp('(^|-)' + v + '$').test(hash); })[0];
+  go(start || 'home');
+
+  var rng = document.getElementById('rng');
+  rng.addEventListener('input', function () {
+    var v = +rng.value, skip = v < 62;
+    document.getElementById('out').textContent = v + " דק'"; document.getElementById('dur').textContent = v + " דק'";
+    document.querySelectorAll('#tbar i[data-opt]').forEach(function (i) { i.classList.toggle('off', skip); });
+    document.getElementById('optstep').classList.toggle('off', skip);
+    document.getElementById('msg').textContent = skip ? 'המשחק הפעיל מדולג, וכל החלקים המרכזיים נשארים.' : 'הפעולה המלאה, כולל המשחק הפעיל.';
+  });
+  var fs = 21;
+  document.querySelectorAll('[data-fs]').forEach(function (b) { b.addEventListener('click', function () { fs = Math.max(17, Math.min(30, fs + 2 * +b.dataset.fs)); document.getElementById('story').style.setProperty('--fs', fs + 'px'); }); });
+  document.querySelectorAll('[data-chk]').forEach(function (c) { c.addEventListener('click', function () {
+    c.classList.toggle('on'); c.textContent = c.classList.contains('on') ? '✓' : '';
+    document.getElementById('bcount').textContent = 'נבחרו ' + document.querySelectorAll('[data-chk].on').length + ' מתוך 3 פריטים.'; }); });
+  var cbody = document.getElementById('cbody'), cin = document.getElementById('cin');
+  function say(q) {
+    if (!q) return; var m = document.createElement('div'); m.className = 'msg me'; m.textContent = q; cbody.appendChild(m);
+    var t = document.createElement('div'); t.className = 'typing'; t.innerHTML = '<i></i><i></i><i></i>'; cbody.appendChild(t); cin.value = '';
+    setTimeout(function () { t.remove(); var b = document.createElement('div'); b.className = 'msg bot';
+      b.innerHTML = 'מצאתי במאגר שתי פעולות שמתאימות:<div class="found"><div>אמונה בזמן קושי <span>כיתה ח\' · 38 דק\'</span></div><div>מעגל של תודה <span>ז\'-ח\' · 35 דק\'</span></div></div>'; cbody.appendChild(b); }, 1300);
+  }
+  document.getElementById('csend').addEventListener('click', function () { say(cin.value); });
+  cin.addEventListener('keydown', function (e) { if (e.key === 'Enter') say(cin.value); });
+  document.querySelectorAll('[data-q]').forEach(function (c) { c.addEventListener('click', function () { say(c.dataset.q); }); });
+  document.querySelectorAll('.slogan').forEach(function (s) { s.addEventListener('click', function () { var sm = s.querySelector('small'); sm.textContent = 'הועתק'; setTimeout(function () { sm.textContent = 'לחצו להעתקה'; }, 1400); }); });
+})();
+</script>
+</body>
+</html>

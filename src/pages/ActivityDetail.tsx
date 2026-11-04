@@ -20,24 +20,32 @@ import { getChupar } from '../data/chuparim';
 import { buildChuparPrintHtml, copiesPerPage, getFields } from '../lib/chuparDesign';
 import { offerHtml } from '../lib/printFile';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { SEVEN_BONUS, SEVEN_PARTS } from '../data/sevenParts';
+
+// צבע החלק לפי שמו, מתוך שבעת החלקים של האתר (למשל "פתיחה" ירוק, "משחק" כתום).
+function partFor(label: string) {
+  const find = (key: string) => SEVEN_PARTS.find((p) => p.key === key);
+  if (/צ[׳']ופר/.test(label)) return SEVEN_BONUS;
+  if (/^פתיחה/.test(label)) return find('opening');
+  if (/דיון|שאלות/.test(label)) return find('discussion');
+  if (/קטע|סיפור|מקור|קריאה/.test(label)) return find('reading');
+  if (/הסבר|חיבור/.test(label)) return find('explanation');
+  if (/סיכום/.test(label)) return find('summary');
+  if (/משחק|מתודה|מהלך|תרגיל/.test(label)) return find('game');
+  return undefined;
+}
 
 function Section({ label, step, children }: { label: string; step?: number; children: React.ReactNode }) {
+  const part = partFor(label);
+  const color = part?.color ?? 'var(--flame)';
+  const tint = part?.tint ?? 'var(--paper)';
   return (
-    <div style={{ marginBottom: 26 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        {step ? (
-          <span style={{
-            flex: 'none', width: 22, height: 22, borderRadius: '50%', background: 'var(--flame)', color: '#FFF6EC',
-            fontSize: 12, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            {step}
-          </span>
-        ) : (
-          <span style={{ width: 8, height: 8, borderRadius: 999, background: 'var(--flame)' }} />
-        )}
-        <h3 style={{ fontSize: 15.5, fontWeight: 800 }}>{label}</h3>
+    <div className="step-card" style={{ ['--c' as string]: color, ['--t' as string]: tint }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
+        {step ? <span className="step-badge">{step}</span> : <span style={{ width: 10, height: 10, borderRadius: 999, background: color, border: '2px solid var(--ink)' }} />}
+        <h3 className="step-name">{label}</h3>
       </div>
-      <div style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-soft)', paddingInlineStart: 16 }}>{children}</div>
+      <div className="step-body">{children}</div>
     </div>
   );
 }
@@ -104,16 +112,17 @@ export function ActivityDetail() {
                 </span>
               </div>
             )}
-            <h1 style={{ fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 800, marginBottom: 12, lineHeight: 1.2 }}>{activity.title}</h1>
-            <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', maxWidth: '58ch', marginBottom: 10 }}>{activity.description}</p>
+            <h1 style={{ fontSize: 'clamp(30px, 4.6vw, 52px)', fontWeight: 900, marginBottom: 14, lineHeight: 1.08, letterSpacing: -0.5 }}>{activity.title}</h1>
+            <p style={{ fontSize: 18, lineHeight: 1.7, color: 'var(--ink)', maxWidth: '60ch', marginBottom: 10 }}>{activity.description}</p>
             <ViewCount kind="activity" id={activity.id} />
           </div>
 
-          <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12, height: 'fit-content' }}>
-            <Row icon={<UsersIcon size={16} />} label={activity.ageLabel} />
-            <Row icon={<ClockIcon size={16} />} label={`${activity.duration} דקות`} />
-            <Row icon={<MapPinIcon size={16} />} label={activity.place === 'שניהם' ? 'פנים וחוץ' : activity.place} />
-            <Row icon={<StarIcon size={16} />} label={`${activity.rating.toFixed(1)} דירוג מדריכים`} />
+          <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12, height: 'fit-content', position: 'relative', boxShadow: 'var(--shadow-hard)' }}>
+            {activity.shabbat !== 'חול' && <span className="stamp-shabbat" style={{ position: 'absolute', top: -16, insetInlineStart: -12 }}>{activity.shabbat === 'שבת' ? 'מתאים לשבת' : 'מתאים גם לשבת'}</span>}
+            <Row icon={<UsersIcon size={16} />} label={activity.ageLabel} tint="var(--sky-tint)" color="var(--sky)" />
+            <Row icon={<ClockIcon size={16} />} label={`${activity.duration} דקות`} tint="var(--flame-tint)" color="var(--flame)" />
+            <Row icon={<MapPinIcon size={16} />} label={activity.place === 'שניהם' ? 'פנים וחוץ' : activity.place} tint="var(--yellow-tint)" color="#C99411" />
+            <Row icon={<StarIcon size={16} />} label={`${activity.rating.toFixed(1)} דירוג מדריכים`} tint="var(--lime-tint)" color="var(--lime)" />
             <div style={{ height: 1, background: 'var(--line)' }} />
             <div style={{ fontSize: 13.5 }}>
               <b>שבת/חול: </b>{activity.shabbat === 'שניהם' ? 'מתאים לשניהם' : `מתאים ל${activity.shabbat} בלבד`}
@@ -153,7 +162,7 @@ export function ActivityDetail() {
       )}
 
       <Reveal>
-        <div style={{ maxWidth: 760 }}>
+        <div style={{ maxWidth: 820 }}>
           <Section label="מטרות">
             <ul style={{ margin: 0, paddingInlineStart: 18 }}>
               {activity.goals.map((g, i) => <li key={i} style={{ marginBottom: 6 }}>{g}</li>)}
@@ -340,10 +349,10 @@ export function ActivityDetail() {
   );
 }
 
-function Row({ icon, label }: { icon: React.ReactNode; label: string }) {
+function Row({ icon, label, tint, color }: { icon: React.ReactNode; label: string; tint: string; color: string }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 14 }}>
-      <span style={{ color: 'var(--flame)' }}>{icon}</span>{label}
+    <div className="fact-box" style={{ ['--t' as string]: tint, ['--c' as string]: color, fontSize: 14.5 }}>
+      {icon}{label}
     </div>
   );
 }

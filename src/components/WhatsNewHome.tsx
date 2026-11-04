@@ -5,6 +5,13 @@ import { readings } from '../data/readings';
 import { staffStudy } from '../data/staffStudy';
 import { chuparim } from '../data/chuparim';
 
+const KIND_PALETTE: Record<string, [string, string]> = {
+  'פעולה': ['#D96A2B', '#FBE4D2'],
+  'קטע קריאה': ['#6B4A9B', '#ECE4F5'],
+  'לימוד צוות': ['#3E7EA6', '#DCEAF2'],
+  'צ׳ופר': ['#C99411', '#FBF0CE'],
+};
+
 interface Row { to: string; title: string; kind: string; sub: string }
 
 const TOTAL = activities.length + readings.length + staffStudy.length + chuparim.length;
@@ -46,18 +53,20 @@ export function WhatsNewHome() {
         </div>
       )}
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h2 style={{ fontSize: 28, fontWeight: 800 }}>מה חדש באתר</h2>
+        <h2 style={{ fontSize: 28, fontWeight: 900 }}>מה חדש באתר</h2>
         <Link to="/whats-new" style={{ display: 'inline-block', padding: '8px 4px', fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>לכל החדשים ←</Link>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 14 }}>
-        {rows.map((r) => (
-          <Link key={r.to} to={r.to} className="card" style={{ display: 'block', padding: '14px 18px', position: 'relative' }}>
-            <span style={{ fontSize: 11, fontWeight: 800, color: '#fff', background: 'var(--flame)', borderRadius: 999, padding: '2px 9px', position: 'absolute', top: 12, insetInlineEnd: 14 }}>חדש</span>
-            <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--ink-faint)', marginBottom: 4 }}>{r.kind}</div>
-            <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 16, lineHeight: 1.3, marginBottom: 4, paddingInlineEnd: 40 }}>{r.title}</div>
-            <div style={{ fontSize: 12.5, color: 'var(--ink-soft)' }}>{r.sub}</div>
-          </Link>
-        ))}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(215px, 1fr))', gap: 12 }}>
+        {rows.map((r) => {
+          const pal = KIND_PALETTE[r.kind] ?? KIND_PALETTE['פעולה'];
+          return (
+            <Link key={r.to} to={r.to} className="card new-card" style={{ ['--c' as string]: pal[0], ['--t' as string]: pal[1] }}>
+              <span className="k">{r.kind}</span>
+              <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 15.5, lineHeight: 1.28 }}>{r.title}</div>
+              <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink-soft)' }}>{r.sub}</div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

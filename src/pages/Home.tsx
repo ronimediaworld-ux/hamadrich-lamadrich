@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Reveal } from '../components/Reveal';
 import { ActivityCard } from '../components/ActivityCard';
 import { MascotIcon } from '../components/TeenAvatar';
+import { CategoryIcon, CAT_STYLE } from '../components/CategoryIcon';
+import { quickGames } from '../data/quickGames';
+import { methods } from '../data/methods';
+import { movementNames } from '../data/movementNames';
 import { SearchIcon, ChevronDownIcon } from '../components/Icons';
 import { categories } from '../data/categories';
 import { activities } from '../data/activities';
@@ -17,22 +21,27 @@ import { staffStudy } from '../data/staffStudy';
 import { situations } from '../data/situations';
 
 const shortcuts = ['אני צריך פעולה', 'משחק מהיר', 'פרשת השבוע', 'פעולה לשבת', 'משהו בלי ציוד', 'פעולה אמונית', '20 דקות פנויות'];
+const shortcutTint = ['#FBE4D2', '#E1F0E5', '#DCEAF2', '#F6DDE7', '#FBF0CE', '#ECE4F5', '#D6EDED'];
+
+const statColor: Record<string, string> = { 'פעולות ומערכים': '#D96A2B', 'קטעי קריאה': '#6B4A9B', 'רעיונות לצ׳ופרים': '#C99411', 'סיטואציות בהדרכה': '#5E7F2A', 'מפגשי לימוד צוות': '#3E7EA6' };
 
 const recommendedIds = ['circle-of-friendship', 'faith-in-hard-times', 'noach-one-persons-power', 'lonely-island-game', 'white-night-outdoors'];
-
-const catColorBg: Record<string, string> = {
-  flame: 'var(--flame)',
-  lime: 'var(--lime)',
-  magenta: 'var(--magenta)',
-  sky: 'var(--sky)',
-  yellow: 'var(--yellow)',
-};
 
 export function Home() {
   const [q, setQ] = useState('');
   const [rolling, setRolling] = useState<string | null>(null);
   const rollRef = useRef<number | null>(null);
   const navigate = useNavigate();
+  const catCounts: Record<string, number> = {
+    activities: activities.filter((a) => a.categorySlug === 'activities').length,
+    'social-nights': activities.filter((a) => a.categorySlug === 'social-nights').length,
+    'staff-study': staffStudy.length,
+    tools: situations.length,
+    readings: readings.length,
+    games: quickGames.length,
+    methods: methods.length,
+    walls: movementNames.reduce((n, m) => n + m.groups.reduce((k, g) => k + g.slogans.length, 0), 0),
+  };
   const recommended = recommendedIds.map((id) => activities.find((a) => a.id === id)!).filter(Boolean);
 
   const currentParsha = getCurrentParsha();
@@ -73,17 +82,18 @@ export function Home() {
       {/* HERO */}
       <div className="wrap" style={{ paddingTop: 56, paddingBottom: 60, textAlign: 'center' }}>
         <Reveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
-            <MascotIcon size={52} />
-            <span style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 'clamp(24px, 3.2vw, 32px)', letterSpacing: -0.3 }}>
+          <div style={{ marginBottom: 6 }}>
+            <span className="hero-flame" style={{ width: 78, height: 78 }}><MascotIcon size={78} /></span>
+            <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 20, letterSpacing: -0.3, marginTop: 8 }}>
               המדריך למדריך
-            </span>
+            </div>
           </div>
         </Reveal>
 
         <Reveal delay={60}>
           <h1 style={{ fontSize: 'clamp(38px, 6vw, 66px)', fontWeight: 900, lineHeight: 1.06, marginBottom: 18 }}>
-            מה אתם צריכים<br />להעביר היום?
+            מה אתם צריכים<br />להעביר{' '}
+            <span className="squig">היום<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C25 2 40 18 62 9s38 9 60 0 38 9 60 1 15-2 15-2" /></svg></span>?
           </h1>
         </Reveal>
 
@@ -94,7 +104,7 @@ export function Home() {
         </Reveal>
 
         <Reveal delay={140}>
-          <form onSubmit={onSearch} style={{ display: 'flex', gap: 10, maxWidth: 600, margin: '0 auto', background: 'var(--paper)', border: '2.5px solid var(--ink)', borderRadius: 999, padding: '8px 8px 8px 20px' }}>
+          <form onSubmit={onSearch} className="hero-search" style={{ display: 'flex', gap: 10, maxWidth: 640, margin: '0 auto', background: 'var(--paper)', border: '2px solid var(--ink)', borderRadius: 999, padding: '8px 8px 8px 20px' }}>
             <SearchIcon size={18} color="var(--ink-soft)" />
             <input
               value={q}
@@ -121,8 +131,8 @@ export function Home() {
 
         <Reveal delay={200}>
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 9, marginTop: 20 }}>
-            {shortcuts.map((s) => (
-              <button key={s} className="chip" onClick={() => navigate(`/search?q=${encodeURIComponent(s)}`)}>{s}</button>
+            {shortcuts.map((s, i) => (
+              <button key={s} className="chip hero-chip" style={{ ['--t' as string]: shortcutTint[i % shortcutTint.length], ...(i === 0 ? { background: 'var(--flame)', color: '#FFF6EE' } : null) }} onClick={() => navigate(`/search?q=${encodeURIComponent(s)}`)}>{s}</button>
             ))}
             <button className="chip" style={{ background: 'var(--yellow-tint)' }} onClick={surprise} aria-live="polite">
               {rolling ? <span key={rolling} className="roll-title">{rolling}</span> : 'הפתיעו אותי'}
@@ -147,8 +157,8 @@ export function Home() {
               ['סיטואציות בהדרכה', situations.length],
               ['מפגשי לימוד צוות', staffStudy.length],
             ].map(([label, n]) => (
-              <div key={String(label)} className="card" style={{ textAlign: 'center', padding: '16px 8px' }}>
-                <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--flame-ink)', lineHeight: 1.1 }}><CountUp to={Number(n)} /></div>
+              <div key={String(label)} className="card stat-card" style={{ textAlign: 'center', padding: '14px 8px' }}>
+                <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 30, color: statColor[String(label)] ?? 'var(--flame-ink)', lineHeight: 1.1 }}><CountUp to={Number(n)} /></div>
                 <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 4 }}>{label}</div>
               </div>
             ))}
@@ -176,17 +186,17 @@ export function Home() {
       {/* BUILD YOUR OWN */}
       <div className="wrap" style={{ paddingBottom: 40 }}>
         <Reveal>
-          <section aria-labelledby="home-build" style={{ border: '2px solid var(--ink)', borderRadius: 20, padding: '22px 26px', background: 'var(--paper)', boxShadow: '6px 6px 0 rgba(36,28,17,.12)' }}>
+          <section aria-labelledby="home-build" style={{ border: '2px solid var(--ink)', borderRadius: 28, padding: '30px 34px', background: 'var(--paper)' }}>
             <h2 id="home-build" style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px' }}>רוצות לבנות פעולה משלכן? מאפס, בשיטה שלי</h2>
             <p style={{ fontSize: 15, color: 'var(--ink-soft)', margin: '0 0 14px', lineHeight: 1.75, maxWidth: '62ch' }}>
               שבעה חלקים בסדר קבוע, כל אחד בצבע משלו, ובסוף צ׳ופר כבונוס. ממלאות תבנית אישית, שומרות בדפדפן ומדפיסות.
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+            <div className="roadmap">
               {[...SEVEN_PARTS, SEVEN_BONUS].map((p) => (
-                <span key={p.name} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '3px 12px 3px 6px', borderRadius: 99, background: p.tint, border: `1.5px solid ${p.color}`, fontSize: 13.5, fontWeight: 700 }}>
-                  <span style={{ width: 22, height: 22, borderRadius: '50%', background: p.color, color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}>{p.n === 8 ? '+' : p.n}</span>
-                  {p.name}
-                </span>
+                <div key={p.name} style={{ ['--c' as string]: p.color }}>
+                  <b>{p.n === 8 ? '+' : p.n}</b>
+                  {p.name}{p.n === 8 ? ' (בונוס)' : ''}
+                </div>
               ))}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
@@ -205,24 +215,20 @@ export function Home() {
           </div>
         </Reveal>
         <Reveal delay={40}>
-          <div className="home-cats" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0,1fr))', gap: 16 }}>
-            {categories.map((c) => (
-              <Link
-                key={c.slug}
-                to={`/category/${c.slug}`}
-                className="tile"
-                style={{
-                  background: catColorBg[c.color],
-                  color: c.color === 'yellow' ? '#4A3A0A' : '#FFF8EE',
-                  border: '2px solid var(--ink)',
-                }}
-              >
-                <div>
-                  <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 17 }}>{c.label}</div>
-                  <div style={{ fontSize: 12.5, opacity: 0.9, marginTop: 4 }}>{c.description}</div>
-                </div>
-              </Link>
-            ))}
+          <div className="home-cats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: 16 }}>
+            {categories.map((c) => {
+              const st = CAT_STYLE[c.slug] ?? CAT_STYLE.activities;
+              return (
+                <Link key={c.slug} to={`/category/${c.slug}`} className="cat-tile" style={{ ['--t' as string]: st.tint, ['--c' as string]: st.color }}>
+                  <CategoryIcon slug={c.slug} className="cat-ic" />
+                  <div>
+                    <h3>{c.label}</h3>
+                    <p>{c.description}</p>
+                  </div>
+                  {catCounts[c.slug] ? <span className="cat-n">{catCounts[c.slug]}</span> : null}
+                </Link>
+              );
+            })}
           </div>
         </Reveal>
       </div>
@@ -249,27 +255,28 @@ export function Home() {
       {/* PARSHA MODULE */}
       <div className="wrap" style={{ paddingBottom: 50 }}>
         <Reveal>
-          <div className="home-split" style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 0, background: 'var(--magenta-tint)', border: '1px solid var(--magenta)', borderRadius: 18, overflow: 'hidden' }}>
-            <div style={{ padding: '34px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--magenta-ink)' }}>השבוע בפרשת השבוע</span>
-              <h3 style={{ fontSize: 26, fontWeight: 800 }}>{currentParsha ? `פרשת ${currentParsha}` : 'פרשת השבוע'}</h3>
-              <p style={{ fontSize: 14, color: 'var(--ink-soft)', maxWidth: '36ch' }}>לא רק ללמד את הפרשה — לקחת ממנה רעיון אחד ולהפוך אותו לפעולה.</p>
-              <Link to="/category/activities?domain=פרשת שבוע" className="btn btn-outline" style={{ marginTop: 8, alignSelf: 'flex-start' }}>לכל פעולות פרשת השבוע</Link>
+          <div className="home-split parsha-panel" style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 0 }}>
+            <div style={{ padding: '38px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8, position: 'relative' }}>
+              <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--yellow)', letterSpacing: .6 }}>השבוע בפרשת השבוע</span>
+              <h3 style={{ fontSize: 'clamp(30px, 4vw, 44px)', fontWeight: 900, lineHeight: 1.05 }}>{currentParsha ? `פרשת ${currentParsha}` : 'פרשת השבוע'}</h3>
+              <p style={{ fontSize: 15, color: '#D8CFC1', maxWidth: '36ch' }}>לא רק ללמד את הפרשה — לקחת ממנה רעיון אחד ולהפוך אותו לפעולה.</p>
+              <Link to="/category/activities?domain=פרשת שבוע" className="btn btn-flame" style={{ marginTop: 10, alignSelf: 'flex-start' }}>לכל פעולות פרשת השבוע</Link>
             </div>
-            <div style={{ padding: '34px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 8 }}>
+            <div style={{ padding: '38px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 10, position: 'relative' }}>
               {parshaActivities.length > 0 ? (
                 parshaActivities.map((a) => (
                   <Link
                     key={a.id}
                     to={`/activity/${a.id}`}
-                    style={{ padding: '10px 14px', borderRadius: 10, background: 'var(--paper)', border: '1px solid var(--magenta)', fontSize: 13.5, fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}
+                    className="parsha-row"
+                    style={{ padding: '12px 18px', fontSize: 15, fontWeight: 700, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}
                   >
                     <span>{a.title}</span>
-                    <span style={{ color: 'var(--ink-faint)', fontWeight: 500, fontSize: 12, whiteSpace: 'nowrap' }}>{a.ageLabel}</span>
+                    <span style={{ color: 'var(--ink-soft)', fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap' }}>{a.ageLabel}</span>
                   </Link>
                 ))
               ) : (
-                <p style={{ fontSize: 13.5, color: 'var(--ink-soft)' }}>
+                <p style={{ fontSize: 14.5, color: '#D8CFC1' }}>
                   {currentParsha
                     ? 'עדיין לא הוספנו פעולות לפרשה הזו — כאן תמצאו את כל פעולות פרשת השבוע, וניצוץ יכול לבנות לכם פעולה חדשה.'
                     : 'כאן תמצאו את כל פעולות פרשת השבוע, וניצוץ יכול לבנות לכם פעולה חדשה לכל פרשה.'}
@@ -317,9 +324,9 @@ export function Home() {
               gap: 24,
               flexWrap: 'wrap',
               background: 'var(--sky-tint)',
-              border: '1px solid var(--sky)',
-              borderRadius: 18,
-              padding: '28px 34px',
+              border: '2px solid var(--ink)',
+              borderRadius: 26,
+              padding: '30px 36px',
             }}
           >
             <div>
@@ -344,6 +351,20 @@ export function Home() {
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20 }}>
               <h2 style={{ fontSize: 28, fontWeight: 800 }}>רעיונות לצ׳ופרים</h2>
               <Link to="/chuparim" style={{ display: 'inline-block', padding: '8px 4px', fontSize: 14, fontWeight: 600, color: 'var(--ink-faint)' }}>כל הצ׳ופרים ←</Link>
+            </div>
+          </Reveal>
+          <Reveal delay={40}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16 }}>
+              {chuparim.slice(-4).reverse().map((c, i) => {
+                const pal = [['#F6DDE7', '#C24270'], ['#FBF0CE', '#C99411'], ['#E1F0E5', '#2F7A4B'], ['#DCEAF2', '#3E7EA6']][i % 4];
+                return (
+                  <Link key={c.id} to={`/chupar/${c.id}`} className="chup-mini" style={{ ['--t' as string]: pal[0], ['--c' as string]: pal[1] }}>
+                    <i />
+                    <b style={{ fontFamily: 'Rubik, sans-serif', fontSize: 17, lineHeight: 1.2 }}>{c.title}</b>
+                    <small style={{ fontWeight: 600, color: 'var(--ink-soft)' }}>{c.kind}</small>
+                  </Link>
+                );
+              })}
             </div>
           </Reveal>
         </div>

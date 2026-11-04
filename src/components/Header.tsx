@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { MascotIcon } from './TeenAvatar';
-import { SearchIcon, HeartIcon, MenuIcon, CloseIcon, ChevronDownIcon } from './Icons';
+import { SearchIcon, MenuIcon, CloseIcon, ChevronDownIcon } from './Icons';
+import { getFavoriteIds } from '../lib/favorites';
 
 interface NavItem { to: string; label: string; flame?: boolean; desc?: string }
 type NavEntry = { kind: 'link'; item: NavItem } | { kind: 'menu'; id: string; label: string; items: NavItem[] };
@@ -41,6 +42,13 @@ export function Header() {
   const navRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const [favCount, setFavCount] = useState(0);
+  useEffect(() => {
+    const sync = () => setFavCount(getFavoriteIds().length);
+    sync();
+    window.addEventListener('favorites-changed', sync);
+    return () => window.removeEventListener('favorites-changed', sync);
+  }, [location.pathname, location.search]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -88,14 +96,14 @@ export function Header() {
     <div role="banner" className="no-print site-header" style={{ position: 'sticky', top: 0, zIndex: 60, background: 'var(--paper)', borderBottom: '2px solid var(--ink)' }}>
       <div className="wrap" style={{ height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 18 }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 18, flex: 'none' }}>
-          <MascotIcon size={30} />
+          <span className="logo-flame"><MascotIcon size={30} /></span>
           המדריך למדריך
         </Link>
 
         <nav ref={navRef} className="header-nav" aria-label="תפריט ראשי" style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink)' }}>
           {NAV.map((e) =>
             e.kind === 'link' ? (
-              <Link key={e.item.to} to={e.item.to} style={e.item.flame ? { color: 'var(--flame-ink)' } : undefined}>{e.item.label}</Link>
+              <Link key={e.item.to} to={e.item.to} className={location.pathname.startsWith(e.item.to.split('?')[0]) ? 'is-current' : undefined} style={e.item.flame ? { color: 'var(--flame-ink)' } : undefined}>{e.item.label}</Link>
             ) : (
               <div key={e.id} className="nav-more" onMouseEnter={() => { if (window.matchMedia('(hover: hover)').matches) setOpenMenu(e.id); }} onMouseLeave={() => { if (window.matchMedia('(hover: hover)').matches) setOpenMenu((cur) => (cur === e.id ? null : cur)); }}>
                 <button type="button" className={`nav-more-btn${openMenu === e.id ? ' is-open' : ''}`} aria-expanded={openMenu === e.id} aria-haspopup="true" onClick={() => setOpenMenu(openMenu === e.id ? null : e.id)}>
@@ -119,8 +127,8 @@ export function Header() {
         {searchForm('header-search-wrap')}
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 'none' }}>
-          <Link to="/favorites" aria-label="הקלסר שלי" title="הקלסר שלי" style={{ flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: '50%', border: '1px solid var(--line)' }}>
-            <HeartIcon size={17} color="var(--ink-soft)" />
+          <Link to="/favorites" aria-label="הקלסר שלי" title="הקלסר שלי" className="binder-btn">
+            <span>הקלסר שלי</span> {favCount > 0 && <b>{favCount}</b>}
           </Link>
           <button
             className="header-burger"

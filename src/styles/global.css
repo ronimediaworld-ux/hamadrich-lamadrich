@@ -26,8 +26,11 @@
   --yellow: #E8B93C;
   --yellow-tint: #FBF0CE;
 
+  --marker: #FFD84D;
+  --ease: cubic-bezier(.2, .8, .2, 1);
   --shadow-card: 0 18px 30px -20px rgba(36, 28, 17, 0.35);
-  --radius: 18px;
+  --shadow-hard: 5px 5px 0 var(--ink);
+  --radius: 22px;
 }
 
 * { box-sizing: border-box; }
@@ -70,51 +73,50 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: none;
+  border: 2px solid var(--ink);
   border-radius: 999px;
-  padding: 12px 22px;
-  font-weight: 700;
+  padding: 11px 24px;
+  font-weight: 800;
   font-size: 14.5px;
   font-family: 'Rubik', sans-serif;
   cursor: pointer;
-  transition: filter .15s ease, transform .12s ease;
+  transition: transform .2s var(--ease), box-shadow .2s var(--ease), background .2s ease, filter .15s ease;
 }
-.btn:active { transform: scale(0.96); }
-.btn-flame { background: var(--flame); color: #FFF6EE; }
-.btn-flame:hover { filter: brightness(1.06); }
-.btn-outline {
-  background: var(--paper);
-  color: var(--ink);
-  border: 2px solid var(--ink);
-}
+.btn:hover { transform: translate(-2px, -3px); box-shadow: 4px 5px 0 var(--ink); }
+.btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 var(--ink); }
+.btn-flame { background: var(--flame); color: #FFF6EE; box-shadow: 4px 4px 0 var(--ink); }
+.btn-flame:hover { box-shadow: 6px 7px 0 var(--ink); }
+.btn-outline { background: var(--paper); color: var(--ink); }
 .btn-outline:hover { background: var(--flame-tint); }
+.btn:disabled { opacity: .55; transform: none; box-shadow: none; cursor: not-allowed; }
 
 /* ---- chips ---- */
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  border-radius: 10px;
+  padding: 7px 17px;
+  border-radius: 999px;
   background: var(--paper);
   border: 2px solid var(--ink);
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background .15s ease, color .15s ease, transform .12s ease;
+  transition: background .2s ease, color .2s ease, transform .2s var(--ease), box-shadow .2s var(--ease);
 }
-.chip:active { transform: scale(0.96); }
-.chip.is-active { background: var(--flame); color: #FFF6EE; border-color: var(--flame); }
+.chip:hover { transform: translate(-1px, -3px); box-shadow: 3px 4px 0 var(--ink); }
+.chip:active { transform: translate(1px, 1px); box-shadow: none; }
+.chip.is-active { background: var(--flame); color: #FFF6EE; border-color: var(--ink); }
 
 /* ---- cards ---- */
 .card {
   background: var(--paper);
-  border: 1px solid var(--line);
+  border: 2px solid var(--ink);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-card);
-  transition: transform .16s ease;
+  box-shadow: none;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease);
 }
-.card:hover { transform: translateY(-4px); }
+a.card:hover, .card.is-hoverable:hover { transform: translate(-3px, -5px); box-shadow: 6px 8px 0 var(--ink); }
 
 /* ---- tiles ---- */
 .tile {
@@ -184,10 +186,11 @@ button {
 
 /* ---- header responsive ---- */
 .header-nav { display: flex; align-items: center; gap: 16px; white-space: nowrap; }
-.header-search-wrap { display: flex; align-items: center; gap: 6px; flex: 0 1 200px; min-width: 150px; }
+.header-search-wrap { display: flex; align-items: center; gap: 6px; flex: 0 1 190px; min-width: 130px; }
 .header-burger { display: none; }
 .header-mobile-panel { display: none; }
-@media (max-width: 1100px) {
+@media (max-width: 1480px) { .header-search-wrap { display: none !important; } }
+@media (max-width: 1240px) {
   .header-nav { display: none !important; }
   .header-search-wrap { display: none !important; }
   .header-burger { display: flex; }
@@ -300,3 +303,91 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .chip { min-height: 38px; }
   .btn { min-height: 42px; }
 }
+
+
+/* =====================================================================
+   עיצוב מחודש: כותרת עליונה, גיבור, אריחים וכרטיסים
+   ===================================================================== */
+@keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-7px) rotate(2deg); } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes pop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.site-header { backdrop-filter: blur(8px); background: rgba(255, 254, 250, .94) !important; }
+.logo-flame { display: inline-flex; transform-origin: 50% 90%; animation: bob 3.4s ease-in-out infinite; }
+a:hover > .logo-flame { animation-duration: .9s; }
+.header-nav > a { padding: 7px 10px; border-radius: 999px; transition: background .2s ease, color .2s ease; }
+.header-nav > a:hover { background: var(--flame-tint); }
+.header-nav > a.is-current { background: var(--ink); color: #fff !important; }
+.header-nav { gap: 2px !important; }
+.nav-more-btn { padding: 7px 10px !important; border-radius: 999px; }
+.nav-more-btn:hover { background: var(--flame-tint); }
+.binder-btn { display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--ink); background: var(--marker); border-radius: 999px; padding: 7px 16px; font-weight: 800; font-size: 14px; white-space: nowrap; transition: transform .2s var(--ease), box-shadow .2s var(--ease); }
+.binder-btn:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 var(--ink); }
+.binder-btn b { background: var(--ink); color: #fff; border-radius: 999px; padding: 0 8px; font-size: 12.5px; font-family: 'Rubik', sans-serif; }
+@media (max-width: 700px) { .binder-btn { padding: 5px 12px; font-size: 13px; } }
+
+/* קו מרקר "מצויר" מתחת למילה בכותרת */
+.squig { position: relative; display: inline-block; }
+.squig svg { position: absolute; inset-inline: -4%; bottom: -.16em; width: 108%; height: .34em; overflow: visible; }
+.squig path { fill: none; stroke: var(--flame); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 260; stroke-dashoffset: 260; animation: draw 1s .5s var(--ease) forwards; }
+
+/* גיבור */
+.hero-flame { display: block; margin: 0 auto; transform-origin: 50% 92%; animation: bob 3.4s ease-in-out infinite; filter: drop-shadow(3px 4px 0 var(--ink)); }
+.hero-search { transition: box-shadow .2s ease, transform .2s ease; box-shadow: 5px 5px 0 var(--ink); }
+.hero-search:hover, .hero-search:focus-within { transform: translate(-1px, -1px); box-shadow: 7px 7px 0 var(--flame); }
+.hero-chip { background: var(--t, var(--paper)); }
+
+/* סטטיסטיקות */
+.stat-card { border-radius: 18px; }
+
+/* אריחי קטגוריות */
+.cat-tile { position: relative; display: grid; gap: 14px; align-content: start; background: var(--t); border: 2px solid var(--ink); border-radius: 22px; padding: 20px; color: var(--ink); transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+.cat-tile:hover { transform: translate(-3px, -5px); box-shadow: 6px 8px 0 var(--ink); }
+.cat-tile .cat-ic { width: 56px; height: 56px; transition: transform .35s var(--ease); }
+.cat-tile:hover .cat-ic { transform: rotate(-8deg) scale(1.1); }
+.cat-tile h3 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 20px; line-height: 1.15; }
+.cat-tile p { margin: 4px 0 0; font-size: 14px; font-weight: 500; color: var(--ink-soft); line-height: 1.5; }
+.cat-tile .cat-n { position: absolute; inset-inline-end: 18px; top: 16px; font-family: 'Rubik', sans-serif; font-weight: 900; font-size: 22px; color: var(--c); }
+
+/* מפת שבעת השלבים */
+.roadmap { display: flex; justify-content: space-between; position: relative; margin: 20px 0 22px; gap: 4px; }
+.roadmap:before { content: ''; position: absolute; inset-inline: 24px; top: 23px; border-top: 3px dashed var(--ink); opacity: .3; }
+.roadmap > div { position: relative; text-align: center; font-weight: 700; font-size: 13.5px; flex: 1; }
+.roadmap b { display: grid; place-items: center; width: 46px; height: 46px; margin: 0 auto 6px; border-radius: 50%; background: var(--c); color: #fff; border: 2px solid var(--ink); font-family: 'Rubik', sans-serif; font-weight: 900; font-size: 18px; transition: transform .3s var(--ease); }
+.roadmap > div:hover b { transform: translateY(-6px) scale(1.1); }
+
+/* חדש באתר: כרטיסים קטנים */
+.new-card { position: relative; display: grid; gap: 4px; padding: 16px 16px 12px; overflow: hidden; }
+.new-card:before { content: ''; position: absolute; inset-inline: 0; top: 0; height: 6px; background: var(--c); }
+.new-card .k { justify-self: start; margin-top: 4px; background: var(--t); font-weight: 800; font-size: 12px; padding: 0 10px; border-radius: 999px; border: 1.5px solid var(--ink); }
+
+/* כרטיס פעולה */
+.act-card { display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; padding: 0 !important; }
+.act-card .act-top { background: var(--t); border-bottom: 2px solid var(--ink); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.act-card .act-tag { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 12.5px; color: #fff; background: var(--c); border-radius: 999px; padding: 1px 12px; }
+.act-card .act-age { font-weight: 800; font-size: 13px; }
+.act-card .act-body { padding: 14px 16px 6px; }
+.act-card .act-foot { padding: 8px 16px 14px; display: flex; align-items: center; justify-content: space-between; }
+
+/* פרשת שבוע */
+.parsha-panel { background: var(--ink); color: #fff; border-radius: 28px; position: relative; overflow: hidden; }
+.parsha-panel:before { content: ''; position: absolute; inset-inline-start: -60px; bottom: -70px; width: 240px; height: 240px; border-radius: 50%; background: var(--flame); }
+.parsha-row { background: #fff; color: var(--ink); border-radius: 16px; transition: transform .2s var(--ease); }
+.parsha-row:hover { transform: translateX(-6px); }
+
+/* מיני כרטיסי צ'ופר */
+.chup-mini { display: grid; gap: 10px; justify-items: center; text-align: center; background: var(--t); border: 2px solid var(--ink); border-radius: 16px; padding: 22px 16px; min-height: 150px; align-content: center; transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+.chup-mini:hover { transform: rotate(-2deg) translateY(-4px); box-shadow: 5px 6px 0 var(--ink); }
+.chup-mini i { width: 38px; height: 38px; border-radius: 50%; background: var(--c); border: 2px solid var(--ink); }
+
+/* דף פעולה: שלבים צבעוניים */
+.step-card { position: relative; background: var(--t); border: 2px solid var(--ink); border-radius: 22px; padding: 18px 22px 20px; margin-bottom: 18px; transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+.step-card:hover { transform: translate(-2px, -3px); box-shadow: 5px 6px 0 var(--ink); }
+.step-badge { flex: none; width: 40px; height: 40px; border-radius: 13px; background: var(--c); color: #fff; font-family: 'Rubik', sans-serif; font-weight: 900; font-size: 20px; display: grid; place-items: center; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); transform: rotate(-4deg); }
+.step-card:hover .step-badge { transform: rotate(4deg) scale(1.08); }
+.step-name { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 20px; }
+.step-body { font-size: 16.5px; line-height: 1.8; color: var(--ink); padding-top: 4px; }
+.fact-box { background: var(--t); border: 2px solid var(--ink); border-radius: 14px; padding: 8px 14px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.fact-box svg { color: var(--c, var(--flame)); }
+.stamp-shabbat { display: inline-block; border: 3px solid #2F7A4B; color: #2F7A4B; background: var(--paper); border-radius: 10px; padding: 2px 14px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 16px; transform: rotate(-4deg); animation: pop .5s .4s var(--ease) both; }

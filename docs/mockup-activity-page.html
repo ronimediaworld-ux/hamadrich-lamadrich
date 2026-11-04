@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>דמה: עמוד פעולה מחודש</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FBF9F2; --paper: #FFFEFA; --ink: #241C11; --ink-soft: #5B4E3C; --ink-faint: #8C7F6B;
+  --line: #E4DBC8; --flame: #D96A2B; --flame-ink: #7A3712; --flame-tint: #FBE4D2;
+  /* שבעת השלבים, כפי שהם כבר מופיעים באתר */
+  --t1:#DCEAF2; --t2:#E1F0E5; --t3:#FBE4D2; --t4:#ECE4F5; --t5:#F6DDE7; --t6:#F6EBC4; --t7:#D6EDED; --tb:#F3E1D8;
+  --s1: #2F5F95; --s2: #2F7A4B; --s3: #B34E14; --s4: #6B4A9B; --s5: #A63D6B; --s6: #7A5B00; --s7: #176B6B; --bonus: #9A4A2A;
+}
+* { box-sizing: border-box; margin: 0; padding: 0 }
+body { font-family: 'Heebo', sans-serif; background: #EDE7D6; color: var(--ink); padding: 28px 20px 60px; line-height: 1.55 }
+h1, h2, h3, .rub { font-family: 'Rubik', 'Heebo', sans-serif }
+.note { max-width: 1180px; margin: 0 auto 22px; font-size: 14px; color: var(--ink-soft) }
+.note b { color: var(--ink) }
+.stage { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 28px; align-items: start }
+@media (max-width: 1000px) { .stage { grid-template-columns: 1fr } }
+.frame { background: var(--bg); border: 2px solid var(--ink); border-radius: 20px; overflow: hidden; box-shadow: 8px 8px 0 rgba(36,28,17,.18) }
+.cap { font-size: 12.5px; color: var(--ink-faint); margin: 0 4px 8px; font-weight: 600; letter-spacing: .02em }
+
+/* כותרת עליונה: חמישה פריטים ועוד, חיפוש אחד */
+.top { display: flex; align-items: center; gap: 18px; padding: 12px 22px; border-bottom: 2px solid var(--ink); background: var(--paper) }
+.brand { white-space: nowrap; font-family: 'Rubik'; font-weight: 800; font-size: 19px; display: flex; align-items: center; gap: 8px }
+.flame { width: 26px; height: 30px; background: var(--flame); border-radius: 55% 45% 50% 50% / 65% 65% 38% 38%; border: 2px solid var(--ink) }
+.nav { display: flex; gap: 16px; font-weight: 600; font-size: 14.5px; margin-inline-start: 10px }
+.nav span { white-space: nowrap; padding: 4px 0; border-bottom: 3px solid transparent }
+.nav .on { background: var(--flame); color: #fff; border-radius: 999px; padding: 4px 14px; border-color: transparent }
+.nav .more { color: var(--ink-faint) }
+.search { white-space: nowrap; margin-inline-start: auto; border: 2px solid var(--ink); border-radius: 999px; padding: 6px 16px; font-size: 13.5px; color: var(--ink-faint); background: #fff; min-width: 190px }
+
+.page { padding: 22px 26px 34px }
+.crumbs { font-size: 12.5px; color: var(--ink-faint); margin-bottom: 14px }
+.hero { background: var(--flame-tint); border: 2px solid var(--ink); border-radius: 20px; padding: 20px 22px 22px; box-shadow: 5px 5px 0 var(--flame) }
+.titlebox { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start }
+h1 { font-size: 34px; line-height: 1.12; font-weight: 900; max-width: 640px }
+.lead { color: var(--ink); font-size: 17px; line-height: 1.7; max-width: 640px; margin-top: 10px }
+
+/* 1. עובדות מרכזיות כצ'יפים, בראש העמוד */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 6px }
+.chip.age { background: var(--t1); color: #1d3f54 }
+.chip.place { background: var(--t6); color: #4a3800 }
+.chip { border: 2px solid var(--ink); border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 13.5px; background: #fff; display: inline-flex; gap: 6px; align-items: center }
+.chip.shab { background: #E7EFD6; border-color: #3E5219; color: #2c3d12 }
+.chip.dur { background: var(--flame-tint); border-color: var(--flame-ink); color: var(--flame-ink) }
+
+/* 2. כפתור ראשי אחד + משני */
+.actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap }
+.btn { font-family: 'Rubik'; font-weight: 700; font-size: 15px; border: 2px solid var(--ink); border-radius: 999px; padding: 10px 22px; background: #fff; display: inline-flex; gap: 8px; align-items: center }
+.btn.primary { background: var(--flame); color: #fff; box-shadow: 3px 3px 0 var(--ink) }
+.btn.ghost { border-style: dashed; color: var(--ink-soft); font-weight: 600 }
+
+/* 3. פס זמן: צורת הפעולה במבט אחד */
+.timeline { margin: 22px 0 6px; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 14px 16px 12px }
+.tl-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px }
+.tl-head b { font-family: 'Rubik'; font-size: 15px }
+.tl-head span { font-size: 12.5px; color: var(--ink-faint) }
+.bar { display: flex; height: 26px; border: 2px solid var(--ink); border-radius: 10px; overflow: hidden; gap: 0 }
+.bar i { display: block; height: 100%; border-inline-start: 2px solid var(--ink); position: relative }
+.bar i:first-child { border-inline-start: 0 }
+.bar i.opt { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.55) 0 4px, transparent 4px 9px) }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 13px; font-weight: 600 }
+.legend span { display: inline-flex; align-items: center; gap: 6px }
+.legend i { width: 12px; height: 12px; border-radius: 4px; border: 1.5px solid var(--ink) }
+.fit { display: flex; align-items: center; gap: 12px; margin-top: 12px; font-size: 13.5px; flex-wrap: wrap }
+.fit .slider { flex: 1; min-width: 160px; height: 8px; border-radius: 6px; background: var(--line); position: relative }
+.fit .slider b { position: absolute; inset-block: 0; inset-inline-start: 0; width: 66%; background: var(--flame); border-radius: 6px }
+.fit .slider u { position: absolute; top: -6px; inset-inline-start: calc(66% - 9px); width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2px solid var(--ink) }
+.fit em { font-style: normal; font-weight: 700; color: var(--flame-ink) }
+
+.layout { display: grid; grid-template-columns: 1fr 210px; gap: 26px; margin-top: 22px; align-items: start }
+@media (max-width: 800px) { .layout { grid-template-columns: 1fr } .rail { display: none } }
+
+/* 4. שלבים כרטיסים צבעוניים: רקע בהיר בצבע השלב, טקסט כהה גדול, תווית בצבע מלא */
+.step { --c: var(--s2); --t: var(--t2); display: grid; grid-template-columns: 46px 1fr; gap: 14px; padding: 16px 18px 18px; margin-bottom: 14px; background: var(--t); border: 2px solid var(--ink); border-inline-start: 10px solid var(--c); border-radius: 18px }
+.dot { width: 42px; height: 42px; border-radius: 50%; background: var(--c); color: #fff; font-family: 'Rubik'; font-weight: 800; display: grid; place-items: center; border: 2px solid var(--ink); font-size: 18px }
+.sh { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+.sh h3 { font-size: 20px; font-weight: 800; color: var(--ink) }
+.tag { font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 2px 12px; color: #fff; background: var(--c) }
+.min { font-size: 13.5px; color: var(--ink); font-weight: 700; background: #fff; border: 1.5px solid var(--ink); border-radius: 999px; padding: 0 10px }
+.opt-note { font-size: 12px; border: 1.5px dashed var(--ink); color: var(--ink); background: #fff; padding: 0 10px; border-radius: 999px; font-weight: 600 }
+.do { margin-top: 8px; color: var(--ink); font-size: 17px; line-height: 1.7; max-width: 62ch }
+.say { margin-top: 10px; border-inline-start: 6px solid var(--c); background: #fff; border-radius: 4px 14px 14px 4px; padding: 10px 16px; font-size: 18px; font-weight: 600; line-height: 1.5 }
+.say small { display: block; font-size: 12px; letter-spacing: .06em; font-weight: 800; margin-bottom: 2px; color: var(--c) }
+ul.sit { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px }
+ul.sit li { background: #fff; border: 1.5px solid var(--c); border-radius: 10px; padding: 7px 12px; font-size: 16px }
+
+/* מסילת ניווט צדדית */
+.rail { position: sticky; top: 14px; display: grid; gap: 10px }
+.rail h4 { font-family: 'Rubik'; font-size: 13px; color: var(--ink-faint); font-weight: 700 }
+.rail a { background: var(--p, #fff); border: 1.5px solid var(--ink); border-radius: 999px; padding: 4px 12px; display: flex; gap: 10px; align-items: center; font-size: 13.5px; font-weight: 600; padding: 4px 0 }
+.rail a i { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); flex: none }
+.rail .more { margin-top: 8px; border-top: 1px dashed var(--line); padding-top: 12px; display: grid; gap: 4px; color: var(--ink-soft); font-size: 13px; font-weight: 600 }
+
+/* טלפון */
+.phone { width: 340px; border: 2px solid var(--ink); border-radius: 34px; background: var(--bg); overflow: hidden; box-shadow: 8px 8px 0 rgba(36,28,17,.18) }
+.phone .top { padding: 10px 14px; gap: 10px }
+.phone .brand { font-size: 16px }
+.phone .search { min-width: 0; padding: 4px 10px; font-size: 12px }
+.phone .page { padding: 14px 16px 18px }
+.phone h1 { font-size: 24px }
+.phone .lead { font-size: 13.5px }
+.phone .chip { font-size: 12px; padding: 3px 10px }
+.phone .btn { font-size: 13.5px; padding: 8px 14px }
+.phone .timeline { padding: 10px }
+.phone .bar { height: 20px }
+.sticky-bar { position: sticky; bottom: 0; display: flex; gap: 8px; padding: 10px 12px; background: var(--paper); border-top: 2px solid var(--ink) }
+.sticky-bar .btn { flex: 1; justify-content: center }
+.phone .step { grid-template-columns: 34px 1fr; gap: 10px; padding: 12px 12px 14px }
+.phone .dot { width: 32px; height: 32px; font-size: 14px }
+.phone .sh h3 { font-size: 15.5px }
+.phone .do { font-size: 14.5px }
+.phone .say { font-size: 15px; padding: 8px 12px }
+</style>
+</head>
+<body>
+<p class="note"><b>גרסה 2: קריא וברור, עם הרבה צבע.</b> כל שלב הוא כרטיס בצבע של החלק שלו מתוך שבעת השלבים. הטקסט תמיד כהה על רקע בהיר (ניגודיות גבוהה, 17 פיקסלים, שורות של עד כ-60 תווים), והצבע המלא נשמר לתוויות, למספרים ולפסים. שינויים: צ'יפים של עובדות מפתח, כפתור פעולה אחד ראשי, פס זמן בצבעי שבעת השלבים עם בורר משך, שלבים צבעוניים שבהם &quot;מה אומרים&quot; נפרד ממה עושים, וסרגל ניווט צדדי. משמאל: אותו עמוד בטלפון. התוכן אמיתי, מהפעולה &quot;לחץ חברתי: לשים לב מתי זה אמיתי&quot;.</p>
+
+<div class="stage">
+  <div>
+    <div class="cap">מחשב</div>
+    <div class="frame">
+      <div class="top">
+        <div class="brand"><span class="flame"></span>המדריך למדריך</div>
+        <div class="nav"><span class="on">פעולות</span><span>ערבי גיבוש</span><span>לימוד צוות</span><span>קטעי קריאה</span><span>צ'ופרים</span><span class="more">עוד ▾</span></div>
+        <div class="search">חיפוש בכל האתר</div>
+      </div>
+      <div class="page">
+        <div class="crumbs">בית › פעולות ומערכים › לחץ חברתי</div>
+        <div class="hero"><div class="titlebox"><div>
+          <h1>לחץ חברתי: לשים לב מתי זה אמיתי</h1>
+          <p class="lead">הערך: בחירה עצמאית. לחץ חברתי הוא דבר נפוץ, והוא יכול לקחת אותנו למקום טוב או פחות טוב. ניסוי מחיאות כפיים, הסיפור של נועם ותרגול של איך אומרים &quot;לא&quot; בלי לריב.</p>
+          <div class="chips"><span class="chip age">כיתות ז'-י'</span><span class="chip dur">69 דקות</span><span class="chip place">פנים</span><span class="chip shab">מתאים גם לשבת</span><span class="chip">ללא ציוד מיוחד</span></div>
+          <div class="actions"><span class="btn primary">▶ מצב &quot;בפעולה&quot;</span><span class="btn">הדפסה</span><span class="btn">♡ שמירה בקלסר</span><span class="btn ghost">עוד ⋯</span></div>
+        </div></div></div>
+
+        <div class="timeline">
+          <div class="tl-head"><b>צורת הפעולה במבט אחד</b><span>הפסים המקווקווים הם שלבים שאפשר לדלג עליהם</span></div>
+          <div class="bar">
+            <i style="flex:9;background:var(--s2)" title="פתיחה"></i>
+            <i style="flex:7;background:var(--s3)" title="משחק"></i>
+            <i class="opt" style="flex:8;background:var(--s3)" title="משחק פעיל (רשות)"></i>
+            <i style="flex:6;background:var(--s5)" title="קטע קריאה"></i>
+            <i style="flex:4;background:var(--s6)" title="הסבר"></i>
+            <i style="flex:12;background:var(--s3)" title="מתודה"></i>
+            <i style="flex:15;background:var(--s4)" title="דיון"></i>
+            <i style="flex:6;background:var(--s7)" title="סיכום"></i>
+            <i style="flex:2;background:var(--bonus)" title="צ'ופר"></i>
+          </div>
+          <div class="legend"><span><i style="background:var(--s2)"></i>פתיחה</span><span><i style="background:var(--s3)"></i>משחק ומתודה</span><span><i style="background:var(--s5)"></i>קריאה</span><span><i style="background:var(--s6)"></i>הסבר</span><span><i style="background:var(--s4)"></i>דיון</span><span><i style="background:var(--s7)"></i>סיכום</span></div>
+          <div class="fit"><span>יש לי</span><em>55 דקות</em><div class="slider"><b></b><u></u></div><span>הפעולה תתקצר ל-<em>55 דקות</em> בלי לפגוע בליבה.</span></div>
+        </div>
+
+        <div class="layout">
+          <div>
+            <div class="step" style="--c:var(--s2);--t:var(--t2)"><div class="dot">1</div><div>
+              <div class="sh"><h3>פתיחה: הניסוי</h3><span class="tag">פתיחה</span><span class="min">4 דק'</span></div>
+              <p class="do">המדריך מתחיל למחוא כפיים ולא מפסיק, עד שכולם מצטרפים. אחר כך עוצרים ושואלים. אם מישהו לא הצטרף, מציינים אותו.</p>
+              <div class="say"><small>מה אומרים</small>״למה הצטרפתם אליי?״</div>
+            </div></div>
+            <div class="step" style="--c:var(--s3);--t:var(--t3)"><div class="dot">2</div><div>
+              <div class="sh"><h3>משחק: מי מזדהה</h3><span class="tag">משחק</span><span class="min">7 דק'</span></div>
+              <p class="do">כולם עוצמים עיניים. המדריך מקריא, וכל מי שמזדהה מוחא כף פעם אחת (בשבת: לוחשים ״גם אני״).</p>
+              <ul class="sit"><li>לפעמים אני עושה דברים רק כי כולם עושים.</li><li>העתקתי במבחן כי כולם ככה.</li><li>הברזתי משיעור כי החברים שלי גם.</li></ul>
+            </div></div>
+            <div class="step" style="--c:var(--s3);--t:var(--t3)"><div class="dot">3</div><div>
+              <div class="sh"><h3>משחק פעיל: מי עומד אם...</h3><span class="tag">משחק</span><span class="min">8 דק'</span><span class="opt-note">אפשר לדלג</span></div>
+              <p class="do">שני סבבים: עיניים פתוחות ועיניים עצומות. משווים איך הרגיש להחליט כשרואים את כולם.</p>
+            </div></div>
+            <div class="step" style="--c:var(--s5);--t:var(--t5)"><div class="dot">4</div><div>
+              <div class="sh"><h3>קטע קריאה: הסיפור של נועם</h3><span class="tag">קריאה</span><span class="min">6 דק'</span></div>
+              <p class="do">קוראים בקול. לא מפרטים את ״המשחק״ המסוכן, ושואלים מה אפשר לעשות ברגע שמציעים.</p>
+            </div></div>
+          </div>
+          <aside class="rail">
+            <h4>קפיצה לשלב</h4>
+            <a style="--p:var(--t2)"><i style="background:var(--s2)"></i>פתיחה</a>
+            <a style="--p:var(--t3)"><i style="background:var(--s3)"></i>משחקים</a>
+            <a style="--p:var(--t5)"><i style="background:var(--s5)"></i>קטע קריאה</a>
+            <a style="--p:var(--t6)"><i style="background:var(--s6)"></i>הסבר</a>
+            <a style="--p:var(--t3)"><i style="background:var(--s3)"></i>מתודה</a>
+            <a style="--p:var(--t4)"><i style="background:var(--s4)"></i>דיון</a>
+            <a style="--p:var(--t7)"><i style="background:var(--s7)"></i>סיכום</a>
+            <div class="more"><span>העתקה כטקסט</span><span>שיתוף קישור</span><span>עותק אישי לעריכה</span></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="cap">טלפון</div>
+    <div class="phone">
+      <div class="top"><div class="brand"><span class="flame" style="width:20px;height:24px"></span>המדריך</div><div class="search">חיפוש</div></div>
+      <div class="page">
+        <h1>לחץ חברתי: לשים לב מתי זה אמיתי</h1>
+        <div class="chips"><span class="chip age">ז'-י'</span><span class="chip dur">69 דק'</span><span class="chip shab">גם לשבת</span></div>
+        <div class="timeline">
+          <div class="tl-head"><b>צורת הפעולה</b><span>55 דק' ▾</span></div>
+          <div class="bar">
+            <i style="flex:9;background:var(--s2)"></i><i style="flex:7;background:var(--s3)"></i><i class="opt" style="flex:8;background:var(--s3)"></i><i style="flex:6;background:var(--s5)"></i><i style="flex:4;background:var(--s6)"></i><i style="flex:12;background:var(--s3)"></i><i style="flex:15;background:var(--s4)"></i><i style="flex:6;background:var(--s7)"></i>
+          </div>
+        </div>
+        <div class="step" style="--c:var(--s2);--t:var(--t2)"><div class="dot">1</div><div>
+          <div class="sh"><h3>פתיחה: הניסוי</h3><span class="min">4 דק'</span></div>
+          <p class="do" style="font-size:13.5px">מתחילים למחוא כפיים ולא מפסיקים, עד שכולם מצטרפים.</p>
+          <div class="say"><small>מה אומרים</small>״למה הצטרפתם אליי?״</div>
+        </div></div>
+        <div class="step" style="--c:var(--s3);--t:var(--t3)"><div class="dot">2</div><div>
+          <div class="sh"><h3>משחק: מי מזדהה</h3><span class="min">7 דק'</span></div>
+          <p class="do" style="font-size:13.5px">עיניים עצומות, מקריאים, ומי שמזדהה מוחא כף.</p>
+        </div></div>
+      </div>
+      <div class="sticky-bar"><span class="btn primary">▶ בפעולה</span><span class="btn">♡</span><span class="btn">הדפסה</span></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

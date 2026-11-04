@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>דמה: כיוון עיצוב נקי ובוגר</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1F1A14; --ink2: #4A4137; --ink3: #7A6F61;
+  --canvas: #F4EFE6; --white: #FFFFFF; --line: #E6DECF;
+  --flame: #E0661F; --flame-d: #B44A10; --amber: #F6B93B;
+  --c-act: #E0661F; --t-act: #FDE7D7;
+  --c-night: #C93B73; --t-night: #FADCE8;
+  --c-staff: #2F78A8; --t-staff: #D9E9F3;
+  --c-sit: #5B8A2B; --t-sit: #E4EFD3;
+  --c-read: #6B47A8; --t-read: #E9E0F5;
+  --c-chup: #D69A0B; --t-chup: #FBEFC7;
+  --c-wall: #137A78; --t-wall: #D2EEED;
+  --c-game: #2C8450; --t-game: #DDF1E4;
+  --s1: #2F5F95; --s2: #2C8450; --s3: #B34E14; --s4: #6B47A8; --s5: #A63D6B; --s6: #8A6A00; --s7: #137A78;
+  --r: 22px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html { background: #E3DCCD }
+body { font-family: 'Heebo', sans-serif; color: var(--ink); line-height: 1.6; padding: 28px 18px 80px }
+.rub { font-family: 'Rubik', sans-serif }
+.wrap { max-width: 1240px; margin: 0 auto }
+.intro { max-width: 900px; margin-bottom: 24px }
+.intro h1 { font-family: 'Rubik'; font-weight: 900; font-size: 34px; line-height: 1.15; margin-bottom: 8px }
+.intro p { color: var(--ink2); font-size: 15.5px }
+.intro ul { margin: 10px 0 0; padding-inline-start: 20px; display: grid; gap: 4px; font-size: 14.5px }
+.label { margin: 36px 0 10px; font-family: 'Rubik'; font-weight: 800; font-size: 13.5px; color: var(--ink3); letter-spacing: .05em }
+.screen { background: var(--canvas); border-radius: 26px; overflow: hidden; box-shadow: 0 30px 60px -30px rgba(31,26,20,.45), 0 0 0 1px rgba(31,26,20,.08) }
+
+/* כותרת עליונה */
+.top { display: flex; align-items: center; gap: 22px; padding: 16px 40px; background: var(--white) }
+.logo { display: flex; align-items: center; gap: 10px; font-family: 'Rubik'; font-weight: 900; font-size: 21px; white-space: nowrap }
+.logo svg { width: 28px; height: 33px }
+.nav { display: flex; gap: 4px; white-space: nowrap }
+.nav span { font-weight: 600; font-size: 15px; padding: 8px 14px; border-radius: 12px; color: var(--ink2) }
+.nav .on { background: var(--canvas); color: var(--ink); font-weight: 700 }
+.nav .ai { color: var(--flame-d); font-weight: 800 }
+.tend { margin-inline-start: auto; display: flex; gap: 10px; align-items: center }
+.find { background: var(--canvas); border-radius: 14px; padding: 9px 18px; color: var(--ink3); font-size: 14px; min-width: 200px }
+.pillbtn { background: var(--ink); color: #fff; border-radius: 14px; padding: 9px 18px; font-family: 'Rubik'; font-weight: 700; font-size: 14px; white-space: nowrap }
+.pillbtn b { background: var(--amber); color: var(--ink); border-radius: 8px; padding: 0 7px; margin-inline-start: 6px }
+
+.body { padding: 22px 40px 44px }
+
+/* גיבור כהה */
+.hero { background: var(--ink); color: #fff; border-radius: 30px; padding: 46px 52px; display: grid; grid-template-columns: 1.15fr .85fr; gap: 30px; align-items: center; position: relative; overflow: hidden }
+.hero h1 { font-family: 'Rubik'; font-weight: 900; font-size: 68px; line-height: 1.03; letter-spacing: -.025em }
+.hero h1 em { font-style: normal; color: var(--amber) }
+.hero p { color: #D8CFC1; font-size: 19px; margin-top: 14px; max-width: 520px }
+.hsearch { margin-top: 26px; background: #fff; border-radius: 18px; display: flex; padding: 7px; max-width: 580px }
+.hsearch span { flex: 1; padding: 11px 16px; color: var(--ink3); font-size: 16px }
+.hsearch b { background: var(--flame); color: #fff; border-radius: 13px; padding: 11px 26px; font-family: 'Rubik'; font-size: 15px }
+.quick { display: flex; gap: 9px; margin-top: 18px; flex-wrap: wrap }
+.quick span { border: 1.5px solid rgba(255,255,255,.28); border-radius: 999px; padding: 6px 15px; font-weight: 600; font-size: 14px; color: #fff; display: inline-flex; align-items: center; gap: 8px }
+.quick i { width: 10px; height: 10px; border-radius: 50%; background: var(--c) }
+.art { position: relative; height: 330px }
+.art svg { width: 100%; height: 100% }
+
+/* בנטו */
+.bento { margin-top: 22px; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 168px; gap: 16px }
+.bt { border-radius: var(--r); padding: 20px 22px; position: relative; overflow: hidden; background: var(--t); display: flex; flex-direction: column; justify-content: space-between; transition: transform .18s, box-shadow .18s }
+.bt:hover { transform: translateY(-4px); box-shadow: 0 18px 30px -18px rgba(31,26,20,.5) }
+.bt h3 { font-family: 'Rubik'; font-weight: 800; font-size: 21px; line-height: 1.15; color: var(--ink) }
+.bt p { font-size: 14px; color: var(--ink2); margin-top: 3px; line-height: 1.4 }
+.bt .n { font-family: 'Rubik'; font-weight: 900; font-size: 34px; line-height: 1; color: var(--c) }
+.bt .n small { font-family: 'Heebo'; font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-inline-start: 6px }
+.bt svg.shape { position: absolute; inset-inline-end: -26px; top: -26px; width: 130px; height: 130px; opacity: .95 }
+.bt.big { grid-column: span 2; grid-row: span 2; background: var(--c-act); color: #fff; padding: 28px 30px }
+.bt.big h3 { color: #fff; font-size: 34px }
+.bt.big p { color: #FFE8D8; font-size: 16px }
+.bt.big .n { color: #fff; font-size: 74px }
+.bt.big .n small { color: #FFE8D8; font-size: 16px }
+.bt.big .minilist { display: grid; gap: 8px; margin-top: 12px }
+.bt.big .minilist div { background: rgba(255,255,255,.16); border-radius: 12px; padding: 8px 14px; font-weight: 600; font-size: 15px; display: flex; justify-content: space-between; gap: 10px }
+.bt.big .minilist small { opacity: .85; font-weight: 500 }
+.bt.big .go { align-self: flex-start; background: #fff; color: var(--flame-d); font-family: 'Rubik'; font-weight: 800; border-radius: 13px; padding: 10px 20px; font-size: 15px }
+.bt.wide { grid-column: span 2 }
+
+/* שבעת השלבים */
+.method { margin-top: 38px; background: var(--white); border-radius: 28px; padding: 34px 40px 34px }
+.method h2 { font-family: 'Rubik'; font-weight: 900; font-size: 36px; line-height: 1.1; letter-spacing: -.02em }
+.method p { color: var(--ink2); font-size: 17px; margin-top: 6px }
+.seg { display: flex; gap: 6px; margin-top: 26px }
+.seg div { flex: 1; border-radius: 14px; background: var(--c); color: #fff; padding: 14px 14px 12px; min-height: 96px; display: flex; flex-direction: column; justify-content: space-between }
+.seg b { font-family: 'Rubik'; font-weight: 900; font-size: 30px; line-height: 1 }
+.seg span { font-weight: 700; font-size: 15px }
+.seg small { font-weight: 500; font-size: 12.5px; opacity: .9; display: block }
+
+/* חדש: רשימה */
+.news { margin-top: 38px }
+.newshead { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px }
+.newshead h2 { font-family: 'Rubik'; font-weight: 900; font-size: 32px; letter-spacing: -.02em }
+.newshead span { font-weight: 700; color: var(--ink2) }
+.rows { background: var(--white); border-radius: 24px; padding: 6px 8px }
+.row { display: grid; grid-template-columns: 8px 110px 1fr auto; gap: 18px; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--line) }
+.row:last-child { border-bottom: 0 }
+.row i { width: 8px; height: 38px; border-radius: 4px; background: var(--c) }
+.row .k { font-weight: 800; font-size: 13px; color: var(--c); font-family: 'Rubik' }
+.row h4 { font-size: 19px; font-weight: 700; line-height: 1.3 }
+.row .m { color: var(--ink3); font-weight: 600; font-size: 14px; white-space: nowrap }
+.row .tagp { font-weight: 700; font-size: 12.5px; background: var(--t-game); color: #17462a; padding: 2px 10px; border-radius: 8px; margin-inline-start: 8px }
+
+/* ===== דף פעולה ===== */
+.banner { background: var(--t-act); border-radius: 30px; padding: 30px 40px 34px; position: relative; overflow: hidden }
+.banner svg { position: absolute; inset-inline-end: -40px; top: -40px; width: 300px; height: 300px }
+.crumb { font-size: 13.5px; color: var(--ink2); font-weight: 600 }
+.kind { display: inline-block; margin-top: 16px; background: var(--c-act); color: #fff; font-family: 'Rubik'; font-weight: 800; font-size: 13px; padding: 3px 14px; border-radius: 999px }
+.banner h1 { font-family: 'Rubik'; font-weight: 900; font-size: 52px; line-height: 1.06; letter-spacing: -.025em; max-width: 760px; margin-top: 10px; position: relative }
+.banner p { font-size: 19px; line-height: 1.7; max-width: 720px; margin-top: 14px; color: var(--ink); position: relative }
+.banner p b { font-weight: 800 }
+.cols { display: grid; grid-template-columns: 1fr 330px; gap: 28px; margin-top: 22px; align-items: start }
+.main { display: grid; gap: 22px }
+.panel { background: var(--white); border-radius: 24px; padding: 22px 26px }
+.panel h3 { font-family: 'Rubik'; font-weight: 800; font-size: 19px; display: flex; justify-content: space-between; align-items: baseline }
+.panel h3 span { font-family: 'Heebo'; font-size: 13.5px; font-weight: 600; color: var(--ink3) }
+.bar { display: flex; margin-top: 14px; height: 40px; border-radius: 12px; overflow: hidden; gap: 3px }
+.bar i { display: grid; place-items: center; color: #fff; font-style: normal; font-family: 'Rubik'; font-weight: 800; font-size: 14px; background: var(--c); border-radius: 6px }
+.bar i.skip { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.4) 0 5px, transparent 5px 11px) }
+.ticks { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: var(--ink3); font-weight: 700; font-family: 'Rubik' }
+.timeline { position: relative; display: grid; gap: 14px }
+.timeline:before { content: ''; position: absolute; inset-inline-start: 33px; top: 24px; bottom: 24px; width: 3px; background: var(--line) }
+.st { display: grid; grid-template-columns: 68px 1fr; gap: 14px; position: relative }
+.dot { width: 68px; display: flex; justify-content: center; padding-top: 18px; position: relative; z-index: 1 }
+.dot b { width: 46px; height: 46px; border-radius: 50%; background: var(--c); color: #fff; display: grid; place-items: center; font-family: 'Rubik'; font-weight: 900; font-size: 20px; box-shadow: 0 0 0 6px var(--canvas) }
+.card { background: var(--white); border-radius: 22px; padding: 20px 26px 22px; border-inline-start: 6px solid var(--c) }
+.card h3 { font-family: 'Rubik'; font-weight: 800; font-size: 24px; line-height: 1.2; display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
+.card h3 em { font-style: normal; font-weight: 700; font-size: 13px; padding: 2px 11px; border-radius: 8px; background: var(--t); color: var(--ink) }
+.card h3 em.t { background: var(--ink); color: #fff }
+.card p { font-size: 18px; line-height: 1.75; margin-top: 8px; max-width: 66ch; color: var(--ink) }
+.quote { margin-top: 14px; background: var(--t); border-radius: 16px; padding: 14px 22px 14px 18px; display: flex; gap: 14px; align-items: flex-start }
+.quote:before { content: '״'; font-family: 'Rubik'; font-weight: 900; font-size: 56px; line-height: .8; color: var(--c) }
+.quote small { display: block; font-weight: 800; font-size: 12px; letter-spacing: .06em; color: var(--c) }
+.quote div { font-size: 20px; font-weight: 700 }
+.list { margin-top: 12px; display: grid; gap: 7px }
+.list div { background: var(--t); border-radius: 12px; padding: 9px 16px; font-size: 16.5px }
+.side { position: sticky; top: 14px; display: grid; gap: 14px }
+.sum { background: var(--ink); color: #fff; border-radius: 24px; padding: 22px }
+.sum .stampline { display: inline-block; background: var(--amber); color: var(--ink); font-family: 'Rubik'; font-weight: 800; font-size: 13px; padding: 3px 12px; border-radius: 8px }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px }
+.facts div { background: rgba(255,255,255,.1); border-radius: 14px; padding: 10px 14px }
+.facts small { display: block; font-size: 12px; color: #CFC5B6; font-weight: 600 }
+.facts b { font-family: 'Rubik'; font-weight: 800; font-size: 20px }
+.btn { display: flex; justify-content: center; align-items: center; gap: 8px; border-radius: 14px; padding: 13px 18px; font-family: 'Rubik'; font-weight: 800; font-size: 15px; margin-top: 10px; background: #fff; color: var(--ink) }
+.btn.main { background: var(--flame); color: #fff }
+.sum .btn.sec { background: rgba(255,255,255,.14); color: #fff }
+.mini2 { display: flex; gap: 8px }
+.mini2 .btn { flex: 1; padding: 10px 6px; font-size: 13.5px }
+
+/* ===== טלפונים ===== */
+.phones { display: grid; grid-template-columns: repeat(2, 330px); gap: 30px; justify-content: center }
+@media (max-width: 800px) { .phones { grid-template-columns: 330px } }
+.ph { border-radius: 40px; overflow: hidden; background: var(--canvas); box-shadow: 0 30px 60px -30px rgba(31,26,20,.5), 0 0 0 1px rgba(31,26,20,.1); height: 720px; display: flex; flex-direction: column }
+.ph .top { padding: 12px 16px }
+.ph .logo { font-size: 18px } .ph .logo svg { width: 22px; height: 26px }
+.ph .pillbtn { padding: 6px 12px; font-size: 13px }
+.menu { width: 36px; height: 36px; border-radius: 12px; background: var(--canvas); display: grid; place-items: center; font-weight: 800 }
+.pb { padding: 14px 14px 10px; flex: 1; overflow: hidden }
+.ph .hero { padding: 24px 22px; border-radius: 26px; grid-template-columns: 1fr }
+.ph .hero h1 { font-size: 40px }
+.ph .hero p { font-size: 15px; margin-top: 8px }
+.ph .hsearch { margin-top: 16px } .ph .hsearch span { padding: 9px 12px; font-size: 14px } .ph .hsearch b { padding: 9px 16px; font-size: 14px }
+.ph .quick { margin-top: 12px; gap: 6px } .ph .quick span { font-size: 12.5px; padding: 4px 11px }
+.ph .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 118px; gap: 10px; margin-top: 12px }
+.ph .bt { padding: 14px 15px; border-radius: 18px } .ph .bt h3 { font-size: 16px } .ph .bt .n { font-size: 24px } .ph .bt p { display: none } .ph .bt svg.shape { width: 64px; height: 64px; inset-inline-end: -16px; top: auto; bottom: -16px }
+.ph .bt.big { grid-column: span 2; grid-row: span 1; padding: 16px 18px } .ph .bt.big h3 { font-size: 24px } .ph .bt.big .n { font-size: 44px } .ph .bt.big .minilist, .ph .bt.big .go { display: none }
+.dock { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--white); padding: 8px 6px 14px }
+.dock span { text-align: center; font-size: 12px; font-weight: 700; display: grid; gap: 3px; justify-items: center; color: var(--ink3) }
+.dock i { width: 40px; height: 26px; border-radius: 13px; background: transparent }
+.dock .on { color: var(--ink) } .dock .on i { background: var(--flame) }
+.ph .banner { border-radius: 24px; padding: 18px 20px 22px } .ph .banner h1 { font-size: 30px } .ph .banner p { display: none } .ph .banner svg { width: 150px; height: 150px; inset-inline-end: -30px; top: -30px }
+.ph .kind { margin-top: 10px }
+.ph .chipsrow { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; position: relative }
+.ph .chipsrow span { background: #fff; border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 13px }
+.ph .timeline { margin-top: 14px } .ph .timeline:before { inset-inline-start: 19px }
+.ph .st { grid-template-columns: 40px 1fr; gap: 8px } .ph .dot { width: 40px; padding-top: 14px } .ph .dot b { width: 32px; height: 32px; font-size: 15px; box-shadow: 0 0 0 4px var(--canvas) }
+.ph .card { padding: 14px 16px 16px; border-radius: 18px } .ph .card h3 { font-size: 18px } .ph .card p { font-size: 15.5px }
+.ph .quote { padding: 10px 14px; border-radius: 14px } .ph .quote:before { font-size: 40px } .ph .quote div { font-size: 16.5px }
+.fixed { display: grid; grid-template-columns: 1fr 52px 52px; gap: 8px; padding: 10px 12px 14px; background: var(--white) }
+.fixed .btn { margin: 0; padding: 12px 6px }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="flame" viewBox="0 0 100 120"><path d="M50 4C53 26 88 42 88 78c0 24-18 38-38 38S12 102 12 78c0-22 18-30 24-50 4 12 10 8 14-24Z" fill="#E0661F"/><path d="M50 52c3 12 22 20 22 36 0 13-10 21-22 21S28 101 28 88c0-12 12-18 22-36Z" fill="#F6B93B"/><circle cx="39" cy="84" r="4.2" fill="#1F1A14"/><circle cx="61" cy="84" r="4.2" fill="#1F1A14"/><path d="M41 95q9 9 18 0" fill="none" stroke="#1F1A14" stroke-width="4" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<div class="wrap">
+<div class="intro">
+  <h1>כיוון עיצוב שני: נקי, בוגר ומאורגן</h1>
+  <p>כיוון אחר לגמרי מהקלסר: בלי קווי מתאר ובלי צל קשיח, עם הרבה אוויר, בלוקים גדולים של צבע ופריסה חכמה. מרגיש כמו מוצר דיגיטלי מקצועי, והצבעים נשארים אלה של האתר.</p>
+  <ul>
+    <li><b>ראש הדף:</b> בלוק כהה גדול עם כותרת ענקית וחיפוש, וקומפוזיציה של צורות גיאומטריות בצבעי הקטגוריות.</li>
+    <li><b>קטגוריות:</b> פריסת "בנטו" עם אריח גדול לפעולות ואריחים קטנים בצבעים, במקום שורת כפתורים.</li>
+    <li><b>דף פעולה:</b> כותרת בבלוק צבעוני, כרטיס סיכום כהה בצד, והשלבים על ציר אנכי עם צבע לכל שלב.</li>
+  </ul>
+</div>
+
+<div class="label">דף הבית</div>
+<div class="screen">
+  <div class="top">
+    <div class="logo"><svg><use href="#flame"/></svg>המדריך למדריך</div>
+    <div class="nav"><span class="on">בית</span><span>פעולות</span><span>ערבי גיבוש</span><span>לימוד צוות</span><span>סיטואציות</span><span class="ai">עוזר AI</span></div>
+    <div class="tend"><div class="find">חיפוש בכל האתר</div><div class="pillbtn">הקלסר שלי<b>3</b></div></div>
+  </div>
+  <div class="body">
+    <div class="hero">
+      <div>
+        <h1>מה מעבירים <em>היום</em>?</h1>
+        <p>354 פעולות בנויות שלב אחרי שלב, מוכנות להדפסה. בוחרים, שומרים בקלסר ועולים לפעולה בביטחון.</p>
+        <div class="hsearch"><span>לדוגמה: פעולה אמונית לכיתה ח' לשבת</span><b>חיפוש</b></div>
+        <div class="quick">
+          <span style="--c:var(--c-act)"><i></i>אני צריך פעולה עכשיו</span>
+          <span style="--c:var(--c-game)"><i></i>משחק מהיר</span>
+          <span style="--c:var(--c-night)"><i></i>פעולה לשבת</span>
+          <span style="--c:var(--c-staff)"><i></i>פרשת השבוע</span>
+        </div>
+      </div>
+      <div class="art">
+        <svg viewBox="0 0 400 330" preserveAspectRatio="xMidYMid meet">
+          <rect x="30" y="30" width="150" height="150" rx="22" fill="#2F78A8"/>
+          <circle cx="285" cy="105" r="85" fill="#E0661F"/>
+          <path d="M30 300a75 75 0 0 1 150 0Z" fill="#C93B73"/>
+          <path d="M200 300 L275 180 L350 300Z" fill="#F6B93B"/>
+          <path d="M350 300a50 50 0 0 0 -50 -50 h0 v50Z" fill="#5B8A2B"/>
+          <circle cx="105" cy="105" r="34" fill="#F4EFE6"/>
+          <rect x="340" y="190" width="40" height="40" rx="10" fill="#6B47A8"/>
+          <g transform="translate(250 60) scale(.58)"><use href="#flame" width="100" height="120"/></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="bento">
+      <div class="bt big">
+        <div><h3>פעולות ומערכים</h3><p>ערכים, אמונה, פרשת שבוע וכללי. כל פעולה עם משחק, קטע קריאה, דיון וסיכום.</p>
+          <div class="minilist"><div>לחץ חברתי: לשים לב מתי זה אמיתי <small>ז'-י'</small></div><div>כולם אומרים? אני בוחר <small>ג'-ו'</small></div><div>וירא: להתווכח עם הצדק <small>ז'-ט'</small></div></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end"><div class="n">354<small>פעולות</small></div><span class="go">לכל הפעולות ←</span></div>
+      </div>
+      <div class="bt" style="--c:var(--c-night);--t:var(--t-night)"><svg class="shape" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#C93B73" opacity=".9"/></svg><div><h3>ערבי גיבוש</h3><p>לילות ותחרויות</p></div><div class="n">87<small>ערבים</small></div></div>
+      <div class="bt" style="--c:var(--c-staff);--t:var(--t-staff)"><svg class="shape" viewBox="0 0 100 100"><rect width="100" height="100" rx="18" fill="#2F78A8"/></svg><div><h3>לימוד צוות</h3><p>מפגשים למדריכים</p></div><div class="n">84<small>מפגשים</small></div></div>
+      <div class="bt wide" style="--c:var(--c-read);--t:var(--t-read)"><svg class="shape" viewBox="0 0 100 100"><path d="M0 100 L50 0 L100 100Z" fill="#6B47A8"/></svg><div><h3>קטעי קריאה</h3><p>סיפורים, משלים ושירה, מסופרים בפשטות</p></div><div class="n">149<small>קטעים</small></div></div>
+      <div class="bt" style="--c:var(--c-sit);--t:var(--t-sit)"><svg class="shape" viewBox="0 0 100 100"><path d="M0 100a100 100 0 0 1 100 -100v100Z" fill="#5B8A2B"/></svg><div><h3>סיטואציות</h3><p>מה עושים כשזה קורה</p></div><div class="n">33</div></div>
+      <div class="bt" style="--c:var(--c-chup);--t:var(--t-chup)"><svg class="shape" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#F6B93B"/></svg><div><h3>צ'ופרים</h3><p>כרטיסים להדפסה</p></div><div class="n">74</div></div>
+      <div class="bt" style="--c:var(--c-wall);--t:var(--t-wall)"><svg class="shape" viewBox="0 0 100 100"><rect width="100" height="100" fill="#137A78" transform="rotate(20 50 50)"/></svg><div><h3>קירות וגלופות</h3><p>חודש ארגון</p></div><div class="n">43<small>משפטים</small></div></div>
+      <div class="bt" style="--c:var(--c-game);--t:var(--t-game)"><svg class="shape" viewBox="0 0 100 100"><path d="M50 0 L100 50 L50 100 L0 50Z" fill="#2C8450"/></svg><div><h3>משחקים</h3><p>ומתודות</p></div><div class="n">274</div></div>
+    </div>
+
+    <div class="method">
+      <h2>כל פעולה בנויה באותו סדר</h2>
+      <p>שבעה חלקים שחוזרים תמיד, כך שתמיד אפשר לדעת איפה אתם ומה בא אחר כך.</p>
+      <div class="seg">
+        <div style="--c:var(--s1)"><b>1</b><span>נושא<small>על מה</small></span></div>
+        <div style="--c:var(--s2)"><b>2</b><span>פתיחה<small>5 דק'</small></span></div>
+        <div style="--c:var(--s3)"><b>3</b><span>משחק<small>10 דק'</small></span></div>
+        <div style="--c:var(--s4)"><b>4</b><span>דיון<small>10 דק'</small></span></div>
+        <div style="--c:var(--s5)"><b>5</b><span>קטע קריאה<small>5 דק'</small></span></div>
+        <div style="--c:var(--s6)"><b>6</b><span>הסבר<small>5 דק'</small></span></div>
+        <div style="--c:var(--s7)"><b>7</b><span>סיכום<small>5 דק'</small></span></div>
+      </div>
+    </div>
+
+    <div class="news">
+      <div class="newshead"><h2>מה חדש השבוע</h2><span>לכל החדשים ←</span></div>
+      <div class="rows">
+        <div class="row" style="--c:var(--c-act)"><i></i><span class="k">פעולה</span><h4>לחץ חברתי: לשים לב מתי זה אמיתי<span class="tagp">גם לשבת</span></h4><span class="m">כיתות ז'-י' · 69 דק'</span></div>
+        <div class="row" style="--c:var(--c-act)"><i></i><span class="k">פעולה</span><h4>כולם אומרים? אני בוחר<span class="tagp">שבת</span></h4><span class="m">כיתות ג'-ו' · 62 דק'</span></div>
+        <div class="row" style="--c:var(--c-staff)"><i></i><span class="k">לימוד צוות</span><h4>וירא: תפילה מתוך הצרה</h4><span class="m">פרשת וירא · 25 דק'</span></div>
+        <div class="row" style="--c:var(--c-read)"><i></i><span class="k">קטע קריאה</span><h4>בגדי המלך החדשים</h4><span class="m">כיתות ג'-ו'</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="label">דף פעולה</div>
+<div class="screen">
+  <div class="top">
+    <div class="logo"><svg><use href="#flame"/></svg>המדריך למדריך</div>
+    <div class="nav"><span>בית</span><span class="on">פעולות</span><span>ערבי גיבוש</span><span>לימוד צוות</span><span>סיטואציות</span><span class="ai">עוזר AI</span></div>
+    <div class="tend"><div class="find">חיפוש בכל האתר</div><div class="pillbtn">הקלסר שלי<b>3</b></div></div>
+  </div>
+  <div class="body">
+    <div class="banner">
+      <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="#E0661F" opacity=".25"/><circle cx="60" cy="60" r="36" fill="#E0661F" opacity=".35"/></svg>
+      <div class="crumb">בית › פעולות ומערכים › לחץ חברתי</div>
+      <span class="kind">פעולה · ערכים</span>
+      <h1>לחץ חברתי: לשים לב מתי זה אמיתי</h1>
+      <p><b>הערך: בחירה עצמאית.</b> לחץ חברתי הוא דבר נפוץ, והוא יכול לקחת אותנו למקום טוב או פחות טוב. ניסוי מחיאות כפיים, משחק הזדהות בשקט, הסיפור של נועם ותרגול של איך אומרים "לא" בלי לריב.</p>
+    </div>
+    <div class="cols">
+      <div class="main">
+        <div class="panel">
+          <h3>הפעולה על ציר הזמן <span>המקווקו הוא שלב שאפשר לדלג עליו</span></h3>
+          <div class="bar"><i style="flex:9;--c:var(--s2)">1</i><i style="flex:7;--c:var(--s3)">2</i><i class="skip" style="flex:8;--c:var(--s3)">3</i><i style="flex:6;--c:var(--s5)">4</i><i style="flex:4;--c:var(--s6)">5</i><i style="flex:12;--c:var(--s3)">6</i><i style="flex:15;--c:var(--s4)">7</i><i style="flex:6;--c:var(--s7)">8</i></div>
+          <div class="ticks"><span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span><span>69 דק'</span></div>
+        </div>
+        <div class="timeline">
+          <div class="st" style="--c:var(--s2);--t:#DDF1E4"><div class="dot"><b>1</b></div><div class="card"><h3>פתיחה: הניסוי <em>פתיחה</em><em class="t">4 דק'</em></h3><p>המדריך מתחיל למחוא כפיים ולא מפסיק, עד שכולם מצטרפים. אחר כך עוצרים ושואלים. אם מישהו לא הצטרף, מציינים אותו ומשבחים אותו.</p><div class="quote"><div><small>מה אומרים</small>"למה הצטרפתם אליי?"</div></div></div></div>
+          <div class="st" style="--c:var(--s3);--t:#FDE7D7"><div class="dot"><b>2</b></div><div class="card"><h3>משחק: מי מזדהה <em>משחק</em><em class="t">7 דק'</em></h3><p>כולם עוצמים עיניים. המדריך מקריא סיטואציות, וכל מי שמזדהה מוחא כף פעם אחת. כך שומעים שלא לבד.</p><div class="list"><div>לפעמים אני עושה דברים רק כי כולם עושים.</div><div>העתקתי במבחן כי כולם ככה.</div><div>הברזתי משיעור כי החברים שלי גם.</div></div></div></div>
+          <div class="st" style="--c:var(--s3);--t:#FDE7D7"><div class="dot"><b>3</b></div><div class="card"><h3>משחק פעיל: מי עומד אם... <em>משחק</em><em class="t">8 דק'</em><em>אפשר לדלג</em></h3><p>שני סבבים: עיניים פתוחות ועיניים עצומות. משווים איך הרגיש להחליט כשרואים את כולם.</p></div></div>
+          <div class="st" style="--c:var(--s5);--t:#FADCE8"><div class="dot"><b>4</b></div><div class="card"><h3>קטע קריאה: הסיפור של נועם <em>קריאה</em><em class="t">6 דק'</em></h3><p>קוראים בקול. לא מפרטים את ה"משחק" המסוכן, ושואלים מה אפשר לעשות ברגע שמציעים.</p></div></div>
+        </div>
+      </div>
+      <aside class="side">
+        <div class="sum">
+          <span class="stampline">מתאים גם לשבת</span>
+          <div class="facts"><div><small>כיתות</small><b>ז'-י'</b></div><div><small>משך</small><b>69 דק'</b></div><div><small>מקום</small><b>פנים</b></div><div><small>ציוד</small><b>ללא</b></div></div>
+          <span class="btn main">▶ מצב "בפעולה"</span>
+          <span class="btn">הורדה להדפסה</span>
+          <div class="mini2"><span class="btn sec">♡ לקלסר</span><span class="btn sec">העתקה</span><span class="btn sec">שיתוף</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<div class="label">בטלפון</div>
+<div class="phones">
+  <div class="ph">
+    <div class="top"><div class="logo"><svg><use href="#flame"/></svg>המדריך</div><div class="tend"><div class="pillbtn">קלסר<b>3</b></div><div class="menu">☰</div></div></div>
+    <div class="pb">
+      <div class="hero"><div><h1>מה מעבירים <em>היום</em>?</h1><p>354 פעולות מוכנות, שלב אחרי שלב.</p>
+        <div class="hsearch"><span>חיפוש בכל האתר</span><b>חיפוש</b></div>
+        <div class="quick"><span style="--c:var(--c-act)"><i></i>פעולה עכשיו</span><span style="--c:var(--c-night)"><i></i>לשבת</span></div></div></div>
+      <div class="bento">
+        <div class="bt big"><div><h3>פעולות ומערכים</h3></div><div class="n">354<small>פעולות</small></div></div>
+        <div class="bt" style="--c:var(--c-night);--t:var(--t-night)"><svg class="shape" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#C93B73"/></svg><div><h3>ערבי גיבוש</h3></div><div class="n">87</div></div>
+        <div class="bt" style="--c:var(--c-staff);--t:var(--t-staff)"><svg class="shape" viewBox="0 0 100 100"><rect width="100" height="100" rx="18" fill="#2F78A8"/></svg><div><h3>לימוד צוות</h3></div><div class="n">84</div></div>
+      </div>
+    </div>
+    <div class="dock"><span class="on"><i></i>בית</span><span><i></i>פעולות</span><span><i></i>חיפוש</span><span><i></i>קלסר</span></div>
+  </div>
+
+  <div class="ph">
+    <div class="top"><div class="logo"><svg><use href="#flame"/></svg>המדריך</div><div class="tend"><div class="pillbtn">קלסר<b>3</b></div><div class="menu">☰</div></div></div>
+    <div class="pb">
+      <div class="banner"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="#E0661F" opacity=".25"/></svg><span class="kind">פעולה · ערכים</span><h1>לחץ חברתי: לשים לב מתי זה אמיתי</h1>
+        <div class="chipsrow"><span>ז'-י'</span><span>69 דק'</span><span>גם לשבת</span></div></div>
+      <div class="timeline">
+        <div class="st" style="--c:var(--s2);--t:#DDF1E4"><div class="dot"><b>1</b></div><div class="card"><h3>פתיחה: הניסוי <em class="t">4 דק'</em></h3><p>מתחילים למחוא כפיים ולא מפסיקים, עד שכולם מצטרפים.</p><div class="quote"><div><small>מה אומרים</small>"למה הצטרפתם אליי?"</div></div></div></div>
+        <div class="st" style="--c:var(--s3);--t:#FDE7D7"><div class="dot"><b>2</b></div><div class="card"><h3>משחק: מי מזדהה <em class="t">7 דק'</em></h3><p>עיניים עצומות, מקריאים, ומי שמזדהה מוחא כף.</p></div></div>
+      </div>
+    </div>
+    <div class="fixed"><span class="btn main">▶ בפעולה</span><span class="btn">♡</span><span class="btn">⎙</span></div>
+  </div>
+</div>
+</div>
+</body>
+</html>
