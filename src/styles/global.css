@@ -210,7 +210,7 @@ a.card:hover, .card.is-hoverable:hover { transform: translate(-3px, -5px); box-s
 
 /* ---- home page responsive ---- */
 @media (max-width: 720px) {
-  .home-cats { grid-template-columns: 1fr !important; }
+  .home-cats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
   .home-split { grid-template-columns: 1fr !important; gap: 20px !important; }
   .home-split > div { padding: 26px 22px !important; }
   .home-split .btn { align-self: stretch !important; justify-content: center; }
@@ -391,3 +391,42 @@ a:hover > .logo-flame { animation-duration: .9s; }
 .fact-box { background: var(--t); border: 2px solid var(--ink); border-radius: 14px; padding: 8px 14px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 .fact-box svg { color: var(--c, var(--flame)); }
 .stamp-shabbat { display: inline-block; border: 3px solid #2F7A4B; color: #2F7A4B; background: var(--paper); border-radius: 10px; padding: 2px 14px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 16px; transform: rotate(-4deg); animation: pop .5s .4s var(--ease) both; }
+
+/* ---- מובייל: שבעת השלבים בעטיפה, ובלי גלישה צדדית ---- */
+html, body { overflow-x: clip; }
+@media (max-width: 700px) {
+  .detail-actions { flex-direction: column; }
+  .detail-actions > * { width: 100%; justify-content: center; }
+  .build-section { padding: 22px 16px 24px !important; border-radius: 22px !important; }
+  .roadmap { flex-wrap: nowrap; gap: 2px; margin: 16px 0 18px; }
+  .roadmap:before { inset-inline: 16px; top: 15px; border-top-width: 2px; }
+  .roadmap > div { flex: 1 1 0; min-width: 0; font-size: 10.5px; line-height: 1.2; padding: 0 1px; }
+  .roadmap b { width: 30px; height: 30px; font-size: 13px; margin-bottom: 4px; border-width: 1.5px; }
+  .mascot-dock { left: 12px !important; bottom: 12px !important; }
+  .mascot-bubble:not(.is-shown) { display: none; }
+  .mascot-bubble { max-width: 200px !important; }
+  .hero-search { padding-inline-start: 14px !important; }
+  .stat-card { padding: 12px 6px !important; }
+  .parsha-panel:before { width: 150px; height: 150px; bottom: -60px; }
+  .cat-tile { padding: 14px 12px; gap: 8px; border-radius: 18px; }
+  .cat-tile .cat-ic { width: 40px; height: 40px; }
+  .cat-tile h3 { font-size: 15.5px; }
+  .cat-tile p { font-size: 11.5px; line-height: 1.4; }
+  .cat-tile .cat-n { font-size: 17px; inset-inline-end: 12px; top: 12px; }
+  .step-card { padding: 14px 16px 16px; border-radius: 18px; }
+  .step-name { font-size: 17.5px; }
+  .step-body { font-size: 16px; }
+  .step-badge { width: 34px; height: 34px; font-size: 17px; }
+}
+
+
+/* ---- תוכן מומלץ: רצועה נעה בלולאה, נעצרת בריחוף ובנגיעה ---- */
+@keyframes marquee-run { from { transform: translateX(0); } to { transform: translateX(33.3333%); } }
+.marquee { overflow: hidden; padding: 14px 0 22px; -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent); mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent); }
+.marquee-track { display: flex; width: max-content; animation: marquee-run 54s linear infinite; }
+.marquee:hover .marquee-track, .marquee:focus-within .marquee-track, .marquee:active .marquee-track { animation-play-state: paused; }
+.marquee .act-card { width: 270px; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee { overflow-x: auto; }
+  .marquee-track { animation: none !important; }
+}

@@ -42,8 +42,9 @@ export function Mascot() {
   }
 
   return (
-    <div className="no-print" style={{ position: 'fixed', left: 22, bottom: 22, zIndex: 80, display: 'flex', alignItems: 'flex-end', gap: 10 }}>
+    <div className="no-print mascot-dock" style={{ position: 'fixed', left: 22, bottom: 22, zIndex: 80, display: 'flex', alignItems: 'flex-end', gap: 10 }}>
       <div
+        className={`mascot-bubble${override ? ' is-shown' : ''}`}
         style={{
           maxWidth: 220,
           background: 'var(--paper)',

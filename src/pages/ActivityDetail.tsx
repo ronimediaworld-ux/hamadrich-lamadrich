@@ -130,7 +130,7 @@ export function ActivityDetail() {
             <div style={{ fontSize: 13.5 }}>
               <b>ציוד: </b>{activity.equipment.length ? activity.equipment.join(', ') : 'ללא ציוד מיוחד'}
             </div>
-            <div className="no-print" style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+            <div className="no-print detail-actions" style={{ display: 'flex', gap: 10, marginTop: 8 }}>
               <PrintButton filename={`${activity.id}.html`} title={activity.title} buildHtml={() => buildActivityPrintHtml(activity, category?.label ?? 'פעולות', [badgeLabel, activity.tags.find((t) => t !== badgeLabel)].filter(Boolean).join(' · '), chuparim.length ? { chuparim, vals: chuparVals } : undefined)} style={{ flex: 1 }} />
               <button
                 className="btn btn-outline"

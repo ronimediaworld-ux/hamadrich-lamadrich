@@ -186,7 +186,7 @@ export function Home() {
       {/* BUILD YOUR OWN */}
       <div className="wrap" style={{ paddingBottom: 40 }}>
         <Reveal>
-          <section aria-labelledby="home-build" style={{ border: '2px solid var(--ink)', borderRadius: 28, padding: '30px 34px', background: 'var(--paper)' }}>
+          <section aria-labelledby="home-build" className="build-section" style={{ border: '2px solid var(--ink)', borderRadius: 28, padding: '30px 34px', background: 'var(--paper)' }}>
             <h2 id="home-build" style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px' }}>רוצות לבנות פעולה משלכן? מאפס, בשיטה שלי</h2>
             <p style={{ fontSize: 15, color: 'var(--ink-soft)', margin: '0 0 14px', lineHeight: 1.75, maxWidth: '62ch' }}>
               שבעה חלקים בסדר קבוע, כל אחד בצבע משלו, ובסוף צ׳ופר כבונוס. ממלאות תבנית אישית, שומרות בדפדפן ומדפיסות.
@@ -195,7 +195,7 @@ export function Home() {
               {[...SEVEN_PARTS, SEVEN_BONUS].map((p) => (
                 <div key={p.name} style={{ ['--c' as string]: p.color }}>
                   <b>{p.n === 8 ? '+' : p.n}</b>
-                  {p.name}{p.n === 8 ? ' (בונוס)' : ''}
+                  {p.name}
                 </div>
               ))}
             </div>
@@ -244,10 +244,14 @@ export function Home() {
           </Reveal>
         </div>
         <Reveal delay={40}>
-          <div className="scrollrow wrap" style={{ paddingTop: 6, paddingBottom: 10 }}>
-            {recommended.map((a, i) => (
-              <ActivityCard key={a.id} activity={a} rotate={[-2, 1.5, -1, 2, -2.5][i % 5]} />
-            ))}
+          <div className="marquee" aria-label="תוכן מומלץ, נע בלולאה. מעבר עכבר או נגיעה עוצרים את התנועה">
+            <div className="marquee-track">
+              {[...recommended, ...recommended, ...recommended].map((a, i) => (
+                <div key={`${a.id}-${i}`} aria-hidden={i >= recommended.length ? true : undefined} style={{ flex: 'none', marginInlineEnd: 20 }}>
+                  <ActivityCard activity={a} rotate={[-2, 1.5, -1, 2, -2.5][i % 5]} />
+                </div>
+              ))}
+            </div>
           </div>
         </Reveal>
       </div>
