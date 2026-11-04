@@ -36,31 +36,16 @@ function partFor(label: string) {
   return undefined;
 }
 
-function Section({ label, step, children }: { label: string; step?: number; children: React.ReactNode }) {
+function Section({ label, children }: { label: string; step?: number; children: React.ReactNode }) {
   const part = partFor(label);
   const color = part?.color ?? 'var(--flame)';
   return (
     <div style={{ marginBottom: 26 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-        {step ? (
-          <span style={{
-            flex: 'none', width: 26, height: 26, borderRadius: '50%', background: color, color: '#FFF6EC',
-            fontSize: 13, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            {step}
-          </span>
-        ) : (
-          <span style={{ width: 8, height: 8, borderRadius: 999, background: color }} />
-        )}
-        <h3 style={{ fontSize: 16, fontWeight: 800, color: part ? color : undefined }}>{label}</h3>
-        {part && (
-          <span title="החלק בשיטת שבעת החלקים" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '1px 10px 1px 4px', borderRadius: 999, background: part.tint, border: `1.5px solid ${color}`, fontSize: 12, fontWeight: 800, color: 'var(--ink)' }}>
-            <span style={{ width: 17, height: 17, borderRadius: '50%', background: color, color: '#fff', fontSize: 10.5, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{part.n === 8 ? '+' : part.n}</span>
-            {part.name}
-          </span>
-        )}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 8 }}>
+        <span style={{ flex: 'none', width: 12, height: 12, borderRadius: 4, background: color }} />
+        <h3 style={{ fontSize: 16.5, fontWeight: 800, color: part ? color : undefined }}>{label}</h3>
       </div>
-      <div style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-soft)', paddingInlineStart: 16, borderInlineStart: `3px solid ${color}`, marginInlineStart: 12 }}>{children}</div>
+      <div style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-soft)', paddingInlineStart: 16, borderInlineStart: `3px solid ${color}`, marginInlineStart: 5 }}>{children}</div>
     </div>
   );
 }
