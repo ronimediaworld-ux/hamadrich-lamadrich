@@ -30,7 +30,9 @@ registerFeatureRoutes(app, { store: createStore(path.join(__dirname, '..')), req
 const PORT = process.env.PORT || 3001;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+// אם שם המודל כבר לא קיים (גוגל מחליפה דגמים), מנסים את הבא ברשימה. gemini-flash-latest תמיד מצביע על ה-Flash העדכני.
+const GEMINI_MODELS = [process.env.GEMINI_MODEL, 'gemini-flash-latest', 'gemini-2.5-flash'].filter(Boolean);
+let GEMINI_MODEL = GEMINI_MODELS[0];
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5-20250929';
@@ -122,9 +124,24 @@ async function fetchGeminiWithRetry(url, body) {
   throw new Error(`Gemini request failed: ${lastErr}`);
 }
 
+async function geminiGenerate(body) {
+  let lastErr;
+  for (const model of [GEMINI_MODEL, ...GEMINI_MODELS.filter((m) => m !== GEMINI_MODEL)]) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+    try {
+      const data = await fetchGeminiWithRetry(url, body);
+      GEMINI_MODEL = model; // המודל שעבד נשמר לבקשות הבאות
+      return data;
+    } catch (err) {
+      lastErr = err;
+      if (!/\b404\b|NOT_FOUND|not found|not supported/i.test(String(err?.message))) throw err;
+    }
+  }
+  throw lastErr;
+}
+
 async function callGemini(query) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-  const data = await fetchGeminiWithRetry(url, {
+  const data = await geminiGenerate({
     systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
     contents: [{ role: 'user', parts: [{ text: `בקשת המדריך/ה: ${query}` }] }],
     generationConfig: { responseMimeType: 'application/json' },
@@ -133,12 +150,11 @@ async function callGemini(query) {
 }
 
 async function callGeminiChat(messages) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
   const contents = messages.map((m) => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
   }));
-  const data = await fetchGeminiWithRetry(url, {
+  const data = await geminiGenerate({
     systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] },
     contents,
   });
@@ -257,6 +273,19 @@ app.post('/api/chat', async (req, res) => {
   } catch (err) {
     console.error('chat failed', err);
     return res.status(500).json({ error: 'chat_failed', message: 'לא הצלחנו לקבל תשובה כרגע. נסו שוב בעוד רגע.' });
+  }
+});
+
+// בדיקת חיבור ל-AI מתוך הדשבורד
+app.post('/api/admin/ai-test', requireAdmin, async (_req, res) => {
+  const provider = activeProvider();
+  if (!provider) return res.json({ ok: false, message: 'לא הוגדר מפתח AI בשרת (GEMINI_API_KEY).' });
+  try {
+    const messages = [{ role: 'user', content: 'ענה במילה אחת בעברית: שלום' }];
+    const reply = provider === 'gemini' ? await callGeminiChat(messages) : await callAnthropicChat(messages);
+    return res.json({ ok: true, provider, model: provider === 'gemini' ? GEMINI_MODEL : ANTHROPIC_MODEL, reply: String(reply).slice(0, 80) });
+  } catch (err) {
+    return res.json({ ok: false, message: String(err?.message || err).slice(0, 300) });
   }
 });
 

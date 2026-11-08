@@ -354,6 +354,19 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
     }
   });
 
+  // שליחת מייל בדיקה (לכתובת ההתראות, או לכתובת שנשלחה) כדי לוודא שהחיבור ל-Resend עובד
+  app.post('/api/admin/mail-test', requireAdmin, async (req, res) => {
+    const to = cleanText(req.body?.to, 120) || NOTIFY_EMAIL;
+    if (!RESEND_API_KEY) return res.json({ ok: false, message: 'לא הוגדר RESEND_API_KEY בשרת.' });
+    if (!to) return res.json({ ok: false, message: 'לא הוגדרה כתובת מייל לבדיקה (NOTIFY_EMAIL).' });
+    try {
+      await sendMail({ to, subject: 'בדיקת מייל מהמדריך למדריך', text: 'אם קיבלת את המייל הזה, שליחת המיילים מהאתר עובדת.', html: '<div dir="rtl">אם קיבלת את המייל הזה, שליחת המיילים מהאתר עובדת. ✓</div>' });
+      return res.json({ ok: true, message: `נשלח אל ${to}. בדקי גם בספאם.` });
+    } catch (err) {
+      return res.json({ ok: false, message: String(err?.message || err).slice(0, 300) });
+    }
+  });
+
   // מצב המערכת: מה מוגדר ומה עוד חסר (להצגה בדשבורד)
   app.get('/api/admin/health', requireAdmin, (req, res) => {
     res.json({
