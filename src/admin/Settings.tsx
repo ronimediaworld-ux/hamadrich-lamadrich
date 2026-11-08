@@ -30,12 +30,38 @@ function TestButton({ label, url, body }: { label: string; url: string; body?: u
   );
 }
 
+function CopyLink({ url }: { url: string }) {
+  const [done, setDone] = useState(false);
+  async function copy() {
+    try { await navigator.clipboard.writeText(url); setDone(true); window.setTimeout(() => setDone(false), 2000); } catch { window.prompt('העתיקי את הקישור:', url); }
+  }
+  return (
+    <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+      <a href={url} dir="ltr" style={{ fontWeight: 700, textDecoration: 'underline', wordBreak: 'break-all' }}>{url}</a>
+      <button type="button" className="btn btn-outline" onClick={copy}>{done ? 'הועתק ✓' : 'העתקת הקישור'}</button>
+    </div>
+  );
+}
+
 export function Settings() {
   const origin = window.location.origin;
   return (
     <div className="adm-stack">
       <div className="adm-head"><h1>הגדרות וחיבורים</h1></div>
+      <Panel title="הקישור לדשבורד שלך">
+        <CopyLink url={`${origin}/admin`} />
+        <p className="adm-muted" style={{ marginTop: 10 }}>כדאי לשמור אותו במועדפים בדפדפן, ובטלפון להוסיף למסך הבית. הכניסה בסיסמה שמוגדרת ב-Render (ADMIN_PASSWORD).</p>
+      </Panel>
       <HealthPanel />
+      <Panel title="פרסום אוטומטי: כל שמירה בדשבורד עולה לאתר לבד">
+        <ol className="adm-steps">
+          <li><b>1. טוקן של GitHub</b><span>נכנסים ל-GitHub עם החשבון ronimediaworld-ux ← <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>Fine-grained token חדש</a>. Repository access: Only select repositories ← hamadrich-lamadrich. Permissions ← Contents: Read and write. יוצרים ומעתיקים.</span></li>
+          <li><b>2. קישור הפריסה</b><span>ב-Render ← השירות ← Settings ← Deploy Hook ← מעתיקים את הקישור.</span></li>
+          <li><b>3. להדביק ב-Render</b><span>Environment: <code>GITHUB_TOKEN</code> (הטוקן) ו-<code>RENDER_DEPLOY_HOOK</code> (הקישור). שומרים ומחכים לפריסה.</span></li>
+          <li><b>4. לבדוק</b><span>לוחצים על הכפתור. אחרי שיעבור, כל שינוי שתעשי בעריכת תוכן יעלה לאתר החי בעוד כשתי דקות, בלי שתיגעי ב-Render.</span></li>
+        </ol>
+        <TestButton label="בדיקת פרסום אוטומטי" url="/api/admin/publish-test" />
+      </Panel>
       <Panel title="חיבור ניצוץ, עוזר ה-AI">
         <ol className="adm-steps">
           <li><b>1. ליצור מפתח חינמי</b><span>נכנסים ל-<a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>Google AI Studio</a> עם חשבון גוגל, לוחצים Create API key ומעתיקים אותו.</span></li>

@@ -43,6 +43,7 @@ export function ContentManager() {
   const [types, setTypes] = useState<TypeInfo[]>([]);
   const [type, setType] = useState('');
   const [items, setItems] = useState<Item[] | null>(null);
+  const [orig, setOrig] = useState<Record<string, string>>({});
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [newIds, setNewIds] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState('');
@@ -57,7 +58,7 @@ export function ContentManager() {
 
   const load = useCallback((t: string) => {
     setItems(null); setSelectedId(null); setMsg(null); setNewIds(new Set()); setSearch(''); setCat('all');
-    fetch(`/api/admin/content/${t}`).then((r) => r.json()).then((d) => setItems(d.items));
+    fetch(`/api/admin/content/${t}`).then((r) => r.json()).then((d: { items: Item[] }) => { setItems(d.items); setOrig(Object.fromEntries(d.items.map((it) => [it.id, JSON.stringify(it)]))); });
   }, []);
   useEffect(() => { if (type) load(type); }, [type, load]);
 
@@ -99,12 +100,19 @@ export function ContentManager() {
     if (bad) { setMsg({ text: 'לפני שמירה צריך לתת לפריט החדש כתובת באנגלית (למעלה, ליד "כתובת בעמוד").', ok: false }); return; }
     setSaving(true); setMsg(null);
     try {
-      const res = await fetch(`/api/admin/content/${type}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ items: normalize(type, items) }) });
+      // שולחים רק מה ששונה; השרת ממזג אל הגרסה העדכנית, כך שעריכה לא דורסת תוכן שנוסף בינתיים
+      const current = normalize(type, items);
+      const upserts = current.filter((it) => orig[it.id] !== JSON.stringify(it));
+      const present = new Set(current.map((it) => it.id));
+      const deletes = Object.keys(orig).filter((id) => !present.has(id));
+      const res = await fetch(`/api/admin/content/${type}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ upserts, deletes }) });
       const d = await res.json();
       if (!res.ok) { setMsg({ text: d.message || 'השמירה נכשלה.', ok: false }); return; }
+      const fresh = await fetch(`/api/admin/content/${type}`).then((r) => r.json()).catch(() => null) as { items: Item[] } | null;
+      if (fresh) { setItems(fresh.items); setOrig(Object.fromEntries(fresh.items.map((it) => [it.id, JSON.stringify(it)]))); }
+      setDirty(false); setNewIds(new Set());
       if (d.committed) {
         setMsg({ text: d.deployScheduled ? 'נשמר ופורסם. האתר יתעדכן לבד בעוד כשתי דקות.' : 'נשמר ופורסם ל-GitHub. כדי שהאתר יתעדכן צריך פריסה ב-Render (או להגדיר חיבור אוטומטי בהגדרות).', ok: true });
-        setDirty(false); setNewIds(new Set());
       } else {
         setMsg({ text: d.warning || 'נשמר רק מקומית. כדי שיעלה לאתר צריך לחבר את GitHub (ראי "הגדרות וחיבורים").', ok: false });
       }

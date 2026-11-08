@@ -100,6 +100,19 @@ async function commitToGitHub(filePath, jsonContent, message) {
   return { committed: true };
 }
 
+// הגרסה העדכנית ביותר של הקובץ: מ-GitHub אם מחוברים (כך שעריכה מדף ישן לא דורסת תוכן שנוסף בינתיים), ואחרת מהדיסק המקומי
+async function readLatest(filePath, localPath) {
+  if (GITHUB_TOKEN) {
+    try {
+      const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}?ref=${GITHUB_BRANCH}`, {
+        headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.raw+json' },
+      });
+      if (r.ok) return JSON.parse(await r.text());
+    } catch { /* ממשיכים לקובץ המקומי */ }
+  }
+  return JSON.parse(readFileSync(localPath, 'utf8'));
+}
+
 export function registerAdminRoutes(app, rootDir) {
   const dataDir = path.join(rootDir, 'src', 'data');
 
@@ -148,9 +161,32 @@ export function registerAdminRoutes(app, rootDir) {
   app.put('/api/admin/content/:type', requireAdmin, async (req, res) => {
     const { type } = req.params;
     if (!CONTENT_TYPES[type]) return res.status(404).json({ error: 'unknown_type' });
-    const items = req.body?.items;
-    if (!Array.isArray(items)) {
-      return res.status(400).json({ error: 'invalid_body', message: 'הבקשה חייבת לכלול מערך items.' });
+
+    const filePath = path.join(dataDir, `${type}.json`);
+    let items;
+    if (Array.isArray(req.body?.upserts) || Array.isArray(req.body?.deletes)) {
+      // מצב מומלץ: רק מה ששונה. ממזגים אל הגרסה העדכנית, כדי לא לדרוס תוכן שנוסף בינתיים.
+      const upserts = Array.isArray(req.body.upserts) ? req.body.upserts : [];
+      const deletes = new Set(Array.isArray(req.body.deletes) ? req.body.deletes : []);
+      if (upserts.some((it) => !it?.id || typeof it.id !== 'string')) {
+        return res.status(400).json({ error: 'missing_id', message: 'לכל פריט חייב להיות שדה id.' });
+      }
+      try {
+        items = await readLatest(`src/data/${type}.json`, filePath);
+      } catch (err) {
+        return res.status(500).json({ error: 'read_failed', message: String(err?.message || err) });
+      }
+      const fresh = [];
+      for (const it of upserts) {
+        const i = items.findIndex((x) => x.id === it.id);
+        if (i >= 0) items[i] = it; else fresh.push(it);
+      }
+      items = [...fresh, ...items.filter((x) => !deletes.has(x.id))];
+    } else {
+      items = req.body?.items;
+      if (!Array.isArray(items)) {
+        return res.status(400).json({ error: 'invalid_body', message: 'הבקשה חייבת לכלול מערך items.' });
+      }
     }
     const ids = items.map((it) => it?.id);
     if (ids.some((id) => !id || typeof id !== 'string')) {
@@ -161,8 +197,6 @@ export function registerAdminRoutes(app, rootDir) {
     }
 
     const jsonContent = JSON.stringify(items, null, 2) + '\n';
-    const filePath = path.join(dataDir, `${type}.json`);
-
     try {
       writeFileSync(filePath, jsonContent, 'utf8');
     } catch (err) {
@@ -184,5 +218,34 @@ export function registerAdminRoutes(app, rootDir) {
         warning: `נשמר מקומית, אבל הפרסום ל-GitHub נכשל: ${String(err?.message || err)}`,
       });
     }
+  });
+
+  // בדיקת חיבור הפרסום האוטומטי: האם הטוקן תקין ובעל הרשאת כתיבה, והאם הוגדר Deploy Hook
+  app.post('/api/admin/publish-test', requireAdmin, async (_req, res) => {
+    const out = { githubToken: !!GITHUB_TOKEN, deployHook: !!RENDER_DEPLOY_HOOK, canWrite: false, repo: GITHUB_REPO, message: '' };
+    if (!GITHUB_TOKEN) {
+      out.message = 'עוד לא הוגדר GITHUB_TOKEN בשרת.';
+      return res.json({ ok: false, ...out });
+    }
+    try {
+      const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}`, { headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, Accept: 'application/vnd.github+json' } });
+      if (!r.ok) {
+        out.message = r.status === 401 ? 'הטוקן לא תקין או שפג תוקפו.' : r.status === 404 ? 'הטוקן לא רואה את המאגר. בדקי שבחרת בו את המאגר hamadrich-lamadrich.' : `GitHub ענה ${r.status}.`;
+        return res.json({ ok: false, ...out });
+      }
+      const info = await r.json();
+      out.canWrite = !!info.permissions?.push;
+      if (!out.canWrite) {
+        out.message = 'לטוקן חסרה הרשאת כתיבה. הגדירי Contents: Read and write.';
+        return res.json({ ok: false, ...out });
+      }
+    } catch (err) {
+      out.message = `לא הצלחנו להגיע ל-GitHub: ${String(err?.message || err).slice(0, 120)}`;
+      return res.json({ ok: false, ...out });
+    }
+    out.message = out.deployHook
+      ? 'הכל מחובר: כל שמירה בדשבורד תעלה לאתר לבד בעוד כשתי דקות.'
+      : 'הטוקן תקין. חסר רק RENDER_DEPLOY_HOOK כדי שהאתר יתעדכן לבד אחרי השמירה.';
+    return res.json({ ok: out.deployHook, ...out });
   });
 }
