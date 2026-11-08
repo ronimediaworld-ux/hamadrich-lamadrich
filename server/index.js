@@ -13,6 +13,18 @@ app.use(express.json({ limit: '5mb' }));
 
 registerAdminRoutes(app, path.join(__dirname, '..'));
 app.set('trust proxy', true);
+
+// אחרי שהדומיין האמיתי עובד: כל כניסה דרך onrender.com או www עוברת (301) לכתובת הראשית, כך שגוגל רואה אתר אחד בלבד.
+// מופעל רק כש-FORCE_CANONICAL_HOST=true וגם SITE_URL מוגדר — כדי שלא יינעל הגישה לפני שהדומיין מחובר.
+if (process.env.FORCE_CANONICAL_HOST === 'true' && process.env.SITE_URL) {
+  const siteUrl = new URL(process.env.SITE_URL);
+  app.use((req, res, next) => {
+    const host = (req.headers.host || '').toLowerCase();
+    const wrongHost = host !== siteUrl.host && (host.endsWith('.onrender.com') || host === `www.${siteUrl.host}`);
+    if (wrongHost && (req.method === 'GET' || req.method === 'HEAD')) return res.redirect(301, siteUrl.origin + req.originalUrl);
+    return next();
+  });
+}
 registerFeatureRoutes(app, { store: createStore(path.join(__dirname, '..')), requireAdmin });
 
 const PORT = process.env.PORT || 3001;

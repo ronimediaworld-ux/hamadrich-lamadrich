@@ -10,6 +10,24 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPO = process.env.GITHUB_REPO || 'ronimediaworld-ux/hamadrich-lamadrich';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
+// כתובת "Deploy Hook" של Render: אחרי שמירה מהדשבורד האתר נבנה מחדש לבד (מחכים דקה אחרי העריכה האחרונה, כדי לא לבנות כל שמירה)
+const RENDER_DEPLOY_HOOK = process.env.RENDER_DEPLOY_HOOK;
+const DEPLOY_DELAY_MS = 60 * 1000;
+let deployTimer = null;
+
+function scheduleDeploy() {
+  if (!RENDER_DEPLOY_HOOK) return false;
+  if (deployTimer) clearTimeout(deployTimer);
+  deployTimer = setTimeout(async () => {
+    deployTimer = null;
+    try {
+      await fetch(RENDER_DEPLOY_HOOK, { method: 'POST' });
+    } catch (err) {
+      console.error('deploy hook failed', err);
+    }
+  }, DEPLOY_DELAY_MS);
+  return true;
+}
 
 // טיפוסי תוכן נתמכים: שם הקובץ, שדה החובה למיון/הצגה ברשימה.
 const CONTENT_TYPES = {
@@ -109,7 +127,7 @@ export function registerAdminRoutes(app, rootDir) {
   app.get('/api/admin/me', (req, res) => {
     const cookies = parseCookies(req);
     const token = cookies['hlm_admin'];
-    return res.json({ loggedIn: !!(token && sessions.has(token)), githubConnected: !!GITHUB_TOKEN });
+    return res.json({ loggedIn: !!(token && sessions.has(token)), githubConnected: !!GITHUB_TOKEN, deployHookConfigured: !!RENDER_DEPLOY_HOOK });
   });
 
   app.get('/api/admin/types', requireAdmin, (_req, res) => {
@@ -157,7 +175,8 @@ export function registerAdminRoutes(app, rootDir) {
         jsonContent,
         `עדכון תוכן: ${CONTENT_TYPES[type].label} (מהדשבורד)`,
       );
-      return res.json({ ok: true, ...result });
+      const deployScheduled = result.committed ? scheduleDeploy() : false;
+      return res.json({ ok: true, ...result, deployScheduled });
     } catch (err) {
       return res.status(200).json({
         ok: true,

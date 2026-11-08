@@ -359,6 +359,9 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
     res.json({
       storage: store.kind,
       githubConnected: !!process.env.GITHUB_TOKEN,
+      deployHookConfigured: !!process.env.RENDER_DEPLOY_HOOK,
+      googleVerification: !!process.env.GOOGLE_SITE_VERIFICATION,
+      forceCanonical: process.env.FORCE_CANONICAL_HOST === 'true',
       mailConfigured: !!RESEND_API_KEY,
       notifyConfigured: !!NOTIFY_EMAIL,
       aiConfigured: !!(process.env.GEMINI_API_KEY || process.env.ANTHROPIC_API_KEY),

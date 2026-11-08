@@ -30,7 +30,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
   );
 }
 
-interface Health { storage: string; githubConnected: boolean; mailConfigured: boolean; notifyConfigured: boolean; aiConfigured: boolean; siteUrl: string; production: boolean }
+interface Health { storage: string; githubConnected: boolean; deployHookConfigured: boolean; googleVerification: boolean; forceCanonical: boolean; mailConfigured: boolean; notifyConfigured: boolean; aiConfigured: boolean; siteUrl: string; production: boolean }
 
 function HealthPanel() {
   const [h, setH] = useState<Health | null>(null);
@@ -39,10 +39,13 @@ function HealthPanel() {
   const rows: [string, boolean, string][] = [
     ['שמירת נתונים קבועה (Upstash)', h.storage === 'upstash', 'בלי זה צפיות, תגובות והצעות נמחקים בכל פריסה. הגדירו UPSTASH_REDIS_REST_URL ו-UPSTASH_REDIS_REST_TOKEN.'],
     ['עריכת תוכן מהדשבורד נשמרת באתר (GitHub)', h.githubConnected, 'בלי GITHUB_TOKEN שינויים בתוכן נשמרים רק מקומית ולא יעלו לאתר החי.'],
+    ['האתר מתעדכן לבד אחרי עריכה בדשבורד', h.deployHookConfigured, 'הגדירו RENDER_DEPLOY_HOOK (Render → Settings → Deploy Hook), וכל שמירה בדשבורד תעלה לאתר תוך כשתי דקות.'],
     ['התראת מייל על הצעות', h.notifyConfigured && h.mailConfigured, 'הגדירו RESEND_API_KEY ו-NOTIFY_EMAIL.'],
     ['שליחת מיילים לנרשמים', h.mailConfigured, 'דורש RESEND_API_KEY, ולאימות דומיין ב-Resend כדי לשלוח לאחרים.'],
     ['עוזר AI (ניצוץ)', h.aiConfigured, 'הגדירו GEMINI_API_KEY.'],
-    ['כתובת האתר לגוגל (SITE_URL)', !h.siteUrl.includes('localhost') && h.production, 'הגדירו SITE_URL לכתובת האמיתית כדי שה-sitemap וה-canonical יהיו נכונים.'],
+    ['דומיין משלכם מחובר (SITE_URL)', !h.siteUrl.includes('localhost') && !h.siteUrl.includes('onrender.com') && h.production, 'אחרי שקניתם דומיין וחיברתם אותו ל-Render, הגדירו SITE_URL לכתובת החדשה (למשל https://example.co.il) כדי שה-sitemap וה-canonical יהיו נכונים.'],
+    ['כל הכניסות עוברות לכתובת הראשית (בלי כפילות לגוגל)', h.forceCanonical, 'אחרי שהדומיין עובד, הגדירו FORCE_CANONICAL_HOST=true.'],
+    ['אימות ב-Google Search Console', h.googleVerification, 'הוסיפו ב-Search Console את האתר, בחרו אימות "תג HTML" והדביקו את הערך ב-GOOGLE_SITE_VERIFICATION. (או אמתו דרך DNS ואז אין צורך.)'],
   ];
   return (
     <Panel title="מצב המערכת">

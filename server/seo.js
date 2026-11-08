@@ -138,6 +138,8 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
       `<meta property="og:image" content="${esc(base)}/icon-512.png" />`,
       `<meta name="twitter:card" content="summary" />`,
     ];
+    // אימות בעלות ב-Google Search Console (אופציונלי): GOOGLE_SITE_VERIFICATION=הערך מתג ה-HTML
+    if (process.env.GOOGLE_SITE_VERIFICATION) tags.push(`<meta name="google-site-verification" content="${esc(process.env.GOOGLE_SITE_VERIFICATION)}" />`);
     const ld = jsonLd(d, base);
     if (ld) tags.push(`<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`);
     let html = indexHtml

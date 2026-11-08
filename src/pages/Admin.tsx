@@ -145,7 +145,7 @@ function AdminDashboard() {
         return;
       }
       if (data.committed) {
-        setSaveMsg({ text: 'נשמר ופורסם ל-GitHub — האתר האמיתי יתעדכן תוך כמה דקות.', ok: true });
+        setSaveMsg({ text: data.deployScheduled ? 'נשמר ופורסם ל-GitHub — האתר האמיתי יתעדכן לבד בעוד כשתי דקות.' : 'נשמר ופורסם ל-GitHub. כדי שהאתר האמיתי יתעדכן יש לבצע פריסה ב-Render (או להגדיר RENDER_DEPLOY_HOOK כדי שזה יקרה לבד).', ok: true });
         setDirty(false);
       } else if (data.warning) {
         setSaveMsg({ text: data.warning, ok: false });
