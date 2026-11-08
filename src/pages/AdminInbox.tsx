@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { activities } from '../data/activities';
 import { readings } from '../data/readings';
 import { getCurrentParsha, getCurrentParshaNames } from '../lib/parsha';
+import { describeTarget } from '../admin/titles';
 
 interface Stats {
   storage: 'upstash' | 'file';
@@ -21,7 +22,7 @@ interface AdminSubmission { id: string; name: string; contact: string; title: st
 const KIND_LABEL: Record<string, string> = { activity: 'פעולה', reading: 'קטע קריאה', chupar: 'צ׳ופר', 'staff-study': 'לימוד צוות', situation: 'סיטואציה', method: 'מתודה' };
 const KIND_PATH: Record<string, string> = { activity: 'activity', reading: 'reading', chupar: 'chupar', 'staff-study': 'staff-study' };
 
-function Panel({ title, children }: { title: string; children: React.ReactNode }) {
+export function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="card" style={{ padding: '18px 22px', marginBottom: 18 }}>
       <h2 style={{ fontSize: 17, fontWeight: 800, marginBottom: 12 }}>{title}</h2>
@@ -32,7 +33,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 
 interface Health { storage: string; githubConnected: boolean; deployHookConfigured: boolean; googleVerification: boolean; forceCanonical: boolean; mailConfigured: boolean; notifyConfigured: boolean; aiConfigured: boolean; siteUrl: string; production: boolean }
 
-function HealthPanel() {
+export function HealthPanel() {
   const [h, setH] = useState<Health | null>(null);
   useEffect(() => { fetch('/api/admin/health').then((r) => r.json()).then(setH).catch(() => setH(null)); }, []);
   if (!h) return null;
@@ -64,7 +65,7 @@ function HealthPanel() {
   );
 }
 
-function StatsView() {
+export function StatsView() {
   const [s, setS] = useState<Stats | null>(null);
   const [err, setErr] = useState('');
   useEffect(() => {
@@ -135,7 +136,7 @@ function StatsView() {
 
 interface Sub { email: string; name: string; createdAt: number }
 
-function SubscribersView() {
+export function SubscribersView() {
   const [list, setList] = useState<Sub[] | null>(null);
   const [mailOk, setMailOk] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -207,7 +208,7 @@ function SubscribersView() {
   );
 }
 
-function CommentsView() {
+export function CommentsView() {
   const [list, setList] = useState<AdminComment[] | null>(null);
   const [status, setStatus] = useState<'pending' | 'approved'>('pending');
   const load = useCallback(() => {
@@ -232,7 +233,7 @@ function CommentsView() {
         {list?.map((c) => (
           <div key={c.id} className="card" style={{ padding: '14px 18px' }}>
             <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginBottom: 4 }}>
-              {KIND_LABEL[c.kind] ?? c.kind}: {KIND_PATH[c.kind] ? <a href={`/${KIND_PATH[c.kind]}/${c.targetId}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>{c.targetId}</a> : c.targetId} · {new Date(c.createdAt).toLocaleString('he-IL')}
+              {KIND_LABEL[c.kind] ?? c.kind}: {KIND_PATH[c.kind] ? <a href={`/${KIND_PATH[c.kind]}/${c.targetId}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>{describeTarget(c.kind, c.targetId).title}</a> : c.targetId} · {new Date(c.createdAt).toLocaleString('he-IL')}
             </div>
             <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>{c.name}</div>
             <div style={{ fontSize: 14.5, whiteSpace: 'pre-line', marginBottom: 10 }}>{c.text}</div>
@@ -247,7 +248,7 @@ function CommentsView() {
   );
 }
 
-function SubmissionsView() {
+export function SubmissionsView() {
   const [list, setList] = useState<AdminSubmission[] | null>(null);
   const load = useCallback(() => {
     fetch('/api/admin/submissions').then((r) => r.json()).then((d) => setList(d.submissions ?? [])).catch(() => setList([]));

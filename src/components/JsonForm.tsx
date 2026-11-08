@@ -2,6 +2,10 @@
 // מערך מחרוזות, מערך אובייקטים, או אובייקט מקונן. משמש לעריכת כל סוגי התוכן באתר בדשבורד,
 // בלי שצריך לכתוב טופס ייעודי לכל טיפוס.
 
+import { LABELS, SELECTS } from '../admin/labels';
+
+const labelOf = (key: string): string => LABELS[key] ?? key;
+
 type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue | undefined };
 
 function isLongText(key: string, value: string): boolean {
@@ -133,7 +137,7 @@ export function JsonForm({ value, onChange, hiddenKeys = ['id'] }: JsonFormProps
             return (
               <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, fontSize: 13.5 }}>
                 <input type="checkbox" checked={fieldValue} onChange={(e) => setField(key, e.target.checked)} />
-                {key}
+                {labelOf(key)}
               </label>
             );
           }
@@ -141,8 +145,21 @@ export function JsonForm({ value, onChange, hiddenKeys = ['id'] }: JsonFormProps
           if (typeof fieldValue === 'number') {
             return (
               <div key={key} style={{ marginBottom: 14 }}>
-                <span style={labelStyle}>{key}</span>
+                <span style={labelStyle}>{labelOf(key)}</span>
                 <input type="number" value={fieldValue} onChange={(e) => setField(key, Number(e.target.value))} style={fieldStyle} />
+              </div>
+            );
+          }
+
+          if (typeof fieldValue === 'string' && SELECTS[key]) {
+            const opts = SELECTS[key];
+            return (
+              <div key={key} style={{ marginBottom: 14 }}>
+                <span style={labelStyle}>{labelOf(key)}</span>
+                <select value={fieldValue} onChange={(e) => setField(key, e.target.value)} style={fieldStyle}>
+                  {!opts.some(([v]) => v === fieldValue) && <option value={fieldValue}>{fieldValue || 'בחרי...'}</option>}
+                  {opts.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
               </div>
             );
           }
@@ -151,7 +168,7 @@ export function JsonForm({ value, onChange, hiddenKeys = ['id'] }: JsonFormProps
             const long = isLongText(key, fieldValue);
             return (
               <div key={key} style={{ marginBottom: 14 }}>
-                <span style={labelStyle}>{key}</span>
+                <span style={labelStyle}>{labelOf(key)}</span>
                 {long ? (
                   <textarea value={fieldValue} onChange={(e) => setField(key, e.target.value)} rows={Math.min(10, Math.max(2, Math.ceil(fieldValue.length / 55)))} style={{ ...fieldStyle, resize: 'vertical' }} />
                 ) : (
@@ -163,15 +180,15 @@ export function JsonForm({ value, onChange, hiddenKeys = ['id'] }: JsonFormProps
 
           if (Array.isArray(fieldValue)) {
             if (fieldValue.length === 0 || typeof fieldValue[0] === 'string') {
-              return <StringArrayField key={key} label={key} value={fieldValue as string[]} onChange={(v) => setField(key, v)} />;
+              return <StringArrayField key={key} label={labelOf(key)} value={fieldValue as string[]} onChange={(v) => setField(key, v)} />;
             }
-            return <ObjectArrayField key={key} label={key} value={fieldValue as Record<string, JsonValue>[]} onChange={(v) => setField(key, v)} />;
+            return <ObjectArrayField key={key} label={labelOf(key)} value={fieldValue as Record<string, JsonValue>[]} onChange={(v) => setField(key, v)} />;
           }
 
           if (typeof fieldValue === 'object') {
             return (
               <div key={key} className="card" style={{ padding: 12, marginBottom: 14, background: 'var(--bg)' }}>
-                <span style={labelStyle}>{key}</span>
+                <span style={labelStyle}>{labelOf(key)}</span>
                 <JsonForm value={fieldValue as Record<string, JsonValue>} onChange={(v) => setField(key, v as JsonValue)} hiddenKeys={[]} />
               </div>
             );
