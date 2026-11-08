@@ -99,9 +99,10 @@ async function fetchWithTimeout(url, options, ms) {
 // connection — worth a couple of quick retries before giving up, since the exact
 // same request usually succeeds seconds later.
 async function fetchGeminiWithRetry(url, body) {
-  const delays = [800, 2000];
+  const delays = [800, 2000, 6000];
   let lastErr = 'unknown';
   for (let attempt = 0; attempt <= delays.length; attempt++) {
+    let wait = delays[attempt];
     try {
       const response = await fetchWithTimeout(
         url,
@@ -110,22 +111,58 @@ async function fetchGeminiWithRetry(url, body) {
       );
       if (response.ok) return response.json();
 
-      lastErr = `${response.status}: ${await response.text()}`;
+      const text = await response.text();
+      lastErr = `${response.status}: ${text}`;
+      // מכסה מלאה (429): גוגל מציינת כמה לחכות. מחכים (עד 20 שניות) ומנסים שוב, ולא נכשלים מיד.
+      if (response.status === 429) {
+        // מכסה יומית נגמרה: אין טעם לחכות ולנסות שוב
+        if (/PerDay|per day/i.test(text)) throw Object.assign(new Error(`Gemini API error ${lastErr}`), { code: 'daily_quota' });
+        const m = text.match(/"retryDelay":\s*"(\d+(?:\.\d+)?)s"/);
+        wait = Math.min(20000, Math.max(3000, m ? Number(m[1]) * 1000 + 500 : 8000));
+      }
       const retryable = response.status === 503 || response.status === 429 || response.status >= 500;
       if (!retryable || attempt === delays.length) {
         throw new Error(`Gemini API error ${lastErr}`);
       }
     } catch (err) {
       // network error / abort / timeout — retry unless we're out of attempts
+      if (err?.code === 'daily_quota') throw err;
       lastErr = err?.message || String(err);
-      if (attempt === delays.length) throw new Error(`Gemini request failed: ${lastErr}`);
+      if (attempt === delays.length || /Gemini API error/.test(lastErr) && !/ 429:| 503:| 5\d\d:/.test(lastErr)) throw new Error(/^Gemini/.test(lastErr) ? lastErr : `Gemini request failed: ${lastErr}`);
     }
-    await sleep(delays[attempt]);
+    await sleep(wait);
   }
   throw new Error(`Gemini request failed: ${lastErr}`);
 }
 
+// תור גלובלי: לא יותר מכמה פניות במקביל ל-Gemini (כדי לא להישבר כשהרבה מבקרים שואלים יחד), והשאר ממתינים בתור
+const AI_MAX_CONCURRENT = Number(process.env.AI_MAX_CONCURRENT || 3);
+const AI_MAX_QUEUE = Number(process.env.AI_MAX_QUEUE || 60);
+let aiRunning = 0;
+const aiQueue = [];
+function aiGate(task) {
+  return new Promise((resolve, reject) => {
+    if (aiQueue.length >= AI_MAX_QUEUE) return reject(Object.assign(new Error('queue_full'), { code: 'queue_full' }));
+    const run = () => {
+      aiRunning++;
+      task().then(resolve, reject).finally(() => { aiRunning--; const next = aiQueue.shift(); if (next) next(); });
+    };
+    if (aiRunning < AI_MAX_CONCURRENT) run(); else aiQueue.push(run);
+  });
+}
+
+// זיכרון תשובות לשאלות זהות (שאלה בודדת, ללא היסטוריה), כדי שמבקרים שונים עם אותה שאלה לא יצרכו מכסה
+const aiCache = new Map();
+const AI_CACHE_MS = 6 * 60 * 60 * 1000;
+function cacheKey(kind, text) { return `${kind}|${String(text).trim().replace(/\s+/g, ' ').toLowerCase().slice(0, 400)}`; }
+function cacheGet(k) { const e = aiCache.get(k); if (e && Date.now() - e.t < AI_CACHE_MS) return e.v; aiCache.delete(k); return null; }
+function cacheSet(k, v) { if (aiCache.size > 300) aiCache.delete(aiCache.keys().next().value); aiCache.set(k, { t: Date.now(), v }); }
+
 async function geminiGenerate(body) {
+  return aiGate(() => geminiGenerateNow(body));
+}
+
+async function geminiGenerateNow(body) {
   let lastErr;
   for (const model of [GEMINI_MODEL, ...GEMINI_MODELS.filter((m) => m !== GEMINI_MODEL)]) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
@@ -135,7 +172,7 @@ async function geminiGenerate(body) {
       return data;
     } catch (err) {
       lastErr = err;
-      if (!/\b404\b|NOT_FOUND|not found|not supported/i.test(String(err?.message))) throw err;
+      if (err?.code === 'daily_quota' || !/\b404\b|NOT_FOUND|not found|not supported/i.test(String(err?.message))) throw err;
     }
   }
   throw lastErr;
@@ -151,6 +188,9 @@ async function callGemini(query) {
 }
 
 async function callGeminiChat(messages) {
+  const single = messages.length === 1 ? cacheKey('chat', messages[0].content) : null;
+  const hit = single && cacheGet(single);
+  if (hit) return hit;
   const contents = messages.map((m) => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
@@ -159,7 +199,9 @@ async function callGeminiChat(messages) {
     systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] },
     contents,
   });
-  return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+  const out = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+  if (single && out) cacheSet(single, out);
+  return out;
 }
 
 async function callAnthropicChat(messages) {
@@ -253,6 +295,7 @@ app.post('/api/generate-activity', async (req, res) => {
     return res.json({ activity: generated, source: 'ai', provider, model: provider === 'gemini' ? GEMINI_MODEL : ANTHROPIC_MODEL });
   } catch (err) {
     console.error('generate-activity failed', err);
+    if (err?.code === 'daily_quota') return res.status(503).json({ error: 'quota', message: 'המכסה היומית החינמית של ה-AI נגמרה. נסו שוב מחר.' });
     return res.status(500).json({ error: 'generation_failed', message: 'לא הצלחנו ליצור פעולה כרגע. נסו לנסח מחדש את הבקשה.' });
   }
 });
@@ -290,6 +333,8 @@ app.post('/api/chat', async (req, res) => {
     return res.json({ reply, provider: usedProvider, model: usedProvider === 'gemini' ? GEMINI_MODEL : ANTHROPIC_MODEL });
   } catch (err) {
     console.error('chat failed', err);
+    if (err?.code === 'daily_quota') return res.status(503).json({ error: 'quota', message: 'ניצוץ הגיע למכסה היומית של השימוש החינמי. הוא יחזור לעבוד מחר, ובינתיים אפשר לחפש במאגר.' });
+    if (err?.code === 'queue_full') return res.status(503).json({ error: 'busy', message: 'ניצוץ עמוס כרגע בגלל הרבה שאלות יחד. נסו שוב בעוד דקה.' });
     return res.status(500).json({ error: 'chat_failed', message: 'לא הצלחנו לקבל תשובה כרגע. נסו שוב בעוד רגע.' });
   }
 });

@@ -17,10 +17,26 @@ const ALLOWED_FILE_TYPES = new Set([
 
 // שליחת מייל דרך Resend (אופציונלי). מוגדר ב-RESEND_API_KEY; ברירת מחדל לשולח: onboarding@resend.dev (שולח רק לבעלת החשבון).
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
+// אפשרות חלופית בלי דומיין: שליחה דרך Gmail (GMAIL_USER + סיסמת אפליקציה של גוגל ב-GMAIL_APP_PASSWORD). עד כ-500 מיילים ביום.
+const GMAIL_USER = process.env.GMAIL_USER;
+const GMAIL_APP_PASSWORD = (process.env.GMAIL_APP_PASSWORD || '').replace(/\s+/g, '');
+const MAIL_READY = !!(RESEND_API_KEY || (GMAIL_USER && GMAIL_APP_PASSWORD));
+const MAIL_NAME = process.env.MAIL_NAME || 'המדריך למדריך';
 const MAIL_FROM = process.env.MAIL_FROM || 'המדריך למדריך <onboarding@resend.dev>';
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL;
 
+async function sendViaGmail({ to, subject, text, html, attachments, bcc }) {
+  const nodemailer = (await import('nodemailer')).default;
+  const transport = nodemailer.createTransport({ host: 'smtp.gmail.com', port: 465, secure: true, auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD } });
+  await transport.sendMail({
+    from: `"${MAIL_NAME}" <${GMAIL_USER}>`, to, bcc, subject, text, html,
+    attachments: attachments?.map((a) => ({ filename: a.filename, content: a.content, encoding: 'base64' })),
+  });
+  return { sent: true };
+}
+
 async function sendMail({ to, subject, text, html, attachments, bcc }) {
+  if (!RESEND_API_KEY && GMAIL_USER && GMAIL_APP_PASSWORD) return sendViaGmail({ to, subject, text, html, attachments, bcc });
   if (!RESEND_API_KEY) return { sent: false, reason: 'no_api_key' };
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -304,7 +320,7 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
     try {
       const all = await store.hgetall('subscribers');
       const list = Object.values(all).map((v) => { try { return JSON.parse(v); } catch { return null; } }).filter(Boolean).sort((a, b) => b.createdAt - a.createdAt);
-      return res.json({ subscribers: list, mailConfigured: !!RESEND_API_KEY, notifyConfigured: !!NOTIFY_EMAIL });
+      return res.json({ subscribers: list, mailConfigured: MAIL_READY, notifyConfigured: !!NOTIFY_EMAIL });
     } catch {
       return res.status(500).json({ error: 'store_failed' });
     }
@@ -336,7 +352,7 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
   app.post('/api/admin/send-weekly', requireAdmin, async (req, res) => {
     const { subject, text, html } = req.body ?? {};
     if (!subject || !text) return res.status(400).json({ error: 'bad_request', message: 'חסר נושא או תוכן.' });
-    if (!RESEND_API_KEY) return res.status(503).json({ error: 'no_mail', message: 'שליחת מיילים לא הוגדרה בשרת (RESEND_API_KEY).' });
+    if (!MAIL_READY) return res.status(503).json({ error: 'no_mail', message: 'שליחת מיילים לא הוגדרה בשרת (RESEND_API_KEY, או GMAIL_USER ו-GMAIL_APP_PASSWORD).' });
     try {
       const all = await store.hgetall('subscribers');
       const emails = Object.keys(all);
@@ -357,7 +373,7 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
   // שליחת מייל בדיקה (לכתובת ההתראות, או לכתובת שנשלחה) כדי לוודא שהחיבור ל-Resend עובד
   app.post('/api/admin/mail-test', requireAdmin, async (req, res) => {
     const to = cleanText(req.body?.to, 120) || NOTIFY_EMAIL;
-    if (!RESEND_API_KEY) return res.json({ ok: false, message: 'לא הוגדר RESEND_API_KEY בשרת.' });
+    if (!MAIL_READY) return res.json({ ok: false, message: 'לא הוגדר חיבור מייל בשרת (RESEND_API_KEY, או GMAIL_USER ו-GMAIL_APP_PASSWORD).' });
     if (!to) return res.json({ ok: false, message: 'לא הוגדרה כתובת מייל לבדיקה (NOTIFY_EMAIL).' });
     try {
       await sendMail({ to, subject: 'בדיקת מייל מהמדריך למדריך', text: 'אם קיבלת את המייל הזה, שליחת המיילים מהאתר עובדת.', html: '<div dir="rtl">אם קיבלת את המייל הזה, שליחת המיילים מהאתר עובדת. ✓</div>' });
@@ -375,7 +391,7 @@ export function registerFeatureRoutes(app, { store, requireAdmin }) {
       deployHookConfigured: !!process.env.RENDER_DEPLOY_HOOK,
       googleVerification: !!process.env.GOOGLE_SITE_VERIFICATION,
       forceCanonical: process.env.FORCE_CANONICAL_HOST === 'true',
-      mailConfigured: !!RESEND_API_KEY,
+      mailConfigured: MAIL_READY,
       notifyConfigured: !!NOTIFY_EMAIL,
       aiConfigured: !!(process.env.GEMINI_API_KEY || process.env.ANTHROPIC_API_KEY),
       siteUrl: process.env.SITE_URL || `${req.protocol}://${req.get('host')}`,

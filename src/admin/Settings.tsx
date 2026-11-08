@@ -70,6 +70,14 @@ export function Settings() {
         </ol>
         <TestButton label="בדיקת ניצוץ" url="/api/admin/ai-test" />
       </Panel>
+      <Panel title="שליחת מיילים דרך Gmail (בלי דומיין)">
+        <ol className="adm-steps">
+          <li><b>1. סיסמת אפליקציה</b><span>בחשבון גוגל של המייל: Security ← הפעלת אימות דו-שלבי (2-Step Verification), ואז <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>App passwords</a> ← שם כלשהו (למשל "האתר") ← מעתיקים את 16 התווים.</span></li>
+          <li><b>2. להדביק ב-Render</b><span>Environment: <code>GMAIL_USER</code> = כתובת ה-Gmail, <code>GMAIL_APP_PASSWORD</code> = הסיסמה, <code>NOTIFY_EMAIL</code> = המייל שאליו יגיעו התראות. שומרים ומחכים לפריסה.</span></li>
+          <li><b>3. לבדוק</b><span>לוחצים "שליחת מייל בדיקה". מותר עד כ-500 מיילים ביום, וזה מספיק לעדכון שבועי.</span></li>
+        </ol>
+        <TestButton label="שליחת מייל בדיקה אלי" url="/api/admin/mail-test" />
+      </Panel>
       <Panel title="חיבור שליחת מיילים (Resend)">
         <ol className="adm-steps">
           <li><b>1. ליצור חשבון</b><span>ב-<a href="https://resend.com" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>Resend</a> (יש חבילה חינמית), ואז API Keys ← Create API Key.</span></li>
