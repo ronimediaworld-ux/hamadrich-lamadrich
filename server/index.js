@@ -207,7 +207,23 @@ async function callAnthropic(query) {
   return data?.content?.[0]?.text ?? '';
 }
 
+// הגבלת קצב לפי כתובת: כך שמבקר אחד לא יוכל לרוקן את המכסה של כולם
+const aiHits = new Map();
+function aiLimited(req, kind, max, windowMs) {
+  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  const key = `${kind}|${ip}`;
+  const now = Date.now();
+  const arr = (aiHits.get(key) ?? []).filter((t) => now - t < windowMs);
+  if (arr.length >= max) { aiHits.set(key, arr); return true; }
+  arr.push(now);
+  aiHits.set(key, arr);
+  if (aiHits.size > 5000) aiHits.clear();
+  return false;
+}
+const TOO_MANY = { error: 'slow_down', message: 'ניצוץ קיבל הרבה בקשות ממך בזמן קצר. נסו שוב בעוד כמה דקות.' };
+
 app.post('/api/generate-activity', async (req, res) => {
+  if (aiLimited(req, 'gen', 6, 10 * 60 * 1000)) return res.status(429).json(TOO_MANY);
   const { query } = req.body ?? {};
   if (!query || typeof query !== 'string' || !query.trim()) {
     return res.status(400).json({ error: 'missing_query', message: 'חסר תיאור של הפעולה המבוקשת.' });
@@ -241,6 +257,7 @@ app.post('/api/generate-activity', async (req, res) => {
 });
 
 app.post('/api/chat', async (req, res) => {
+  if (aiLimited(req, 'chat', 25, 10 * 60 * 1000)) return res.status(429).json(TOO_MANY);
   const { messages } = req.body ?? {};
   if (!Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'missing_messages', message: 'לא התקבלה שיחה תקינה.' });
