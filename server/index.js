@@ -31,7 +31,8 @@ const PORT = process.env.PORT || 3001;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 // אם שם המודל כבר לא קיים (גוגל מחליפה דגמים), מנסים את הבא ברשימה. gemini-flash-latest תמיד מצביע על ה-Flash העדכני.
-const GEMINI_MODELS = [process.env.GEMINI_MODEL, 'gemini-flash-latest', 'gemini-2.5-flash'].filter(Boolean);
+// בדקתי: gemini-3.6-flash מגיב תוך כשתי שניות; gemini-flash-latest נתקע, ו-gemini-2.5-flash כבר לא זמין. לכן הסדר הזה.
+const GEMINI_MODELS = [...new Set([process.env.GEMINI_MODEL, 'gemini-3.6-flash', 'gemini-flash-latest'].filter(Boolean))];
 let GEMINI_MODEL = GEMINI_MODELS[0];
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
