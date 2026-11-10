@@ -88,8 +88,7 @@ def head(n, title, col):
 
 
 def card(text, tag=None):
-    t = {'hers': '<span class="tag tag-hers">של רוני</span>', 'new': '<span class="tag tag-new">הצעה</span>'}.get(tag, '')
-    return f'<div class="line{" blank" if "____" in text else ""}">{e(text)}{t}</div>'
+    return f'<div class="line{" blank" if "____" in text else ""}">{e(text)}</div>'
 
 
 def build():
@@ -106,8 +105,6 @@ def build():
             continue
         sec += 1
         out.append(f'<section class="page">{head(sec, "משפטים לשכבות: " + names.get(m["id"], m["movement"]), COLS[(sec - 1) % 6])}')
-        if sec == 1:
-            out.append('<div class="legend"><span class="tag tag-hers">של רוני</span> משפט שכבר באתר &nbsp; <span class="tag tag-new">הצעה</span> משפט חדש לבחירה (בודקים מול הרכז לפני הדפסה)</div>')
         for g in m['groups']:
             new = CANDIDATES.get(m['id'], {}).get(g['name'], [])
             cards = ''.join(card(s, 'hers') for s in g['slogans']) + ''.join(card(s, 'new') for s in new)
