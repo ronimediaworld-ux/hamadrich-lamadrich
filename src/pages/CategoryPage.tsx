@@ -18,6 +18,7 @@ import { PageSearch } from '../components/PageSearch';
 import { matchesQuery } from '../lib/textFilter';
 import { PARSHIOT_BY_BOOK } from '../lib/parsha';
 import { WallsSection } from '../components/WallsSection';
+import { WallIdeasSection } from '../components/WallIdeasSection';
 
 const colorBg: Record<string, string> = {
   flame: 'var(--flame)',
@@ -99,7 +100,7 @@ export function CategoryPage() {
     : slug === 'methods' ? `${methods.length} מתודות`
     : slug === 'readings' ? `${readings.length} קטעי קריאה`
     : slug === 'staff-study' ? `${staffStudy.length} מפגשי לימוד צוות`
-    : slug === 'walls' ? 'שמות השכבות בשלוש תנועות'
+    : slug === 'walls' ? 'שמות השכבות, גלופות ורעיונות לקירות'
     : `${items.length} פעולות במאגר`;
 
   return (
@@ -121,7 +122,7 @@ export function CategoryPage() {
 
       <PageSearch value={pq} onChange={setPq} placeholder={`חיפוש ב${category.label}...`} />
 
-      {slug === 'walls' && <WallsSection query={pq} />}
+      {slug === 'walls' && <><WallsSection query={pq} /><WallIdeasSection query={pq} /></>}
 
       {slug === 'tools' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
