@@ -32,18 +32,16 @@ GENERAL = [
 ]
 
 CSS = '''
-@page { size: A4; margin: 0; }
+@page { size: A4; margin: 16mm 15mm; }
 * { box-sizing: border-box; }
 html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-body { margin: 0; font-family: 'Heebo', sans-serif; color: %(INK)s; background: %(CREAM)s; direction: rtl; font-size: 11pt; }
-.page { width: 210mm; padding: 14mm; break-before: page; }
-.page:first-child { break-before: auto; }
-h1 { font: 900 24pt 'Rubik'; margin: 0 0 6mm; padding: 5mm 6mm; background: %(FLAME)s; color: #fff; border: .7mm solid %(INK)s; border-radius: 6mm; box-shadow: 1.6mm 1.6mm 0 %(INK)s; }
-.name { display: grid; grid-template-columns: 26mm 1fr; gap: 4mm; align-items: start; padding: 3mm 0; border-bottom: .3mm solid #e4d9bc; break-inside: avoid; }
-.name b { font: 800 15pt 'Rubik'; color: %(FLAME)s; }
-.lines { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 3mm; }
-.line { background: #fff; border: .45mm solid %(INK)s; border-radius: 3.2mm; padding: 2.6mm 3.4mm; font: 700 11pt 'Rubik'; line-height: 1.4; break-inside: avoid; }
-.line.blank { background: #F4EEFB; }
+body { margin: 0; font-family: 'Heebo', sans-serif; color: #000; background: #fff; direction: rtl; font-size: 12pt; }
+h1 { font: 900 30pt 'Rubik'; text-align: center; margin: 0 0 8mm; padding-bottom: 4mm; border-bottom: 1.2mm double #000; letter-spacing: .02em; }
+.name { margin: 0 0 7mm; break-inside: avoid; }
+.name h2 { font: 800 17pt 'Rubik'; margin: 0 0 3mm; padding-bottom: 1.2mm; border-bottom: .5mm solid #000; }
+.lines { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 4mm; }
+.line { border: .5mm solid #000; border-radius: 3mm; padding: 3mm 4mm; font: 700 12.5pt 'Rubik'; line-height: 1.45; break-inside: avoid; }
+.line.blank { border-style: dashed; }
 '''
 
 
@@ -52,13 +50,13 @@ def card(t):
 
 
 def main():
-    parts = ['<section class="page"><h1>גלופות</h1>']
+    parts = ['<section><h1>גלופות</h1>']
     for name, lines in BY_NAME:
-        parts.append(f'<div class="name"><b>{e(name)}</b><div class="lines">{"".join(card(t) for t in lines)}</div></div>')
-    parts.append(f'<div class="name"><b>לכל שם</b><div class="lines">{"".join(card(t) for t in GENERAL)}</div></div></section>')
+        parts.append(f'<div class="name"><h2>{e(name)}</h2><div class="lines">{"".join(card(t) for t in lines)}</div></div>')
+    parts.append(f'<div class="name general"><h2>לכל שם</h2><div class="lines">{"".join(card(t) for t in GENERAL)}</div></div></section>')
     doc = f'''<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>גלופות</title>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>{CSS % dict(INK=INK, FLAME=FLAME, CREAM=CREAM)}</style></head><body>{"".join(parts)}</body></html>'''
+<style>{CSS}</style></head><body>{"".join(parts)}</body></html>'''
     out = os.path.join(ROOT, 'docs', 'glufot-found.html')
     open(out, 'w', encoding='utf-8').write(doc)
     print('written', out)
