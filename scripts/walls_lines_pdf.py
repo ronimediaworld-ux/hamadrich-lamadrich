@@ -94,7 +94,7 @@ def card(text, tag=None):
 def build():
     out = []
     out.append(f'''<section class="cover"><div class="blob b1"></div><div class="blob b2"></div><div class="sq s1"></div><div class="sq s2"></div><div class="sq s3"></div>
-<div class="cover-body">{mascot(150)}<div class="cover-kicker">המדריך למדריך</div><h1>משפטים מוכנים<br>לגלופות ולקירות</h1>
+<div class="cover-body">{mascot(150)}<div class="cover-kicker">המדריך למדריך</div><h1>גלופות וקירות<br>לנתקעים בדקה תשעים</h1>
 <div class="cover-hand">לבחור, להדפיס, לתלות</div></div><div class="cover-foot">{datetime.date.today().strftime("%d.%m.%Y")}</div></section>''')
 
     sec = 0
@@ -167,7 +167,7 @@ h2.sub { break-after: avoid; font-size: 14.5pt; font-weight: 800; margin: 6mm 0 
 
 def main():
     body = build()
-    doc = f'''<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>משפטים מוכנים לגלופות ולקירות</title>
+    doc = f'''<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>גלופות וקירות לנתקעים בדקה תשעים</title>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@400;500;700;800&family=Gveret+Levin&display=swap" rel="stylesheet">
 <style>{CSS % dict(INK=INK, FLAME=FLAME, CREAM=CREAM)}</style></head><body>{body}</body></html>'''
     out = os.path.join(ROOT, 'docs', 'sefer-glufot-vekirot.html')

@@ -1,5 +1,5 @@
 // מועדפים ("הקלסר שלי"): נשמרים בדפדפן. פעולות נשמרות לפי id רגיל (תאימות לאחור), שאר התכנים לפי "סוג:id".
-export type FavKind = 'activity' | 'reading' | 'staff-study' | 'chupar' | 'personal';
+export type FavKind = 'activity' | 'reading' | 'staff-study' | 'chupar' | 'personal' | 'file';
 
 const STORAGE_KEY = 'hamadrich-favorites';
 
@@ -8,7 +8,7 @@ export function favKey(kind: FavKind, id: string): string {
 }
 
 export function parseFavKey(key: string): { kind: FavKind; id: string } {
-  const m = key.match(/^(reading|staff-study|chupar|personal):(.+)$/);
+  const m = key.match(/^(reading|staff-study|chupar|personal|file):(.+)$/);
   return m ? { kind: m[1] as FavKind, id: m[2] } : { kind: 'activity', id: key };
 }
 

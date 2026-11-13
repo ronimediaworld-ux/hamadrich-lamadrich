@@ -19,6 +19,7 @@ import { matchesQuery } from '../lib/textFilter';
 import { PARSHIOT_BY_BOOK } from '../lib/parsha';
 import { WallsSection } from '../components/WallsSection';
 import { WallIdeasSection } from '../components/WallIdeasSection';
+import { DownloadFileCard } from '../components/DownloadFileCard';
 
 const colorBg: Record<string, string> = {
   flame: 'var(--flame)',
@@ -122,7 +123,7 @@ export function CategoryPage() {
 
       <PageSearch value={pq} onChange={setPq} placeholder={`חיפוש ב${category.label}...`} />
 
-      {slug === 'walls' && <><WallsSection query={pq} /><WallIdeasSection query={pq} /></>}
+      {slug === 'walls' && <><DownloadFileCard id="glufot-vekirot" /><WallsSection query={pq} /><WallIdeasSection query={pq} /></>}
 
       {slug === 'tools' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

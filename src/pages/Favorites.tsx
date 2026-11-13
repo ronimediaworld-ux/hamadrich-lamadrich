@@ -9,6 +9,7 @@ import { activities } from '../data/activities';
 import { readings } from '../data/readings';
 import { staffStudy } from '../data/staffStudy';
 import { chuparim } from '../data/chuparim';
+import { downloadFiles } from '../data/files';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { buildCombinedPrintHtml } from '../lib/activityPrint';
 import { entriesForKeys } from '../lib/binderPrint';
@@ -26,6 +27,7 @@ const TABS: Tab[] = [
   { id: 'readings', label: 'קטעי קריאה', color: '#C24270', tint: '#F6DDE7' },
   { id: 'staff-study', label: 'לימוד צוות', color: '#6B5AA6', tint: '#E6E1F4' },
   { id: 'chuparim', label: 'צ׳ופרים', color: '#3E7EA6', tint: '#DCEAF2' },
+  { id: 'files', label: 'קבצים להורדה', color: '#B5651D', tint: '#F6E6D3' },
   { id: 'personal', label: 'התבניות והעותקים שלי', color: '#2F7A4B', tint: '#DCEFE3' },
 ];
 
@@ -67,6 +69,9 @@ export function Favorites() {
       } else if (kind === 'personal') {
         const p = getPersonal(id);
         if (p) out.push({ tab: 'personal', key, kind, id, title: p.title, sub: p.id === BLANK_TEMPLATE_ID ? 'תבנית ריקה להדפסה' : p.kind === 'copy' ? 'עותק אישי של פעולה' : 'תבנית אישית', url: p.id === BLANK_TEMPLATE_ID ? '/how-to-build' : `/my/${p.id}` });
+      } else if (kind === 'file') {
+        const f = downloadFiles.find((x) => x.id === id);
+        if (f) out.push({ tab: 'files', key, kind, id, title: f.title, sub: f.sub, url: f.url });
       } else if (kind === 'chupar') {
         const c = chuparim.find((x) => x.id === id);
         if (c) out.push({ tab: 'chuparim', key, kind, id, title: c.title, sub: `${c.kind} · ${c.prepTime}`, url: `/chupar/${c.id}` });
@@ -143,8 +148,11 @@ export function Favorites() {
                         }
                         return (
                           <div key={it.key} className="card" style={{ padding: '16px 18px', background: t.tint, border: `1.5px solid ${t.color}`, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                            <Link to={it.url} style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 16, lineHeight: 1.3 }}>{it.title}</Link>
+                            {it.kind === 'file'
+                              ? <a href={it.url} target="_blank" rel="noopener" style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 16, lineHeight: 1.3 }}>{it.title}</a>
+                              : <Link to={it.url} style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 16, lineHeight: 1.3 }}>{it.title}</Link>}
                             <div style={{ fontSize: 12.5, color: 'var(--ink-soft)' }}>{it.sub}</div>
+                            {it.kind === 'file' && <a className="btn btn-flame" href={it.url} download style={{ alignSelf: 'flex-start', padding: '6px 14px', fontSize: 13 }}>הורדת ה־PDF</a>}
                             <button type="button" onClick={() => toggleFavorite(it.key)} style={{ alignSelf: 'flex-start', marginTop: 4, border: 'none', background: 'transparent', color: 'var(--ink-faint)', fontSize: 12.5, textDecoration: 'underline', padding: 0 }}>הסרה מהקלסר</button>
                           </div>
                         );
