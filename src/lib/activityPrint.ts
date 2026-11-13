@@ -10,16 +10,16 @@ import { timedSteps } from './timePlan';
 import { getChupar } from '../data/chuparim';
 import type { PersonalCopy } from './personalCopies';
 
-const PALETTE = ['#B24A1A', '#8C3862', '#255780', '#496421', '#1F6551', '#564591', '#733B1B', '#8C5C10'];
+const PALETTE = ['#C85B2A', '#A64D79', '#356E9A', '#5E7B2F', '#2F7D6A', '#6B5AA6', '#8A4D2A', '#B17824'];
 
 function stepColor(name: string, index: number): string {
-  if (/פתיחה/.test(name)) return '#B24A1A';
-  if (/סרטון|קליפ|הקרנ|צפייה/.test(name)) return '#255780';
-  if (/קריאה|סיפור|עדות|קטע/.test(name)) return '#8C3862';
-  if (/מתודה|תערוכה|תרגיל|משימה|פעילות/.test(name)) return '#496421';
-  if (/משחק|סבב/.test(name)) return '#1F6551';
-  if (/דיון|שאלות/.test(name)) return '#564591';
-  if (/סיכום|צ[׳']ופר|מגן/.test(name)) return '#733B1B';
+  if (/פתיחה/.test(name)) return '#C85B2A';
+  if (/סרטון|קליפ|הקרנ|צפייה/.test(name)) return '#356E9A';
+  if (/קריאה|סיפור|עדות|קטע/.test(name)) return '#A64D79';
+  if (/מתודה|תערוכה|תרגיל|משימה|פעילות/.test(name)) return '#5E7B2F';
+  if (/משחק|סבב/.test(name)) return '#2F7D6A';
+  if (/דיון|שאלות/.test(name)) return '#6B5AA6';
+  if (/סיכום|צ[׳']ופר|מגן/.test(name)) return '#8A4D2A';
   return PALETTE[index % PALETTE.length];
 }
 
@@ -122,7 +122,7 @@ function renderCards(content: string): string | null {
   if (cards.length < 4) return null;
   const grid =
     cards
-      .map((c) => `<div class="qcard"><span class="qn">${c.n}</span><div class="qt">"${escapeHtml(c.text)}"</div><div class="qw">${escapeHtml(c.who)}</div></div>`)
+      .map((c) => `<div class="qcard"><span class="qn">${c.n}</span><div class="qt${c.text.length > 70 ? ' long' : ''}">"${escapeHtml(c.text)}"</div><div class="qw">${escapeHtml(c.who)}</div></div>`)
       .join('') +
     (blank ? `<div class="qcard blank"><span class="qn">+</span><div class="line"></div><div class="line"></div><div class="qw">שם: ____________ ז״ל</div></div>` : '');
   const intro = before.length ? `<p class="app-intro">${escapeHtml(before.join(' '))}</p>` : '';
@@ -150,7 +150,7 @@ function renderSlips(content: string): string {
   const lines = restBlocks.join('\n').split('\n').map((l) => l.trim()).filter(Boolean);
   return `<p class="app-intro">${escapeHtml(introBlock || '')}</p><div class="slips">${lines.map((l) => {
     const [head, body] = l.split('||');
-    return body ? `<div class="slip"><div><div class="slip-h">${escapeHtml(head)}</div>${escapeHtml(body)}</div></div>` : `<div class="slip">${escapeHtml(l)}</div>`;
+    return body ? `<div class="slip${body.length > 70 ? ' long' : ''}"><div><div class="slip-h">${escapeHtml(head)}</div>${escapeHtml(body)}</div></div>` : `<div class="slip${l.length > 70 ? ' long' : ''}">${escapeHtml(l)}</div>`;
   }).join('')}</div>`;
 }
 
@@ -173,78 +173,81 @@ function renderAppendix(ap: { label: string; content: string }): string {
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Heebo:wght@400;500;700&display=swap');
   @import url('${FONT_IMPORT}');
-  :root { --paper:#FFFFFF; --ink:#140F07; --soft:#2B2217; --faint:#54483A; --line:#B9AD93; --flame:#C85B20; --flame-ink:#6A2E0E; --tint:#FBE4D2; }
+  :root { --paper:#FBF9F2; --ink:#1A140B; --soft:#3A2F20; --faint:#6A5D48; --line:#E4DBC8; --flame:#D96A2B; --flame-ink:#7A3712; --tint:#FBE4D2; }
   * { box-sizing: border-box; }
-  html { background-color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { margin: 0; color: var(--ink); font-family: 'Heebo', Arial, sans-serif; font-weight: 500; direction: rtl; font-size: 15px; line-height: 1.8; }
-  .doc { max-width: 800px; margin: 0 auto; padding: 24px 28px 40px; }
+  html { background-color: var(--paper); background-image: radial-gradient(#E9E1CF 1px, transparent 1.2px); background-size: 18px 18px;
+         -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; color: var(--ink); font-family: 'Heebo', Arial, sans-serif; font-weight: 500; direction: rtl; font-size: 14px; line-height: 1.75; }
+  .doc { max-width: 780px; margin: 0 auto; padding: 24px 28px 40px; }
   table.wrap { width: 100%; border-collapse: collapse; } table.wrap > thead { display: table-header-group; } table.wrap td { padding: 0; vertical-align: top; }
-  .run { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 2.5px solid var(--ink); margin-bottom: 18px; }
-  .brand { display: flex; align-items: center; gap: 9px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 19px; }
-  .run small { font-size: 13px; color: var(--faint); font-weight: 500; }
-  .crumbs { font-size: 13.5px; color: var(--faint); margin-bottom: 10px; }
-  .crumbs b { color: var(--ink); }
-  .hero { display: grid; grid-template-columns: 1.5fr 1fr; gap: 26px; align-items: start; margin-bottom: 24px; }
-  .chip { display: inline-block; padding: 4px 14px; border-radius: 999px; background: var(--tint); border: 1px solid #C98E66; color: var(--flame-ink); font-weight: 700; font-size: 13.5px; margin-bottom: 8px; }
-  h1 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 36px; line-height: 1.22; margin: 0 0 10px; }
-  .desc { color: var(--soft); font-size: 16px; margin: 0; }
-  .meta { background: #fff; border: 1.5px solid #8F8268; border-radius: 18px; padding: 16px 18px; font-size: 14.5px; line-height: 1.75; }
-  .meta .row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; font-weight: 700; }
-  .meta .dot { color: var(--flame); font-size: 13px; }
-  .meta hr { border: 0; border-top: 1.5px solid var(--line); margin: 9px 0; }
+  .run { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); margin-bottom: 18px; }
+  .brand { display: flex; align-items: center; gap: 9px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 17px; }
+  .run small { font-size: 12.5px; color: var(--faint); }
+  .crumbs { font-size: 12.5px; color: var(--faint); margin-bottom: 10px; }
+  .crumbs b { color: var(--soft); }
+  .hero { display: grid; grid-template-columns: 1.55fr 1fr; gap: 26px; align-items: start; margin-bottom: 24px; }
+  .chip { display: inline-block; padding: 4px 13px; border-radius: 999px; background: var(--tint); color: var(--flame-ink); font-weight: 700; font-size: 12px; margin-bottom: 8px; }
+  h1 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 34px; line-height: 1.2; margin: 0 0 10px; }
+  .desc { color: var(--soft); font-size: 14.5px; margin: 0; }
+  .meta { background: #FFFEFA; border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; font-size: 13px; line-height: 1.7; }
+  .meta .row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+  .meta .dot { color: var(--flame); font-size: 12px; }
+  .meta hr { border: 0; border-top: 1px solid var(--line); margin: 9px 0; }
   .meta p { margin: 0 0 6px; }
-  .shabbat { background: #E1ECF6; border: 1.5px solid #6E97BA; border-radius: 12px; padding: 10px 14px; color: #0F2F4D; margin-bottom: 20px; font-size: 15px; }
-  h2.sec { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 21px; color: #8F3A10; margin: 0 0 8px; }
-  h2.sec::after { content: '●'; font-size: 12px; margin-inline-start: 8px; }
-  ul { margin: 4px 0 10px; padding-inline-start: 22px; }
-  li { margin-bottom: 4px; }
-  p { margin: 0 0 8px; }
-  .divider { display: flex; align-items: center; gap: 10px; color: var(--soft); font-weight: 700; font-size: 14px; margin: 20px 0 14px; }
-  .divider::after { content: ''; flex: 1; border-top: 1.5px solid var(--line); }
-  .step { margin-bottom: 18px; break-inside: avoid; }
-  .step h3 { margin: 0 0 6px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 9px; }
-  .num { flex: none; width: 26px; height: 26px; border-radius: 50%; color: #fff; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; }
-  .min { font-family: 'Heebo', sans-serif; font-weight: 700; color: var(--faint); font-size: 13.5px; }
+  .shabbat { background: #E9F1F8; border: 1px solid #B9D0E3; border-radius: 12px; padding: 9px 14px; color: #1F4A6E; margin-bottom: 20px; font-size: 13px; }
+  h2.sec { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 18px; color: #B8501C; margin: 0 0 8px; }
+  h2.sec::after { content: '●'; font-size: 11px; margin-inline-start: 8px; }
+  ul { margin: 4px 0 8px; padding-inline-start: 20px; }
+  li { margin-bottom: 2px; }
+  p { margin: 0 0 6px; }
+  .divider { display: flex; align-items: center; gap: 10px; color: var(--faint); font-size: 12px; margin: 18px 0 12px; }
+  .divider::after { content: ''; flex: 1; border-top: 1px solid var(--line); }
+  .step { margin-bottom: 14px; break-inside: avoid; }
+  .step h3 { margin: 0 0 4px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 16.5px; display: flex; align-items: center; gap: 8px; }
+  .num { flex: none; width: 23px; height: 23px; border-radius: 50%; color: #fff; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; }
+  .min { font-family: 'Heebo', sans-serif; font-weight: 500; color: var(--faint); font-size: 12.5px; }
   .step-body { padding-inline-start: 4px; }
-  blockquote { margin: 8px 0 10px; padding: 3px 14px 3px 0; border-inline-start: 4px solid #C85B20; color: var(--ink); font-weight: 500; }
-  .linkrow { margin: 8px 0; padding: 8px 12px; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; font-size: 14px; }
-  .linkrow span { color: var(--faint); font-size: 12px; margin-inline-start: 6px; word-break: break-all; }
-  .note { color: var(--faint); font-size: 13.5px; }
-  .guide li { margin-bottom: 6px; }
-  .ideas { margin-top: 18px; border: 1.5px solid #8F8268; border-radius: 14px; padding: 13px 18px; font-size: 14.5px; break-inside: avoid; }
-  .ideas h3 { font-family: 'Rubik', sans-serif; font-size: 17px; margin: 0 0 6px; }
-  .ideas .g { margin: 9px 0 0; }
-  .ideas .how { background: #FBEDB8; border-radius: 8px; padding: 4px 10px; margin-top: 3px; }
-  .tipbox { margin-top: 16px; background: #FBEDB8; border: 1.5px solid #B58A1C; border-radius: 14px; padding: 12px 18px; font-size: 15px; break-inside: avoid; }
-  .src { margin: 10px 0 0; font-size: 14px; }
+  blockquote { margin: 6px 0 8px; padding: 2px 14px 2px 0; border-inline-start: 3px solid #D96A2B; color: var(--ink); }
+  .linkrow { margin: 6px 0; padding: 7px 12px; background: #FFFEFA; border: 1px solid var(--line); border-radius: 10px; font-size: 12.5px; }
+  .linkrow span { color: var(--faint); font-size: 11.5px; margin-inline-start: 6px; word-break: break-all; }
+  .note { color: var(--faint); font-size: 12.5px; }
+  .guide li { margin-bottom: 5px; }
+  .ideas { margin-top: 16px; border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; font-size: 13px; break-inside: avoid; }
+  .ideas h3 { font-family: 'Rubik', sans-serif; font-size: 15px; margin: 0 0 6px; }
+  .ideas .g { margin: 8px 0 0; }
+  .ideas .how { background: #FBF0CC; border-radius: 8px; padding: 4px 10px; margin-top: 3px; }
+  .tipbox { margin-top: 14px; background: #FBF0CC; border: 1px solid #E8C86A; border-radius: 14px; padding: 11px 16px; font-size: 13px; break-inside: avoid; }
+  .src { margin: 10px 0 0; font-size: 12.5px; }
   .page { break-before: page; page-break-before: always; }
-  .app-h { display: flex; align-items: center; gap: 8px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 21px; margin: 0 0 12px; }
-  .app-h .bar { width: 10px; height: 24px; border-radius: 5px; background: var(--flame); }
-  .app-intro { text-align: center; color: var(--soft); font-size: 14px; margin: 0 0 12px; }
-  .textcard { border: 2.5px solid var(--ink); border-radius: 22px; background: #fff; padding: 22px 26px; font-size: 16.5px; line-height: 2; }
-  .textcard p { margin-bottom: 10px; }
-  .infobox { margin-top: 18px; background: #D6E6F2; border: 1.5px solid #6E97BA; border-radius: 16px; padding: 14px 20px; break-inside: avoid; font-size: 14.5px; }
-  .infobox h4 { margin: 0 0 6px; font-family: 'Rubik', sans-serif; font-weight: 800; color: #12304D; font-size: 16px; }
+  .app-h { display: flex; align-items: center; gap: 8px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 18px; margin: 0 0 12px; }
+  .app-h .bar { width: 9px; height: 22px; border-radius: 5px; background: var(--flame); }
+  .app-intro { text-align: center; color: var(--faint); font-size: 13px; margin: 0 0 12px; }
+  .textcard { border: 2px solid var(--ink); border-radius: 22px; background: #FFFEFA; padding: 22px 26px; font-size: 14.5px; line-height: 1.95; }
+  .textcard p { margin-bottom: 9px; }
+  .infobox { margin-top: 18px; background: #DDEAF3; border-radius: 16px; padding: 14px 20px; break-inside: avoid; font-size: 13px; }
+  .infobox h4 { margin: 0 0 6px; font-family: 'Rubik', sans-serif; font-weight: 800; color: #1F3F5C; font-size: 14px; }
   .cols { column-count: 2; column-gap: 26px; }
-  .colblock { break-inside: avoid; margin: 0 0 14px; padding: 12px 16px; border: 1.5px solid #8F8268; border-radius: 14px; background: #fff; }
-  .colhead { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 14.5px; color: var(--flame-ink); margin-bottom: 4px; }
-  .coltext { font-size: 16.5px; line-height: 1.95; }
-  .colnote { margin-top: 10px; font-size: 13.5px; color: var(--faint); }
+  .colblock { break-inside: avoid; margin: 0 0 14px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 14px; background: #FFFEFA; }
+  .colhead { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 13px; color: var(--flame-ink); margin-bottom: 4px; }
+  .coltext { font-size: 15px; line-height: 1.9; }
+  .colnote { margin-top: 10px; font-size: 12.5px; color: var(--faint); }
   .slips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .slip { border: 2.5px dashed #B58A1C; border-radius: 12px; background: #fff; padding: 16px 14px; min-height: 88px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 16.5px; line-height: 1.7; font-weight: 700; break-inside: avoid; }
-  .slip-h { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 16.5px; color: var(--flame-ink); margin-bottom: 6px; }
+  .slip { border: 2px dashed #E6B94F; border-radius: 12px; background: #FFFEFA; padding: 16px 14px; min-height: 84px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 14.5px; line-height: 1.7; break-inside: avoid; }
+  .slip-h { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 15px; color: var(--flame-ink); margin-bottom: 6px; }
   .qgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .qcard { position: relative; min-height: 122px; border: 2.5px dashed #B58A1C; border-radius: 14px; background: #fff; padding: 22px 16px 14px; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 6px; break-inside: avoid; }
-  .qn { position: absolute; top: 7px; left: 11px; font-size: 12.5px; font-weight: 700; color: var(--faint); }
-  .qt { font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.5; }
-  .qw { color: #5E260A; font-weight: 700; font-size: 13.5px; }
-  .qcard.blank .line { border-top: 1.5px dotted #3F362A; margin: 8px 6px; }
-  .sources { margin-top: 14px; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 16px; font-size: 13px; line-height: 1.65; break-inside: avoid; }
+  .qcard { position: relative; min-height: 118px; border: 2px dashed #E6B94F; border-radius: 14px; background: #FFFEFA; padding: 22px 16px 14px; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 6px; break-inside: avoid; }
+  .qn { position: absolute; top: 7px; left: 11px; font-size: 12px; font-weight: 700; color: var(--faint); }
+  .qt { font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 15.5px; line-height: 1.5; }
+  .qw { color: #7A3712; font-weight: 700; font-size: 12.5px; }
+  .qcard.blank .line { border-top: 1px dotted #5B4E3C; margin: 8px 6px; }
+  .sources { margin-top: 14px; background: #FFFEFA; border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; font-size: 12.5px; line-height: 1.6; break-inside: avoid; }
   .shields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 22px; justify-items: center; }
   .shield { width: 100%; max-width: 262px; }
+  .qcard, .slip, .colblock, .textcard, .meta, .tipbox, .ideas, .infobox { overflow-wrap: anywhere; }
+  .qt.long, .slip.long { font-size: 13.5px; line-height: 1.55; }
   @page { size: A4; margin: 13mm 13mm 16mm;
-    @bottom-right { content: 'המדריך למדריך'; font: 11px 'Heebo', sans-serif; color: #54483A; }
-    @bottom-left { content: 'עמוד ' counter(page); font: 11px 'Heebo', sans-serif; color: #54483A; } }
+    @bottom-right { content: 'המדריך למדריך'; font: 10px 'Heebo', sans-serif; color: #6A5D48; }
+    @bottom-left { content: 'עמוד ' counter(page); font: 10px 'Heebo', sans-serif; color: #6A5D48; } }
   @media print { .doc { max-width: none; padding: 0; } .crumbs { margin-top: 0; } }
 `;
 
@@ -271,7 +274,7 @@ function renderIdeas(a: Activity): string {
   const more = sensitive
     ? '<p><b>יש עוד זמן?</b> זו פעולה על זיכרון, ולכן לא מציעים להוסיף משחק. עדיף להאריך את השיחה, לתת לכל חניכה לשתף בשקט, או לקרוא יחד קטע נוסף.</p>'
     : games.length
-      ? `<p><b>יש עוד זמן?</b> אפשר להוסיף משחק מוכר שקשור לנושא${shabbat ? ' (בלי ציוד, מתאים לשבת)' : ''}:</p>${games.map((c) => `<div class="g"><b>${escapeHtml(c.g.name)}</b> <span style="color:#54483A">· ${escapeHtml(c.g.kind)} · ${escapeHtml(c.g.players)}${c.theme ? ` · מתאים ל${escapeHtml(c.theme)}` : ''}</span><div>${escapeHtml(c.g.description)}</div><div class="how"><b>איך מקשרים:</b> ${escapeHtml(fillTopic(c.game.how, a))}</div></div>`).join('')}`
+      ? `<p><b>יש עוד זמן?</b> אפשר להוסיף משחק מוכר שקשור לנושא${shabbat ? ' (בלי ציוד, מתאים לשבת)' : ''}:</p>${games.map((c) => `<div class="g"><b>${escapeHtml(c.g.name)}</b> <span style="color:#6A5D48">· ${escapeHtml(c.g.kind)} · ${escapeHtml(c.g.players)}${c.theme ? ` · מתאים ל${escapeHtml(c.theme)}` : ''}</span><div>${escapeHtml(c.g.description)}</div><div class="how"><b>איך מקשרים:</b> ${escapeHtml(fillTopic(c.game.how, a))}</div></div>`).join('')}`
       : '';
   return `<div class="ideas"><h3>לפי הזמן שיש</h3>${skip}${more}</div>`;
 }
@@ -381,7 +384,7 @@ function renderPersonalBody(c: PersonalCopy): string {
   const steps = c.steps.map((s, i) => {
     const body = s.body.trim()
       ? `<div>${renderBody(s.body)}</div>`
-      : `${s.hint && !c.cleanPrint ? `<div style="color:#54483A;font-size:13.5px">${escapeHtml(s.hint)}</div>` : ''}${('<div style="height:' + (c.cleanPrint ? 34 : 46) + 'px;border-bottom:1.5px solid #8F8268"></div>').repeat(c.cleanPrint ? 4 : 1)}`;
+      : `${s.hint && !c.cleanPrint ? `<div style="color:#6A5D48;font-size:12px">${escapeHtml(s.hint)}</div>` : ''}${('<div style="height:' + (c.cleanPrint ? 34 : 46) + 'px;border-bottom:1px solid #C9BFA9"></div>').repeat(c.cleanPrint ? 4 : 1)}`;
     return `<section style="border-inline-start:5px solid ${escapeHtml(s.color || '#D96A2B')};padding:6px 14px 8px;margin:0 0 10px;break-inside:avoid;background:#FFFEFA;border-radius:6px"><h2 style="font-size:17px;margin:0 0 3px">${i + 1}. ${escapeHtml(s.label)}</h2>${body}</section>`;
   }).join('');
   const notes = c.notes.trim() ? `<div style="margin-top:12px;padding:10px 14px;border:1.5px dashed #8C7F6B;border-radius:8px"><b>הערות אישיות:</b><br>${escapeHtml(c.notes).replace(/\n/g, '<br>')}</div>` : '';
