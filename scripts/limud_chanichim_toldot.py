@@ -30,7 +30,7 @@ def minutes(label):
 
 ACT = dict(
     id='limud-chanichim-toldot', title='לימוד חניכים: פרשת תולדות, לא להתפתות להנאה רגעית', categorySlug='activities',
-    subtopics=['פרשת תולדות', 'בחירה', 'התמודדות עם עייפות'], ageLabel='', ageMin=7, ageMax=12,
+    subtopics=['פרשת תולדות', 'בחירה', 'התמודדות עם עייפות'], ageLabel='', ageMin=1, ageMax=12,
     duration=sum(minutes(l) for l, _ in steps), groupSize='כל הקבוצה', equipment=[], shabbat='שניהם', place='פנים',
     energy='נמוכה', depth='בינוני', values=['בחירה', 'התמדה', 'עשיית הדבר החשוב'],
     tags=['לימוד חניכים', 'פרשת שבוע', 'תולדות', 'עשו ויעקב', 'בחירה', 'שבת', 'דיון'], rating=4.6, character='E',
