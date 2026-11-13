@@ -35,7 +35,7 @@ steps = [
 ]
 
 ACT = dict(
-    id=ID, title='תולדות: כוחן של מילים, ברכה שמרימה', categorySlug='activities',
+    id=ID, title='תולדות: כוחן של מילים וברכה', categorySlug='activities',
     subtopics=['ברכה', 'לשון טובה', 'מילים'], ageLabel='', ageMin=6, ageMax=8,
     duration=sum(minutes(l) for l, _ in steps), groupSize='10–25 חניכים', equipment=[], shabbat='שבת', place='פנים',
     energy='בינונית', depth='בינוני', values=['כוח המילים', 'ברכה', 'לשון טובה'],
