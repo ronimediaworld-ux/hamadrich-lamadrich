@@ -31,35 +31,30 @@ GENERAL = [
     'כי משפחה לא בוחרים..', 'כי אין לנו יותר לאן לשאוף..',
 ]
 
+COLORS = ['#FFD9A8', '#BFE3F2', '#F9C5D5', '#CDE8B0', '#E3D3F5', '#FFF0A0', '#BDEBDD', '#FFC9B8']
+
 CSS = '''
-@page { size: A4; margin: 16mm 15mm; }
+@page { size: A4; margin: 8mm; }
 * { box-sizing: border-box; }
 html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-body { margin: 0; font-family: 'Heebo', sans-serif; color: #000; background: #fff; direction: rtl; font-size: 12pt; }
-h1 { font: 900 30pt 'Rubik'; text-align: center; margin: 0 0 8mm; padding-bottom: 4mm; border-bottom: 1.2mm double #000; letter-spacing: .02em; }
-.name { margin: 0 0 7mm; break-inside: avoid; }
-.name h2 { font: 800 17pt 'Rubik'; margin: 0 0 3mm; padding-bottom: 1.2mm; border-bottom: .5mm solid #000; }
-.lines { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 4mm; }
-.line { border: .5mm solid #000; border-radius: 3mm; padding: 3mm 4mm; font: 700 12.5pt 'Rubik'; line-height: 1.45; break-inside: avoid; }
-.line.blank { border-style: dashed; }
+body { margin: 0; font-family: 'Rubik', 'Heebo', sans-serif; color: #000; background: #fff; direction: rtl; }
+.sheet { height: 281mm; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(9, 1fr); gap: 2.2mm; }
+.sq { border: .45mm solid #111; border-radius: 2.5mm; padding: 1.5mm 2.5mm; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 700; font-size: 9.5pt; line-height: 1.3; overflow: hidden; }
+.sq.blank { border-style: dashed; }
 '''
 
 
-def card(t):
-    return f'<div class="line{" blank" if "____" in t else ""}">{e(t)}</div>'
-
-
 def main():
-    parts = ['<section><h1>גלופות</h1>']
-    for name, lines in BY_NAME:
-        parts.append(f'<div class="name"><h2>{e(name)}</h2><div class="lines">{"".join(card(t) for t in lines)}</div></div>')
-    parts.append(f'<div class="name general"><h2>לכל שם</h2><div class="lines">{"".join(card(t) for t in GENERAL)}</div></div></section>')
+    lines = [t for _, ls in BY_NAME for t in ls] + GENERAL
+    cells = [f'<div class="sq{" blank" if "____" in t else ""}" style="background:{COLORS[i % len(COLORS)]}">{e(t)}</div>' for i, t in enumerate(lines)]
+    while len(cells) < 45:
+        cells.append(f'<div class="sq blank" style="background:{COLORS[len(cells) % len(COLORS)]}"></div>')
     doc = f'''<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>גלופות</title>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>{CSS}</style></head><body>{"".join(parts)}</body></html>'''
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>{CSS}</style></head><body><div class="sheet">{"".join(cells)}</div></body></html>'''
     out = os.path.join(ROOT, 'docs', 'glufot-found.html')
     open(out, 'w', encoding='utf-8').write(doc)
-    print('written', out)
+    print('written', out, len(lines), 'lines')
 
 
 if __name__ == '__main__':
