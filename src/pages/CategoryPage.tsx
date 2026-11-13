@@ -29,7 +29,7 @@ const colorBg: Record<string, string> = {
   yellow: 'var(--yellow)',
 };
 
-const activityDomains = ['הכל', 'ערכים', 'אמונה', 'פרשת שבוע', 'כללי'];
+const activityDomains = ['הכל', 'ערכים', 'אמונה', 'פרשת שבוע', 'לימוד חניכים', 'כללי'];
 const readingDomains = ['הכל', 'אמוני', 'ערכי', 'שניהם'];
 
 export function CategoryPage() {

@@ -18,6 +18,7 @@ const domainColor: Record<string, { bg: string; fg: string }> = {
   'ערכים': colorMap.lime,
   'אמונה': colorMap.sky,
   'פרשת שבוע': colorMap.magenta,
+  'לימוד חניכים': colorMap.yellow ?? colorMap.sky,
   'כללי': colorMap.flame,
 };
 
