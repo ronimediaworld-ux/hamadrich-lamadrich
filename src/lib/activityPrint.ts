@@ -9,6 +9,7 @@ import { bridgeCandidates, fillTopic, isSensitive } from '../data/gameBridges';
 import { timedSteps } from './timePlan';
 import { getChupar } from '../data/chuparim';
 import type { PersonalCopy } from './personalCopies';
+import glufotBook from '../data/glufotBook.json';
 
 const PALETTE = ['#C85B2A', '#A64D79', '#356E9A', '#5E7B2F', '#2F7D6A', '#6B5AA6', '#8A4D2A', '#B17824'];
 
@@ -346,6 +347,13 @@ export const PRINT_CSS_EXTRA = `${CSS}
   .toc li { padding: 5px 0; border-bottom: 1px dotted var(--line); display: flex; justify-content: space-between; gap: 12px; }
   .toc .t-sec { font-family: 'Rubik', sans-serif; font-weight: 800; color: var(--flame-ink); border-bottom: none; padding-top: 14px; }
   .item-generic .textcard { margin-top: 12px; }
+  .gv-h2 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 20px; margin: 18px 0 8px; border-bottom: 2px solid var(--ink); padding-bottom: 4px; }
+  .gv-h3 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 15px; margin: 12px 0 6px; color: var(--flame-ink); }
+  .gv-h3 small { margin-inline-start: 8px; font-weight: 500; color: var(--faint); font-size: 12px; }
+  .gv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
+  .gv-sq { border: 1.5px solid #1A140B; border-radius: 10px; padding: 8px 10px; text-align: center; font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 12.5px; line-height: 1.45; display: flex; align-items: center; justify-content: center; min-height: 54px; break-inside: avoid; overflow-wrap: anywhere; }
+  .gv-blank { border-style: dashed; }
+  .gv-group { break-inside: auto; }
 `;
 
 export function wrapDoc(title: string, runningTitle: string, inner: string): string {
@@ -376,6 +384,7 @@ export interface BinderEntry {
   generic?: { sub: string; text: string; link?: string };
   chupar?: Chupar;
   personal?: PersonalCopy;
+  glufot?: boolean;
 }
 
 // תבנית או עותק אישי בקלסר: שלבים ממולאים, ובשלב ריק שורת כתיבה (עם הכוונה קצרה) להשלמה ביד.
@@ -391,6 +400,22 @@ function renderPersonalBody(c: PersonalCopy): string {
   return goals + steps + notes;
 }
 
+// ספר "גלופות וקירות לנתקעים בדקה תשעים": משפטים בלבד, בריבועים צבעוניים, בלי הסברים (מתוך src/data/glufotBook.json).
+const GV_COLORS = ['#FFD9A8', '#BFE3F2', '#F9C5D5', '#CDE8B0', '#E3D3F5', '#FFF0A0', '#BDEBDD', '#FFC9B8'];
+function renderGlufotBook(): string {
+  let i = 0;
+  const book = glufotBook as { title: string; sections: { title: string; groups: { name: string; sub: string; lines: string[] }[] }[] };
+  const sections = book.sections.map((s, si) => {
+    const groups = s.groups.map((g) => {
+      const cards = g.lines.map((l) => `<div class="gv-sq${l.includes('____') ? ' gv-blank' : ''}" style="background:${GV_COLORS[i++ % GV_COLORS.length]}">${escapeHtml(l)}</div>`).join('');
+      const head = g.name ? `<h3 class="gv-h3">${escapeHtml(g.name)}${g.sub ? `<small>${escapeHtml(g.sub)}</small>` : ''}</h3>` : '';
+      return `<div class="gv-group">${head}<div class="gv-grid">${cards}</div></div>`;
+    }).join('');
+    return `<section class="gv-sec${si === 0 ? '' : ' page'}"><h2 class="gv-h2">${escapeHtml(s.title)}</h2>${groups}</section>`;
+  }).join('');
+  return `<main class="doc page gv"><div class="crumbs">גלופות וקירות</div><h1>${escapeHtml(book.title)}</h1><p class="desc">משפטים מוכנים לגלופות ולקירות הסניף. בוחרים, מדפיסים ותולים.</p>${sections}</main>`;
+}
+
 export function buildCombinedPrintHtml(docTitle: string, intro: string, entries: BinderEntry[]): string {
   const bySection: Record<string, BinderEntry[]> = {};
   entries.forEach((e) => (bySection[e.section] ??= []).push(e));
@@ -403,6 +428,7 @@ export function buildCombinedPrintHtml(docTitle: string, intro: string, entries:
       const chs = (e.activity.chuparIds ?? []).map((cid) => getChupar(cid)).filter((c): c is Chupar => !!c);
       return `<div class="page">${renderActivityMain(e.activity, e.categoryLabel ?? e.section, e.badge ?? e.section, chs.length ? { chuparim: chs, vals: [] } : undefined)}</div>`;
     }
+    if (e.glufot) return renderGlufotBook();
     if (e.personal) {
       return `<main class="doc item-generic page"><div class="crumbs">${escapeHtml(e.section)}</div><h1>${escapeHtml(e.title)}</h1><p class="desc">${escapeHtml(e.generic?.sub ?? '')}</p>${renderPersonalBody(e.personal)}</main>`;
     }

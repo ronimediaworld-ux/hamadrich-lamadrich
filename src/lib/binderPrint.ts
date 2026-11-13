@@ -2,6 +2,7 @@ import { activities } from '../data/activities';
 import { readings } from '../data/readings';
 import { staffStudy } from '../data/staffStudy';
 import { chuparim } from '../data/chuparim';
+import { downloadFiles } from '../data/files';
 import { getCategory, getActivityDomain } from '../data/categories';
 import { parseFavKey } from './favorites';
 import { getPersonal } from './personalCopies';
@@ -26,6 +27,9 @@ export function entriesForKeys(keys: string[]): BinderEntry[] {
     } else if (kind === 'personal') {
       const c = getPersonal(id);
       if (c) out.push({ section: 'התבניות והעותקים שלי', title: c.title, generic: { sub: c.kind === 'copy' ? 'עותק אישי של פעולה' : (c.updatedAt === 0 ? 'תבנית ריקה להדפסה' : 'תבנית אישית לפי שבעת החלקים'), text: '' }, personal: c });
+    } else if (kind === 'file') {
+      const f = downloadFiles.find((x) => x.id === id);
+      if (f && id === 'glufot-vekirot') out.push({ section: 'גלופות וקירות', title: f.title, generic: { sub: 'משפטים מוכנים לגלופות ולקירות', text: '' }, glufot: true });
     } else if (kind === 'chupar') {
       const c = chuparim.find((x) => x.id === id);
       if (c) out.push({ section: 'צ׳ופרים', title: c.title, generic: { sub: `${c.kind} · ${c.prepTime} · תקציב ${c.budget}`, text: `${c.description}\n\nטיפ: ${c.tip}` }, chupar: c });
