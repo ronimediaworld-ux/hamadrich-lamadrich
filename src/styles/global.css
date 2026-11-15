@@ -789,3 +789,12 @@ h1, h2, h3, h4 { font-weight: 700; }
 .binder-btn:hover { background: var(--yellow-tint); }
 .hero-scene::after { display: none; }
 .card { border-radius: 18px; }
+
+/* מתג בין שני סוגי צמדי מדריכים */
+.variant-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.variant-opt { text-align: start; display: grid; gap: 4px; background: var(--paper); border: 1.5px solid var(--stroke); border-radius: 16px; padding: 14px 16px; font-family: inherit; color: var(--ink); transition: border-color .2s ease, background .2s ease; }
+.variant-opt b { font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 15px; }
+.variant-opt span { font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
+.variant-opt:hover { border-color: var(--line-strong); }
+.variant-opt.is-on { background: var(--flame-tint); border-color: var(--flame); }
+@media (max-width: 560px) { .variant-switch { grid-template-columns: 1fr; } }
