@@ -807,3 +807,16 @@ h1, h2, h3, h4 { font-weight: 700; }
 
 .variant-opt.is-on { background: var(--yellow-tint); border-color: #7A5B00; }
 .variant-opt.is-on b { color: #7A5B00; }
+
+/* גלריית סרטונים */
+.vid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; align-items: start; }
+.vid-frame { position: relative; aspect-ratio: 9 / 16; background: #14122a; }
+.vid-frame iframe, .vid-poster { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vid-poster { padding: 0; cursor: pointer; background: #14122a; }
+.vid-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vid-play { position: absolute; inset-inline: 0; top: 50%; margin: -32px auto 0; width: 64px; height: 64px; border-radius: 50%; background: rgba(255, 255, 255, .92); color: var(--ink); display: grid; place-items: center; font-size: 22px; padding-inline-start: 4px; box-shadow: 0 10px 24px -10px rgba(0, 0, 0, .5); transition: transform .2s var(--ease); }
+.vid-poster:hover .vid-play { transform: scale(1.08); }
+.home-vids { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.home-vid { display: block; overflow: hidden; padding: 0; }
+.home-vid img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: center 30%; display: block; background: #14122a; }
+@media (max-width: 720px) { .home-vids { grid-template-columns: 1fr 1fr 1fr; gap: 8px; } .home-vid div { padding: 6px 8px 10px !important; } .home-vid div div:last-child { font-size: 12.5px !important; } }

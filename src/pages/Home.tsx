@@ -20,6 +20,7 @@ import { readings } from '../data/readings';
 import { chuparim } from '../data/chuparim';
 import { staffStudy } from '../data/staffStudy';
 import { situations } from '../data/situations';
+import { videos, thumbUrl } from '../data/videos';
 
 const shortcuts = ['אני צריך פעולה', 'משחק מהיר', 'פרשת השבוע', 'פעולה לשבת', 'משהו בלי ציוד', 'פעולה אמונית', '20 דקות פנויות'];
 const shortcutTint = ['#FFE8DC', '#E4F2E8', '#E4EEF8', '#F8E3EC', '#FBF0CC', '#EDE4F6', '#DDF1F1'];
@@ -162,6 +163,27 @@ export function Home() {
                 <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 900, fontSize: 30, color: statColor[String(label)] ?? 'var(--flame-ink)', lineHeight: 1.1 }}><CountUp to={Number(n)} /></div>
                 <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 4 }}>{label}</div>
               </div>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+
+      {/* VIDEO SERIES */}
+      <div className="wrap" style={{ paddingBottom: 40 }}>
+        <Reveal>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
+            <h2 style={{ fontSize: 24, fontWeight: 700 }}>סדרת הרשת: נדבר ת׳כלס</h2>
+            <Link to="/videos" style={{ fontSize: 14, fontWeight: 700, color: 'var(--flame-ink)' }}>לכל הסרטונים ←</Link>
+          </div>
+          <div className="home-vids">
+            {videos.filter((v) => v.episode).slice(0, 3).map((v) => (
+              <Link key={v.id} to="/videos" className="card home-vid">
+                {thumbUrl(v) && <img src={thumbUrl(v) as string} alt="" loading="lazy" />}
+                <div style={{ padding: '10px 14px 14px' }}>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--flame-ink)' }}>{v.episode}</div>
+                  <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 700, fontSize: 15.5 }}>{v.title}</div>
+                </div>
+              </Link>
             ))}
           </div>
         </Reveal>

@@ -23,6 +23,7 @@ const NAV: NavEntry[] = [
       { to: '/chuparim', label: 'צ׳ופרים', desc: 'מוכנים להדפסה, עם השם שלכם' },
       { to: '/category/games', label: 'משחקים', desc: 'קרחונים, אמון וגיבוש' },
       { to: '/category/methods', label: 'מתודות', desc: 'כלים לשילוב בכל פעולה' },
+      { to: '/videos', label: 'סרטונים', desc: 'סדרת הרשת של המדריך למדריך' },
     ],
   },
   {

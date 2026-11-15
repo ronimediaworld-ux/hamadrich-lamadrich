@@ -15,6 +15,7 @@ import { SearchResults } from './pages/SearchResults';
 import { Favorites } from './pages/Favorites';
 import { About } from './pages/About';
 import { Reviews } from './pages/Reviews';
+import { Videos } from './pages/Videos';
 import { HowToBuild } from './pages/HowToBuild';
 import { SubmitActivity } from './pages/SubmitActivity';
 import { Admin } from './pages/Admin';
@@ -87,6 +88,7 @@ export default function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/about" element={<About />} />
           <Route path="/how-to-build" element={<HowToBuild />} />
+          <Route path="/videos" element={<Videos />} />
           <Route path="/builder" element={<PlanBuilder />} />
           <Route path="/shabbat-pack" element={<ShabbatPack />} />
           <Route path="/whats-new" element={<WhatsNew />} />

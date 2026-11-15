@@ -21,6 +21,7 @@ export function Footer() {
           <Link to="/ai">עוזר AI</Link>
           <Link to="/category/tools">סיטואציות בהדרכה</Link>
           <Link to="/how-to-build">נדבר ת׳כלס</Link>
+          <Link to="/videos">סרטונים</Link>
           <Link to="/builder">בונה פעולה</Link>
           <Link to="/shabbat-pack">חבילת שבת</Link>
           <Link to="/favorites">הקלסר שלי</Link>
