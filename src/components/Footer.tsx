@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MascotIcon } from './TeenAvatar';
+import { SOCIAL } from '../data/social';
 
 export function Footer() {
   return (
@@ -29,6 +30,12 @@ export function Footer() {
           <Link to="/reviews">דירוג והמלצות</Link>
         </div>
       </div>
+      <nav className="wrap" aria-label="רשתות חברתיות" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14, marginTop: 18, fontSize: 13.5, fontWeight: 700 }}>
+        <span style={{ color: 'var(--ink-faint)', fontWeight: 600 }}>עקבו ותצטרפו:</span>
+        {SOCIAL.youtube && <a href={SOCIAL.youtube} target="_blank" rel="noopener noreferrer">יוטיוב</a>}
+        {SOCIAL.instagram && <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer">אינסטגרם</a>}
+        {SOCIAL.whatsapp && <a href={SOCIAL.whatsapp} target="_blank" rel="noopener noreferrer">קבוצת וואטסאפ</a>}
+      </nav>
       <nav className="wrap" aria-label="מסמכים משפטיים" style={{ display: 'flex', flexWrap: 'wrap', gap: 18, marginTop: 18, fontSize: 12.5, color: 'var(--ink-faint)' }}>
         <Link to="/privacy">מדיניות פרטיות</Link>
         <Link to="/terms">תנאי שימוש</Link>
