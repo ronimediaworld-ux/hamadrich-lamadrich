@@ -8,6 +8,7 @@ import { situations } from '../data/situations';
 import { methods } from '../data/methods';
 import { readings } from '../data/readings';
 import { staffStudy } from '../data/staffStudy';
+import { SOCIAL } from '../data/social';
 
 const stats = [
   { label: 'פעולות ומערכים', getCount: () => activities.length },
@@ -114,6 +115,21 @@ export function About() {
               <div style={{ fontSize: 12.5, color: 'var(--ink-faint)', marginTop: 4 }}>{s.label}</div>
             </div>
           ))}
+        </div>
+      </Reveal>
+
+      <Reveal delay={120}>
+        <div style={{ background: 'var(--paper)', border: '1.5px solid var(--stroke)', borderRadius: 18, padding: '26px 30px', marginBottom: 20 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>עקבו ותצטרפו</h2>
+          <p style={{ fontSize: 14.5, color: 'var(--ink-soft)', marginBottom: 18 }}>
+            סרטונים חדשים, רעיונות לפעולות ועדכונים על תוכן חדש באתר, בכל המקומות שאנחנו נמצאים בהם.
+          </p>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            {SOCIAL.youtube && <a className="btn btn-outline" href={SOCIAL.youtube} target="_blank" rel="noopener noreferrer">ערוץ היוטיוב ↗</a>}
+            {SOCIAL.instagram && <a className="btn btn-outline" href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer">אינסטגרם ↗</a>}
+            {SOCIAL.whatsapp && <a className="btn btn-outline" href={SOCIAL.whatsapp} target="_blank" rel="noopener noreferrer">קבוצת הוואטסאפ ↗</a>}
+            <Link to="/videos" className="btn btn-outline">הסרטונים באתר</Link>
+          </div>
         </div>
       </Reveal>
 
