@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><title>ניצוץ מונפש</title>
+<style>
+html,body{margin:0;height:100%}
+body{display:flex;align-items:center;justify-content:center;background:#E6F2F8;font-family:system-ui,sans-serif}
+svg.spark{height:440px;width:auto}
+.spark { overflow: visible; }
+.spark-anim .spark-eyes { transform-box: fill-box; transform-origin: 50% 55%; animation: sparkBlink 5.2s ease-in-out infinite; }
+.spark-anim .spark-root { transform-box: fill-box; transform-origin: 50% 100%; animation: sparkBreathe 3.4s ease-in-out infinite; }
+.spark-anim .spark-outer { transform-box: fill-box; transform-origin: 50% 100%; animation: sparkFlick 2.3s ease-in-out infinite; }
+.spark-anim .spark-mid { transform-box: fill-box; transform-origin: 50% 100%; animation: sparkFlick 1.9s ease-in-out -.6s infinite; }
+.spark-anim .spark-arm-r { transform-origin: 1024px 690px; animation: sparkWave 1.5s ease-in-out infinite; }
+.spark-anim .spark-arm-l { transform-origin: 522px 760px; animation: sparkSway 3s ease-in-out infinite; }
+.spark-anim .spark-leg-l { transform-origin: 692px 846px; animation: sparkStep 1.7s ease-in-out infinite; }
+.spark-anim .spark-leg-r { transform-origin: 786px 848px; animation: sparkStep 1.7s ease-in-out -.85s infinite; }
+.spark-anim .spark-s { transform-box: fill-box; transform-origin: 50% 50%; animation: sparkPulse 2.2s ease-in-out infinite; }
+.spark-anim .spark-s2 { animation-delay: -.5s; }
+.spark-anim .spark-s3 { animation-delay: -1.1s; }
+.spark-anim .spark-s4 { animation-delay: -1.6s; }
+@keyframes sparkBreathe { 0%, 100% { transform: translateY(0) scale(1, 1); } 50% { transform: translateY(-1.6%) scale(.992, 1.014); } }
+@keyframes sparkFlick { 0%, 100% { transform: scale(1, 1) skewX(0deg); } 35% { transform: scale(1.012, 1.03) skewX(-1.4deg); } 70% { transform: scale(.992, 1.012) skewX(1deg); } }
+@keyframes sparkBlink { 0%, 91%, 100% { transform: scaleY(1); } 94.5% { transform: scaleY(.08); } }
+@keyframes sparkWave { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(16deg); } }
+@keyframes sparkSway { 0%, 100% { transform: rotate(2deg); } 50% { transform: rotate(-5deg); } }
+@keyframes sparkStep { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+@keyframes sparkPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.8); } }
+</style></head><body>
+<svg viewBox="340 40 810 930" class="spark spark-anim"><defs><linearGradient id="o" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF4A06"/><stop offset="1" stop-color="#FF7A12"/></linearGradient><linearGradient id="m" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A00"/><stop offset="1" stop-color="#FFA800"/></linearGradient><radialGradient id="f" cx="0.55" cy="0.5" r="0.65"><stop offset="0" stop-color="#FFDC4D"/><stop offset="1" stop-color="#FFBE00"/></radialGradient></defs><g class="spark-root"><g class="spark-leg spark-leg-l" stroke="#2A2040" stroke-width="26" stroke-linecap="round" fill="none"><path d="M692 846 L668 912"/><path d="M612 934 q-4-22 30-22 q38 2 46 14 q2 20-30 22 q-34 4-46-14z" fill="#2A2040" stroke="none"/></g><g class="spark-leg spark-leg-r" stroke="#2A2040" stroke-width="26" stroke-linecap="round" fill="none"><path d="M786 848 L782 915"/><path d="M770 936 q0-24 30-22 q40-2 52 18 q-2 24-34 24 q-44 2-48-20z" fill="#2A2040" stroke="none"/></g><g class="spark-arm spark-arm-l"><path d="M522 760 Q470 794 420 774" stroke="#2A2040" stroke-width="23" stroke-linecap="round" fill="none"/><circle cx="418" cy="774" r="22" fill="#2A2040"/></g><g class="spark-arm spark-arm-r"><path d="M1024 690 Q1080 664 1088 624 Q1094 596 1106 590" stroke="#2A2040" stroke-width="23" stroke-linecap="round" fill="none"/><circle cx="1106" cy="590" r="22" fill="#2A2040"/></g><g class="spark-flame"><path class="spark-outer" d="M708 62C880 88 976 232 970 420L965 440 1005 400C1052 470 1068 574 1020 692 960 794 876 860 740 860 580 860 468 790 438 680 418 560 468 450 560 346 600 306 620 288 632 250 650 264 662 286 669 307 722 250 742 168 708 62Z" fill="url(#o)"/><path class="spark-mid" d="M800 158C930 232 948 352 940 480 1000 540 1012 612 986 684 922 792 830 852 740 852 600 852 496 782 470 646 466 566 520 500 600 442 660 400 700 390 760 352 806 322 808 240 800 158Z" fill="url(#m)"/><path class="spark-face-layer" d="M853 285C906 340 930 420 936 482 992 560 1012 640 978 704 924 794 832 846 740 848 622 848 522 782 496 690 480 628 500 558 560 492 624 438 704 458 762 424 822 398 852 358 853 285Z" fill="url(#f)"/><ellipse cx="626" cy="690" rx="40" ry="28" fill="#FF8A5C"/><ellipse cx="922" cy="652" rx="38" ry="28" fill="#FF8A5C"/><g class="spark-eyes"><ellipse cx="648" cy="636" rx="27" ry="39" fill="#2A2040" transform="rotate(-4 648 636)"/><ellipse cx="893" cy="602" rx="27" ry="39" fill="#2A2040" transform="rotate(-4 893 602)"/><ellipse cx="657" cy="616" rx="7" ry="12" fill="#fff"/><ellipse cx="902" cy="582" rx="7" ry="12" fill="#fff"/></g><g stroke="#2A2040" stroke-width="8.5" stroke-linecap="round" fill="none"><path d="M600 526 Q620 492 652 503"/><path d="M850 478 Q876 462 898 490"/></g><path d="M752 690 C758 716 804 720 812 686" stroke="#2A2040" stroke-width="8.5" stroke-linecap="round" fill="none"/><g stroke="#2A2040" stroke-width="8" stroke-linecap="round" fill="rgba(255,255,255,.08)"><circle cx="642" cy="637" r="93"/><circle cx="889" cy="604" r="93"/><path d="M735 612 Q765 588 796 600" fill="none"/><path d="M517 640 L548 634 M985 578 L997 578" fill="none"/></g></g><g stroke="#FFC107" stroke-width="22" stroke-linecap="round" fill="none"><path class="spark-s spark-s1" d="M424 318 L468 374"/><path class="spark-s spark-s2" d="M370 394 L436 420"/><path class="spark-s spark-s3" d="M1036 344 L1060 290"/><path class="spark-s spark-s4" d="M1068 372 L1126 334"/></g></g></svg>
+</body></html>
