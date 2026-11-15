@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 190" width="420" height="570">
+  <!-- ground shadow -->
+  <ellipse cx="70" cy="181" rx="34" ry="5.5" fill="#E9573A" opacity=".22"/>
+  <!-- legs + feet -->
+  <g fill="#E8472F">
+    <path d="M55 150 q-3 14 -1 24 q1 4 6 4 q6 0 6 -5 l1 -23z"/>
+    <path d="M85 150 q3 14 1 24 q-1 4 -6 4 q-6 0 -6 -5 l-1 -23z"/>
+  </g>
+  <!-- feet -->
+  <ellipse cx="58" cy="176.5" rx="9" ry="4.6" fill="#E03D28"/><ellipse cx="82" cy="176.5" rx="9" ry="4.6" fill="#E03D28"/>
+  <!-- arms -->
+  <g fill="#EE5233">
+    <path d="M44 136 q-17 -2 -25 -16 q-3 -6 2 -9 q5 -3 9 3 q6 8 18 9z"/>
+    <path d="M93 134 q17 -1 27 -9 q5 -4 9 0 q3 5 -1 9 q-11 12 -35 12z"/>
+  </g>
+  <!-- body -->
+  <path d="M46 126 q-4 28 6 32 q18 6 36 0 q10 -4 6 -32z" fill="#F0502F"/>
+  <ellipse cx="70" cy="146" rx="11" ry="12" fill="#FF9A2E"/>
+  <!-- flame head -->
+  <path d="M73 4 C79 24 108 38 114 74 C120 106 100 132 70 134 C40 132 20 106 26 76 C30 56 42 52 47 38 C52 54 58 58 63 56 C56 40 62 20 73 4Z" fill="#EE4A2E"/>
+  <path d="M71 28 C76 42 98 52 102 78 C106 102 90 124 70 126 C50 124 34 104 38 80 C41 66 50 62 54 52 C58 62 63 64 66 62 C62 52 65 38 71 28Z" fill="#FF8A1F"/>
+  <ellipse cx="70" cy="96" rx="31" ry="27" fill="#FFC21E"/>
+  <!-- cheeks -->
+  <circle cx="45" cy="106" r="5" fill="#FF8F6B" opacity=".55"/>
+  <circle cx="95" cy="106" r="5" fill="#FF8F6B" opacity=".55"/>
+  <!-- eyes -->
+  <circle cx="56" cy="93" r="4.4" fill="#2F2420"/><circle cx="84" cy="93" r="4.4" fill="#2F2420"/>
+  <circle cx="57.4" cy="91.6" r="1.4" fill="#fff"/><circle cx="85.4" cy="91.6" r="1.4" fill="#fff"/>
+  <!-- glasses -->
+  <g fill="rgba(255,255,255,.22)" stroke="#3A2A26" stroke-width="2.6">
+    <circle cx="56" cy="93" r="12.5"/><circle cx="84" cy="93" r="12.5"/>
+  </g>
+  <path d="M68.5 91.5 q1.5 -2 3 0" stroke="#3A2A26" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M43.6 90 l-6 -2 M96.4 90 l6 -2" stroke="#3A2A26" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M49 86 q3 -3 7 -3" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".8"/>
+  <path d="M77 86 q3 -3 7 -3" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".8"/>
+  <!-- smile -->
+  <path d="M63 109 Q70 116 77 109" stroke="#2F2420" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <!-- embers -->
+  <g fill="#FF8A1F">
+    <path d="M18 46 q-6 -9 0 -18 q6 9 0 18z"/>
+    <path d="M122 26 q-5 -8 0 -16 q5 8 0 16z" fill="#FF6A3A"/>
+    <path d="M128 98 q-4 -7 0 -13 q4 6 0 13z"/>
+    <path d="M14 122 q-5 -6 0 -12 q5 6 0 12z" fill="#FF6A3A"/>
+  </g>
+</svg>

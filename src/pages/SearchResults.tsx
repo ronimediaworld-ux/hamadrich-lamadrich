@@ -37,7 +37,7 @@ export function SearchResults() {
       </Reveal>
 
       <Reveal delay={40}>
-        <form onSubmit={onSearch} style={{ display: 'flex', gap: 10, maxWidth: 560, marginBottom: 32, background: 'var(--paper)', border: '2.5px solid var(--ink)', borderRadius: 999, padding: '8px 8px 8px 20px' }}>
+        <form onSubmit={onSearch} style={{ display: 'flex', gap: 10, maxWidth: 560, marginBottom: 32, background: 'var(--paper)', border: '1.5px solid var(--stroke)', borderRadius: 999, padding: '8px 8px 8px 20px' }}>
           <SearchIcon size={18} color="var(--ink-soft)" />
           <input
             value={q}

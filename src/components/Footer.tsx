@@ -3,7 +3,7 @@ import { MascotIcon } from './TeenAvatar';
 
 export function Footer() {
   return (
-    <footer className="no-print" style={{ borderTop: '2px solid var(--ink)', padding: '32px 0 44px', marginTop: 60 }}>
+    <footer className="no-print" style={{ borderTop: '1.5px solid var(--stroke)', padding: '32px 0 44px', marginTop: 60 }}>
       <div className="wrap" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 15 }}>

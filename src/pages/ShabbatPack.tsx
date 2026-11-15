@@ -67,7 +67,7 @@ export function ShabbatPack() {
       </div>
 
       <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 10 }}>עוד פעולות לשבת</h2>
-      <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="חיפוש פעולה לשבת: חברות, אמונה..." aria-label="חיפוש פעולה לשבת" style={{ width: '100%', maxWidth: 420, padding: '10px 16px', borderRadius: 999, border: '2px solid var(--ink)', fontSize: 14.5, fontFamily: 'Heebo, sans-serif', marginBottom: 10 }} />
+      <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="חיפוש פעולה לשבת: חברות, אמונה..." aria-label="חיפוש פעולה לשבת" style={{ width: '100%', maxWidth: 420, padding: '10px 16px', borderRadius: 999, border: '1.5px solid var(--stroke)', fontSize: 14.5, fontFamily: 'Heebo, sans-serif', marginBottom: 10 }} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 22 }}>
         {extra.map((a) => <Row key={a.id} id={a.id} title={a.title} sub={`${a.ageLabel} · ${a.duration} דק׳`} set={checked} setter={setChecked} />)}
       </div>

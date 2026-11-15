@@ -38,12 +38,12 @@ function classify(label: string): SectionKind {
 
 const KIND_COLOR: Record<SectionKind, string> = {
   open: '#C85B2A',
-  game: '#2F7D6A',
-  link: '#6B5AA6',
-  reading: '#A64D79',
-  discussion: '#356E9A',
+  game: '#5FB09A',
+  link: '#8E7BD6',
+  reading: '#D66E9F',
+  discussion: '#5AA3C9',
   activity: '#B17824',
-  summary: '#8A4D2A',
+  summary: '#C98A66',
   bonus: '#B35C3C',
   meta: '#65725F',
 };
@@ -180,11 +180,11 @@ function renderPointer(section: Section, num: string, pageNote: string): string 
 export function mascotSvg(gradId: string): string {
   return `<svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true">
   <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#F2C85B"/><stop offset="100%" stop-color="#D96A2B"/>
+    <stop offset="0%" stop-color="#F2C85B"/><stop offset="100%" stop-color="#EE7B4D"/>
   </linearGradient></defs>
-  <path d="M40 6c10 14 26 24 26 42a26 26 0 0 1-52 0c0-8 3-14 7-19 2 7 7 10 11 7-5-13 1-22 8-30z" fill="url(#${gradId})" stroke="#241C11" stroke-width="2.4" stroke-linejoin="round"/>
-  <circle cx="32" cy="52" r="4" fill="#241C11"/><circle cx="50" cy="52" r="4" fill="#241C11"/>
-  <path d="M32 62c3 3 13 3 16 0" stroke="#241C11" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M40 6c10 14 26 24 26 42a26 26 0 0 1-52 0c0-8 3-14 7-19 2 7 7 10 11 7-5-13 1-22 8-30z" fill="url(#${gradId})" stroke="#3B3652" stroke-width="2.4" stroke-linejoin="round"/>
+  <circle cx="32" cy="52" r="4" fill="#3B3652"/><circle cx="50" cy="52" r="4" fill="#3B3652"/>
+  <path d="M32 62c3 3 13 3 16 0" stroke="#3B3652" stroke-width="2.4" fill="none" stroke-linecap="round"/>
 </svg>`;
 }
 
@@ -247,7 +247,7 @@ export function buildPrintableHtml(title: string, bodyText: string): string {
 <title>${safeTitle}</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@600;800&family=Heebo:wght@400;500;700&display=swap');
-  :root { --bg:#FBF9F2; --paper:#FFFEFA; --ink:#241C11; --ink-soft:#5B4E3C; --ink-faint:#8C7F6B; --line:#E4DBC8; --flame:#D96A2B; --flame-ink:#7A3712; --flame-tint:#FBE4D2; }
+  :root { --bg:#FBF9F2; --paper:#FFFFFF; --ink:#3B3652; --ink-soft:#5D5972; --ink-faint:#8A8699; --line:#E4DBC8; --flame:#EE7B4D; --flame-ink:#8A3A18; --flame-tint:#FFE8DC; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Heebo', Arial, sans-serif; direction: rtl; }
   .sheet { max-width: 720px; margin: 0 auto; background: var(--paper); padding: 30px 34px 40px; }

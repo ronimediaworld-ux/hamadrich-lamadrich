@@ -279,7 +279,7 @@ export function AIAssistant() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="כתבו כל שאלה או בקשה..."
-          style={{ flex: 1, padding: '13px 18px', borderRadius: 999, border: '2.5px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif', fontSize: 15, outline: 'none' }}
+          style={{ flex: 1, padding: '13px 18px', borderRadius: 999, border: '1.5px solid var(--stroke)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif', fontSize: 15, outline: 'none' }}
         />
         <button type="submit" className="btn btn-flame" disabled={loading}>שליחה</button>
       </form>

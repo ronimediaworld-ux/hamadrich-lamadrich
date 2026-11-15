@@ -44,7 +44,7 @@ function AdminLogin({ onLoggedIn }: { onLoggedIn: () => void }) {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="סיסמה"
           autoFocus
-          style={{ width: '100%', border: '2px solid var(--ink)', borderRadius: 10, padding: '10px 14px', fontSize: 15, marginBottom: 12 }}
+          style={{ width: '100%', border: '1.5px solid var(--stroke)', borderRadius: 10, padding: '10px 14px', fontSize: 15, marginBottom: 12 }}
         />
         {error && <p style={{ color: 'var(--flame-ink)', fontSize: 13.5, marginBottom: 12 }}>{error}</p>}
         <button type="submit" className="btn btn-flame" disabled={busy} style={{ width: '100%', justifyContent: 'center' }}>

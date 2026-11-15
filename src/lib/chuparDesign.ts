@@ -16,7 +16,7 @@ export const PALETTES: Record<string, Palette> = {
   mint: { bg: '#DDF6EE', fg: '#0F4D42', acc: '#1FAF92', acc2: '#8FE3CE' },
   sky: { bg: '#E6EEFF', fg: '#1B2F6B', acc: '#3F6BE8', acc2: '#A9C0FF' },
   chalk: { bg: '#2B3A33', fg: '#F4F1E6', acc: '#F4D35E', acc2: '#8FD1B5' },
-  cream: { bg: '#FFF8E7', fg: '#3B2A14', acc: '#E05D2D', acc2: '#F2B84B' },
+  cream: { bg: '#FFF8E7', fg: '#3B2A14', acc: '#E05D2D', acc2: '#F5CB63' },
 };
 
 export const FONT_IMPORT = "https://fonts.googleapis.com/css2?family=Rubik:wght@500;800;900&family=Heebo:wght@400;500;700;800&family=Suez+One&family=Secular+One&family=Amatic+SC:wght@400;700&family=Karantina:wght@700&family=Frank+Ruhl+Libre:wght@700;900&family=Varela+Round&family=Gveret+Levin&family=Playpen+Sans+Hebrew:wght@700;800&family=Alef:wght@700&family=David+Libre:wght@700&display=swap";
@@ -110,10 +110,10 @@ function motif(name: string, p: Palette): string {
 // צבעי "מרקר" שטוחים — בהשראת העיצובים המקוריים (רקע לבן, מסגרת שחורה דקה, כיתוב שחור עבה, תוויות צבעוניות)
 const CHIP_COLORS = ['#FFEB00', '#FF9500', '#7EE06A', '#F27FE0', '#C137D6'];
 const FLAT: Record<string, [string, string]> = {
-  sunrise: ['#FF9500', '#FFEB00'], berry: ['#F27FE0', '#C137D6'], ocean: ['#4A5D8F', '#8FB8E8'],
-  forest: ['#7EE06A', '#90A783'], grape: ['#C137D6', '#F27FE0'], night: ['#4A5D8F', '#FFEB00'],
+  sunrise: ['#FF9500', '#FFEB00'], berry: ['#F27FE0', '#C137D6'], ocean: ['#6F86C4', '#8FB8E8'],
+  forest: ['#7EE06A', '#90A783'], grape: ['#C137D6', '#F27FE0'], night: ['#6F86C4', '#FFEB00'],
   sand: ['#C9A27E', '#FFEB00'], cherry: ['#FF4D4D', '#FF9500'], mint: ['#7EE06A', '#8FE3CE'],
-  sky: ['#4A5D8F', '#8FB8E8'], chalk: ['#90A783', '#FFEB00'], cream: ['#FF9500', '#FFEB00'],
+  sky: ['#6F86C4', '#8FB8E8'], chalk: ['#90A783', '#FFEB00'], cream: ['#FF9500', '#FFEB00'],
 };
 
 function hash(id: string): number {
@@ -252,10 +252,10 @@ export const isDieShape = (shape: string): boolean => shape in DIE;
 
 // שלושה צבעי עיצוב לכל פלטה: שני צבעים בהירים (מתחת לטקסט שחור) וצבע כהה לגושים קטנים
 const THEMES: Record<string, [string, string, string]> = {
-  sunrise: ['#FF9500', '#FFEB00', '#404040'], berry: ['#F27FE0', '#FFEB00', '#C137D6'], ocean: ['#8FB8E8', '#FFEB00', '#4A5D8F'],
-  forest: ['#7EE06A', '#F27FE0', '#4A5D8F'], grape: ['#D49BEF', '#7EE06A', '#C137D6'], night: ['#8FB8E8', '#FFEB00', '#4A5D8F'],
-  sand: ['#E3C29B', '#FF9500', '#404040'], cherry: ['#FF7A70', '#FFEB00', '#404040'], mint: ['#8FE3CE', '#FFEB00', '#4A5D8F'],
-  sky: ['#A9C0FF', '#7EE06A', '#4A5D8F'], chalk: ['#B7CBA9', '#FFEB00', '#4A5D8F'], cream: ['#FFEB00', '#FF9500', '#404040'],
+  sunrise: ['#FF9500', '#FFEB00', '#4B4666'], berry: ['#F27FE0', '#FFEB00', '#C137D6'], ocean: ['#8FB8E8', '#FFEB00', '#6F86C4'],
+  forest: ['#7EE06A', '#F27FE0', '#6F86C4'], grape: ['#D49BEF', '#7EE06A', '#C137D6'], night: ['#8FB8E8', '#FFEB00', '#6F86C4'],
+  sand: ['#E3C29B', '#FF9500', '#4B4666'], cherry: ['#FF7A70', '#FFEB00', '#4B4666'], mint: ['#8FE3CE', '#FFEB00', '#6F86C4'],
+  sky: ['#A9C0FF', '#7EE06A', '#6F86C4'], chalk: ['#B7CBA9', '#FFEB00', '#6F86C4'], cream: ['#FFEB00', '#FF9500', '#4B4666'],
 };
 
 // בחירת לוק לכרטיס שלא הוגדר לו: לפי היחס בין הרוחב לגובה
@@ -312,7 +312,7 @@ ${strip('left')}${strip('right')}
 <div style="position:absolute;left:31mm;right:9mm;top:2mm;bottom:2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
 <div style="font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.4mm;line-height:1;letter-spacing:.06em">★ הקרנה מיוחדת ★</div>
 <div style="font-family:'Secular One','Rubik',sans-serif;font-size:8mm;line-height:1.05;white-space:nowrap">${esc(pr.text)}</div>
-<div style="height:.9mm;background:#404040;border-radius:1mm;width:78%;margin:.7mm 0 1mm"></div>
+<div style="height:.9mm;background:#4B4666;border-radius:1mm;width:78%;margin:.7mm 0 1mm"></div>
 <div style="font-family:'Rubik',sans-serif;font-weight:900;font-size:5.4mm;line-height:1.1">${esc(subtitle)}</div>
 <div style="display:flex;gap:1.4mm;margin-top:1.3mm;justify-content:center;flex-wrap:wrap">${chipsHtml}</div></div></div>`;
   }
@@ -324,20 +324,20 @@ ${strip('left')}${strip('right')}
     const tfs = Math.min(11.5, 50 / Math.max(total, 5) / 0.6);
     const slot = nm
       ? esc(nm)
-      : `<span style="display:inline-block;min-width:${tfs * 2.6}mm;height:${tfs * 0.8}mm;border-bottom:${Math.max(.7, tfs * 0.09)}mm dotted #404040;vertical-align:baseline"></span>`;
+      : `<span style="display:inline-block;min-width:${tfs * 2.6}mm;height:${tfs * 0.8}mm;border-bottom:${Math.max(.7, tfs * 0.09)}mm dotted #4B4666;vertical-align:baseline"></span>`;
     const chipCss = (bg: string, fg = '#111') => `background:${bg};color:${fg};font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:4.6mm;line-height:1;padding:.5mm 1.8mm .8mm;`;
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;color:#111;direction:rtl;">
 <div style="position:absolute;inset:1.8mm;border:.3mm solid #111;pointer-events:none"></div>
 <div style="position:absolute;left:0;top:0;width:36mm;height:${h}mm">
 <svg viewBox="0 0 120 100" style="position:absolute;inset:0;width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M10 34c-2-16 16-26 34-20 14-8 34 0 38 18 14 6 24 22 12 38-8 12-22 12-30 8-4 14-24 22-38 12C8 78 2 60 10 34z" fill="#93A683"/></svg>
-<div style="position:absolute;left:7mm;top:5mm;width:22mm;height:22mm;background:#4A5D8F;transform:rotate(14deg)"></div>
-<div style="position:absolute;left:10mm;top:8mm;width:15mm;height:15mm;background:#404040;color:#fff;font-family:'Secular One','Rubik',sans-serif;text-align:center;font-size:3.3mm;line-height:1.05;padding-top:3.3mm;box-sizing:border-box"><div style="font-size:2.6mm">15</div>קפליות</div>
-<div style="position:absolute;left:17mm;top:19mm;width:12mm;height:12mm;background:#404040;transform:rotate(0deg)"></div>
-<div style="position:absolute;left:14mm;top:22mm;width:16mm;height:16mm;background:#4A5D8F;opacity:.0"></div>
+<div style="position:absolute;left:7mm;top:5mm;width:22mm;height:22mm;background:#6F86C4;transform:rotate(14deg)"></div>
+<div style="position:absolute;left:10mm;top:8mm;width:15mm;height:15mm;background:#4B4666;color:#fff;font-family:'Secular One','Rubik',sans-serif;text-align:center;font-size:3.3mm;line-height:1.05;padding-top:3.3mm;box-sizing:border-box"><div style="font-size:2.6mm">15</div>קפליות</div>
+<div style="position:absolute;left:17mm;top:19mm;width:12mm;height:12mm;background:#4B4666;transform:rotate(0deg)"></div>
+<div style="position:absolute;left:14mm;top:22mm;width:16mm;height:16mm;background:#6F86C4;opacity:.0"></div>
 </div>
 <div style="position:absolute;right:5mm;left:38mm;top:6.4mm;bottom:3mm;display:flex;flex-direction:column;justify-content:center;align-items:stretch">
 <div style="font-family:'Secular One','Rubik',sans-serif;font-size:${tfs}mm;line-height:1.1;text-align:center;white-space:nowrap">${esc(prefix)}${slot}</div>
-<div style="height:1mm;background:#404040;border-radius:1mm;margin:.8mm 1mm 1.4mm"></div>
+<div style="height:1mm;background:#4B4666;border-radius:1mm;margin:.8mm 1mm 1.4mm"></div>
 <div style="display:flex;flex-wrap:wrap;gap:1.4mm 2mm;align-items:center;justify-content:flex-start">
 <span style="font-family:'Amatic SC','Heebo',cursive;font-weight:700;font-size:5mm">לקחת כש:</span>
 <span style="${chipCss('#FF9500')}">כואב לי</span><span style="${chipCss('#C137D6', '#fff')}">עייף/ה</span>

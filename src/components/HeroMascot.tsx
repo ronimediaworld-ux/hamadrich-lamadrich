@@ -18,7 +18,7 @@ export function HeroMascot({ size = 120 }: { size?: number }) {
           <path d="M12 0 14.6 9.4 24 12 14.6 14.6 12 24 9.4 14.6 0 12 9.4 9.4Z" fill="#FFE59A" />
         </svg>
       ))}
-      <div className="hm-flame"><MascotIcon size={size} /></div>
+      <div className="hm-flame"><MascotIcon size={size} body /></div>
       <div className="hm-shadow" />
     </div>
   );

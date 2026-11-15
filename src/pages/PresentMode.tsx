@@ -86,24 +86,24 @@ export function PresentMode() {
 
   const overtime = left !== null && left < 0;
   return (
-    <div className="present" style={{ minHeight: '100vh', background: '#1E1710', color: '#F7EBD2', display: 'flex', flexDirection: 'column', padding: 'clamp(16px, 3vw, 36px)' }}>
+    <div className="present" style={{ minHeight: '100vh', background: '#1E1710', color: '#FFF4DC', display: 'flex', flexDirection: 'column', padding: 'clamp(16px, 3vw, 36px)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
         <Link to={`/activity/${activity.id}`} style={{ color: '#CBBFA6', fontSize: 14 }}>→ חזרה לפעולה</Link>
         <div style={{ display: 'flex', gap: 6 }} aria-label={`שלב ${i + 1} מתוך ${slides.length}`}>
           {slides.map((_, k) => (
-            <button key={k} type="button" onClick={() => setI(k)} aria-label={`שלב ${k + 1}`} style={{ width: k === i ? 28 : 12, height: 12, borderRadius: 999, border: 'none', cursor: 'pointer', background: k === i ? 'var(--flame)' : k < i ? '#8C7F6B' : '#4A3E2E', transition: 'width .2s' }} />
+            <button key={k} type="button" onClick={() => setI(k)} aria-label={`שלב ${k + 1}`} style={{ width: k === i ? 28 : 12, height: 12, borderRadius: 999, border: 'none', cursor: 'pointer', background: k === i ? 'var(--flame)' : k < i ? '#8A8699' : '#4A3E2E', transition: 'width .2s' }} />
           ))}
         </div>
-        <button type="button" onClick={toggleFullscreen} style={{ background: 'transparent', border: '1px solid #6B5A44', color: '#F7EBD2', borderRadius: 999, padding: '6px 14px', fontSize: 13 }}>מסך מלא</button>
+        <button type="button" onClick={toggleFullscreen} style={{ background: 'transparent', border: '1px solid #6B5A44', color: '#FFF4DC', borderRadius: 999, padding: '6px 14px', fontSize: 13 }}>מסך מלא</button>
       </div>
 
       <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', maxWidth: 980, width: '100%', margin: '0 auto', animation: 'cardIn .35s cubic-bezier(.2,.8,.2,1)' }}>
         <div style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: slide.kind === 'title' ? 'clamp(34px, 6vw, 64px)' : 'clamp(26px, 4.4vw, 46px)', color: slide.kind === 'step' ? '#F2C85B' : '#fff', lineHeight: 1.15, marginBottom: 18 }}>
-          {slide.kind === 'step' && <span style={{ color: '#8C7F6B', marginInlineEnd: 12 }}>{i}.</span>}
+          {slide.kind === 'step' && <span style={{ color: '#8A8699', marginInlineEnd: 12 }}>{i}.</span>}
           {slide.label}
         </div>
         {slide.body && (
-          <div style={{ fontSize: 'clamp(19px, 2.8vw, 30px)', lineHeight: 1.65, whiteSpace: 'pre-line', color: '#F7EBD2' }}>{slide.body}</div>
+          <div style={{ fontSize: 'clamp(19px, 2.8vw, 30px)', lineHeight: 1.65, whiteSpace: 'pre-line', color: '#FFF4DC' }}>{slide.body}</div>
         )}
         {slide.items && slide.items.length > 0 && (
           <ul style={{ margin: '16px 0 0', paddingInlineStart: 28, fontSize: 'clamp(18px, 2.6vw, 28px)', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -121,8 +121,8 @@ export function PresentMode() {
         {left !== null && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 'clamp(30px, 5vw, 52px)', color: overtime ? '#FF8A7A' : '#fff', fontVariantNumeric: 'tabular-nums', direction: 'ltr' }}>{overtime ? '-' : ''}{fmt(Math.abs(left))}</span>
-            <button type="button" onClick={() => setRunning((r) => !r)} style={{ background: '#F7EBD2', color: '#1E1710', border: 'none', borderRadius: 999, padding: '9px 20px', fontWeight: 800, fontSize: 15 }}>{running ? 'עצירה' : 'התחלה'}</button>
-            <button type="button" onClick={() => { setLeft(slide.minutes ? slide.minutes * 60 : null); setRunning(false); }} style={{ background: 'transparent', border: '1px solid #6B5A44', color: '#F7EBD2', borderRadius: 999, padding: '8px 16px', fontSize: 13 }}>איפוס</button>
+            <button type="button" onClick={() => setRunning((r) => !r)} style={{ background: '#FFF4DC', color: '#1E1710', border: 'none', borderRadius: 999, padding: '9px 20px', fontWeight: 800, fontSize: 15 }}>{running ? 'עצירה' : 'התחלה'}</button>
+            <button type="button" onClick={() => { setLeft(slide.minutes ? slide.minutes * 60 : null); setRunning(false); }} style={{ background: 'transparent', border: '1px solid #6B5A44', color: '#FFF4DC', borderRadius: 999, padding: '8px 16px', fontSize: 13 }}>איפוס</button>
           </div>
         )}
         <button type="button" className="btn btn-flame" onClick={() => go(1)} disabled={i === slides.length - 1} style={{ opacity: i === slides.length - 1 ? 0.35 : 1 }}>הבא ←</button>

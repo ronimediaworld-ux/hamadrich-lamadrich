@@ -49,13 +49,13 @@ export function Mascot() {
           maxWidth: 220,
           background: 'var(--paper)',
           color: 'var(--ink)',
-          border: '2px solid var(--ink)',
+          border: '1.5px solid var(--stroke)',
           borderRadius: '16px 16px 16px 4px',
           padding: '11px 15px',
           fontSize: 13,
           lineHeight: 1.5,
           fontWeight: 600,
-          boxShadow: '0 14px 26px -14px rgba(36,28,17,0.5)',
+          boxShadow: '0 14px 26px -14px rgba(60,50,100,0.5)',
         }}
       >
         {text}
@@ -71,12 +71,12 @@ export function Mascot() {
           height: 58,
           borderRadius: '50%',
           background: 'var(--paper)',
-          border: '2.5px solid var(--ink)',
+          border: '1.5px solid var(--stroke)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          boxShadow: '0 14px 26px -14px rgba(36,28,17,0.55)',
+          boxShadow: '0 14px 26px -14px rgba(60,50,100,0.55)',
         }}
       >
         <MascotIcon size={38} />

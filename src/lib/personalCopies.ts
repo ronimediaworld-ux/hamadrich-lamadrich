@@ -84,7 +84,7 @@ export function personalText(c: PersonalCopy): string {
 
 export function buildPersonalPrintHtml(c: PersonalCopy): string {
   const steps = c.steps.map((s, i) => `
-  <section class="st" style="--c:${s.color || '#D96A2B'}">
+  <section class="st" style="--c:${s.color || '#EE7B4D'}">
     <h2><span class="n">${i + 1}</span>${escapeHtml(s.label)}</h2>
     <p>${s.body.trim() ? para(s.body) : (c.cleanPrint ? '<span class="blank">&nbsp;</span>'.repeat(4) : '<span class="blank">&nbsp;</span>')}</p>
   </section>`).join('');
@@ -96,18 +96,18 @@ export function buildPersonalPrintHtml(c: PersonalCopy): string {
   @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500;800&family=Heebo:wght@400;700&display=swap');
   * { box-sizing: border-box; }
   @page { size: A4; margin: 12mm; }
-  body { margin: 0; color: #241C11; direction: rtl; font-family: 'Heebo', sans-serif; font-size: 14px; line-height: 1.75; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; color: #3B3652; direction: rtl; font-family: 'Heebo', sans-serif; font-size: 14px; line-height: 1.75; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .doc { max-width: 186mm; margin: 0 auto; }
   h1 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 26px; margin: 0 0 4px; }
-  .by { color: #8C7F6B; font-size: 12px; margin: 0 0 12px; }
+  .by { color: #8A8699; font-size: 12px; margin: 0 0 12px; }
   h3 { font-family: 'Rubik', sans-serif; font-size: 16px; margin: 10px 0 4px; }
-  .st { break-inside: avoid; border-inline-start: 5px solid var(--c); padding: 6px 14px 8px; margin: 0 0 10px; background: #FFFEFA; border-radius: 6px; }
+  .st { break-inside: avoid; border-inline-start: 5px solid var(--c); padding: 6px 14px 8px; margin: 0 0 10px; background: #FFFFFF; border-radius: 6px; }
   .st h2 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 17px; margin: 0 0 3px; display: flex; align-items: center; gap: 8px; }
   .n { background: var(--c); color: #fff; border-radius: 50%; width: 24px; height: 24px; line-height: 24px; text-align: center; font-size: 13px; }
   .st p { margin: 0; }
   .blank { display: block; height: ${c.cleanPrint ? 34 : 46}px; border-bottom: 1px solid #C9BFA9; }
-  .notes { margin-top: 12px; padding: 10px 14px; border: 1.5px dashed #8C7F6B; border-radius: 8px; }
-  .foot { margin-top: 14px; font-size: 11px; color: #8C7F6B; }
+  .notes { margin-top: 12px; padding: 10px 14px; border: 1.5px dashed #8A8699; border-radius: 8px; }
+  .foot { margin-top: 14px; font-size: 11px; color: #8A8699; }
 </style></head><body><div class="doc">
   <h1>${escapeHtml(c.title)}</h1>
   <p class="by">${c.kind === 'copy' ? 'עותק אישי · ' : ''}המדריך למדריך</p>

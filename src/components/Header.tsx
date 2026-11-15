@@ -79,7 +79,7 @@ export function Header() {
   }
 
   const searchForm = (className?: string, extraStyle?: React.CSSProperties) => (
-    <form onSubmit={onSearch} className={className} style={{ background: 'var(--bg)', border: '2px solid var(--ink)', borderRadius: 999, padding: '6px 6px 6px 14px', ...extraStyle }}>
+    <form onSubmit={onSearch} className={className} style={{ background: 'var(--bg)', border: '1.5px solid var(--stroke)', borderRadius: 999, padding: '6px 6px 6px 14px', ...extraStyle }}>
       <SearchIcon size={16} color="var(--ink-soft)" />
       <input
         value={q}
@@ -93,7 +93,7 @@ export function Header() {
   );
 
   return (
-    <div role="banner" className="no-print site-header" style={{ position: 'sticky', top: 0, zIndex: 60, background: 'var(--paper)', borderBottom: '2px solid var(--ink)' }}>
+    <div role="banner" className="no-print site-header" style={{ position: 'sticky', top: 0, zIndex: 60, background: 'var(--paper)', borderBottom: '1.5px solid var(--stroke)' }}>
       <div className="wrap" style={{ height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 18 }}>
         <Link to="/" className="site-logo" style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 18, flex: 'none' }}>
           <span className="logo-flame"><MascotIcon size={30} /></span>

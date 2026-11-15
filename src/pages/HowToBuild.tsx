@@ -547,8 +547,8 @@ function TalkCardsExtra() {
         key={idx ?? 'empty'}
         className="talk-card"
         style={{
-          minHeight: 190, borderRadius: 20, border: '2.5px solid var(--ink)', overflow: 'hidden', display: 'flex', flexDirection: 'column',
-          background: style ? style.tint : 'var(--paper)', boxShadow: '7px 7px 0 rgba(36,28,17,.14)', marginBottom: 16,
+          minHeight: 190, borderRadius: 20, border: '1.5px solid var(--stroke)', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+          background: style ? style.tint : 'var(--paper)', boxShadow: '7px 7px 0 rgba(60,50,100,.14)', marginBottom: 16,
         }}
       >
         <div style={{ background: style ? style.color : 'var(--ink)', color: '#fff', padding: '8px 18px', fontFamily: 'Rubik, sans-serif', fontWeight: 800, fontSize: 14 }}>

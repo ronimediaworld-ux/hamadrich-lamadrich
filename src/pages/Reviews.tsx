@@ -175,7 +175,7 @@ export function Reviews() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="לדוגמה: מדריכה, שבט להב"
-              style={{ padding: '12px 16px', borderRadius: 12, border: '2px solid var(--ink)', fontFamily: 'Heebo, sans-serif', fontSize: 14.5, outline: 'none' }}
+              style={{ padding: '12px 16px', borderRadius: 12, border: '1.5px solid var(--stroke)', fontFamily: 'Heebo, sans-serif', fontSize: 14.5, outline: 'none' }}
             />
           </label>
 
@@ -187,7 +187,7 @@ export function Reviews() {
               placeholder="מה עזר לך? מה היית משנה?"
               rows={5}
               required
-              style={{ padding: '12px 16px', borderRadius: 12, border: '2px solid var(--ink)', fontFamily: 'Heebo, sans-serif', fontSize: 14.5, outline: 'none', resize: 'vertical' }}
+              style={{ padding: '12px 16px', borderRadius: 12, border: '1.5px solid var(--stroke)', fontFamily: 'Heebo, sans-serif', fontSize: 14.5, outline: 'none', resize: 'vertical' }}
             />
           </label>
 

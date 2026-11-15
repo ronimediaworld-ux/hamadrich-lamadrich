@@ -6,15 +6,15 @@ import { ClockIcon, UsersIcon, StarIcon, EyeIcon } from './Icons';
 import { getAllViews } from '../lib/api';
 import { getCategory, getActivityDomain } from '../data/categories';
 
-const colorMap: Record<string, { bg: string; fg: string }> = {
-  flame: { bg: 'var(--flame-tint)', fg: 'var(--flame-ink)' },
-  lime: { bg: 'var(--lime-tint)', fg: 'var(--lime-ink)' },
-  magenta: { bg: 'var(--magenta-tint)', fg: 'var(--magenta-ink)' },
-  sky: { bg: 'var(--sky-tint)', fg: 'var(--sky-ink)' },
-  yellow: { bg: 'var(--yellow-tint)', fg: '#6B4F0E' },
+const colorMap: Record<string, { bg: string; fg: string; accent?: string }> = {
+  flame: { bg: 'var(--flame-tint)', fg: 'var(--flame-ink)', accent: 'var(--flame)' },
+  lime: { bg: 'var(--lime-tint)', fg: 'var(--lime-ink)', accent: 'var(--lime)' },
+  magenta: { bg: 'var(--magenta-tint)', fg: 'var(--magenta-ink)', accent: 'var(--magenta)' },
+  sky: { bg: 'var(--sky-tint)', fg: 'var(--sky-ink)', accent: 'var(--sky)' },
+  yellow: { bg: 'var(--yellow-tint)', fg: '#6B4F0E', accent: 'var(--yellow)' },
 };
 
-const domainColor: Record<string, { bg: string; fg: string }> = {
+const domainColor: Record<string, { bg: string; fg: string; accent?: string }> = {
   'ערכים': colorMap.lime,
   'אמונה': colorMap.sky,
   'פרשת שבוע': colorMap.magenta,
@@ -44,7 +44,7 @@ export function ActivityCard({ activity, rotate = 0 }: { activity: Activity; rot
         flex: '0 0 270px',
         padding: 20,
         transform: `rotate(${rotate}deg)`,
-        borderTop: `8px solid ${colors.fg}`,
+        borderTop: `6px solid ${colors.accent ?? colors.fg}`,
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>

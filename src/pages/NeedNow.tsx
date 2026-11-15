@@ -17,7 +17,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-const SELECT: React.CSSProperties = { padding: '10px 12px', borderRadius: 12, border: '2px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif', fontSize: 15 };
+const SELECT: React.CSSProperties = { padding: '10px 12px', borderRadius: 12, border: '1.5px solid var(--stroke)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif', fontSize: 15 };
 
 export function NeedNow() {
   useDocumentTitle('אני צריכה פעולה עכשיו');
@@ -45,7 +45,7 @@ export function NeedNow() {
 
       <form
         onSubmit={(e) => { e.preventDefault(); setAsked(true); }}
-        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, padding: '20px 22px', border: '2px solid var(--ink)', borderRadius: 18, background: 'var(--paper)', marginBottom: 26 }}
+        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, padding: '20px 22px', border: '1.5px solid var(--stroke)', borderRadius: 18, background: 'var(--paper)', marginBottom: 26 }}
       >
         <Field label="כיתה">
           <select value={grade} onChange={(e) => { setGrade(Number(e.target.value)); setAsked(false); }} style={SELECT}>

@@ -21,14 +21,14 @@ interface Tab { id: string; label: string; color: string; tint: string }
 
 // כל לשונית היא "מחיצה" בקלסר.
 const TABS: Tab[] = [
-  { id: 'activities', label: 'פעולות ומערכים', color: '#D96A2B', tint: '#FBE4D2' },
-  { id: 'games', label: 'משחקים', color: '#7A9A3E', tint: '#E7EFD6' },
-  { id: 'social-nights', label: 'ערבי גיבוש', color: '#E8B93C', tint: '#FBF0CE' },
-  { id: 'readings', label: 'קטעי קריאה', color: '#C24270', tint: '#F6DDE7' },
-  { id: 'staff-study', label: 'לימוד צוות', color: '#6B5AA6', tint: '#E6E1F4' },
-  { id: 'chuparim', label: 'צ׳ופרים', color: '#3E7EA6', tint: '#DCEAF2' },
+  { id: 'activities', label: 'פעולות ומערכים', color: '#EE7B4D', tint: '#FFE8DC' },
+  { id: 'games', label: 'משחקים', color: '#86B894', tint: '#E4F2E8' },
+  { id: 'social-nights', label: 'ערבי גיבוש', color: '#F5CB63', tint: '#FFF4D6' },
+  { id: 'readings', label: 'קטעי קריאה', color: '#DE6F92', tint: '#FCE5EC' },
+  { id: 'staff-study', label: 'לימוד צוות', color: '#8E7BD6', tint: '#E6E1F4' },
+  { id: 'chuparim', label: 'צ׳ופרים', color: '#4A93BD', tint: '#DFF0F8' },
   { id: 'files', label: 'קבצים להורדה', color: '#B5651D', tint: '#F6E6D3' },
-  { id: 'personal', label: 'התבניות והעותקים שלי', color: '#2F7A4B', tint: '#DCEFE3' },
+  { id: 'personal', label: 'התבניות והעותקים שלי', color: '#4F9E70', tint: '#DCEFE3' },
 ];
 
 interface Item { tab: string; key: string; kind: FavKind; id: string; title: string; sub: string; url: string }
@@ -120,7 +120,7 @@ export function Favorites() {
         <div>
           <div>
             <div className="binder-tabs" role="tablist" aria-label="מחיצות הקלסר">
-              <button role="tab" aria-selected={active === 'all'} className={`binder-tab${active === 'all' ? ' is-active' : ''}`} style={{ ['--tab' as string]: '#241C11' }} onClick={() => setActive('all')}>
+              <button role="tab" aria-selected={active === 'all'} className={`binder-tab${active === 'all' ? ' is-active' : ''}`} style={{ ['--tab' as string]: '#3B3652' }} onClick={() => setActive('all')}>
                 הכל <span>{items.length}</span>
               </button>
               {visibleTabs.map((t) => (

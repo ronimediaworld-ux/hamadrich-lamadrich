@@ -56,9 +56,9 @@ export function Comments({ kind, targetId }: { kind: ViewKind; targetId: string 
 
       <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 560 }}>
         <input value={name} onChange={(e) => setName(e.target.value)} maxLength={40} placeholder="שם (אפשר גם בלי)" aria-label="שם"
-          style={{ padding: '10px 14px', borderRadius: 10, border: '2px solid var(--ink)', fontSize: 14, fontFamily: 'Heebo, sans-serif' }} />
+          style={{ padding: '10px 14px', borderRadius: 10, border: '1.5px solid var(--stroke)', fontSize: 14, fontFamily: 'Heebo, sans-serif' }} />
         <textarea value={text} onChange={(e) => setText(e.target.value)} maxLength={600} rows={3} required placeholder="איך הלכה הפעולה? מה כדאי לשנות?" aria-label="התגובה שלך"
-          style={{ padding: '10px 14px', borderRadius: 10, border: '2px solid var(--ink)', fontSize: 14, fontFamily: 'Heebo, sans-serif', resize: 'vertical' }} />
+          style={{ padding: '10px 14px', borderRadius: 10, border: '1.5px solid var(--stroke)', fontSize: 14, fontFamily: 'Heebo, sans-serif', resize: 'vertical' }} />
         <input value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true"
           style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none', width: 1, height: 1, opacity: 0 }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>

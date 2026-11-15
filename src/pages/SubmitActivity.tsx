@@ -6,7 +6,7 @@ import { fileToBase64, postSubmission } from '../lib/api';
 
 const SUBMIT_EMAIL = 'ronimediaworldd@gmail.com';
 const MAX_FILE = 700 * 1024;
-const FIELD: React.CSSProperties = { padding: '12px 16px', borderRadius: 12, border: '2px solid var(--ink)', fontFamily: 'Heebo, sans-serif', fontSize: 14.5, outline: 'none' };
+const FIELD: React.CSSProperties = { padding: '12px 16px', borderRadius: 12, border: '1.5px solid var(--stroke)', fontFamily: 'Heebo, sans-serif', fontSize: 14.5, outline: 'none' };
 const LABEL: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13.5, fontWeight: 700 };
 
 export function SubmitActivity() {

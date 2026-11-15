@@ -11,16 +11,16 @@ import { getChupar } from '../data/chuparim';
 import type { PersonalCopy } from './personalCopies';
 import glufotBook from '../data/glufotBook.json';
 
-const PALETTE = ['#C85B2A', '#A64D79', '#356E9A', '#5E7B2F', '#2F7D6A', '#6B5AA6', '#8A4D2A', '#B17824'];
+const PALETTE = ['#C85B2A', '#D66E9F', '#5AA3C9', '#5E7B2F', '#5FB09A', '#8E7BD6', '#C98A66', '#B17824'];
 
 function stepColor(name: string, index: number): string {
   if (/פתיחה/.test(name)) return '#C85B2A';
-  if (/סרטון|קליפ|הקרנ|צפייה/.test(name)) return '#356E9A';
-  if (/קריאה|סיפור|עדות|קטע/.test(name)) return '#A64D79';
+  if (/סרטון|קליפ|הקרנ|צפייה/.test(name)) return '#5AA3C9';
+  if (/קריאה|סיפור|עדות|קטע/.test(name)) return '#D66E9F';
   if (/מתודה|תערוכה|תרגיל|משימה|פעילות/.test(name)) return '#5E7B2F';
-  if (/משחק|סבב/.test(name)) return '#2F7D6A';
-  if (/דיון|שאלות/.test(name)) return '#6B5AA6';
-  if (/סיכום|צ[׳']ופר|מגן/.test(name)) return '#8A4D2A';
+  if (/משחק|סבב/.test(name)) return '#5FB09A';
+  if (/דיון|שאלות/.test(name)) return '#8E7BD6';
+  if (/סיכום|צ[׳']ופר|מגן/.test(name)) return '#C98A66';
   return PALETTE[index % PALETTE.length];
 }
 
@@ -90,14 +90,14 @@ function renderStep(s: FlowStep, i: number): string {
 
 // --- נספחים ---
 function shieldSvg(): string {
-  const dots = (y: number) => `<line x1="52" x2="248" y1="${y}" y2="${y}" stroke="#5B4E3C" stroke-width="1" stroke-dasharray="1.5 2.5"/>`;
+  const dots = (y: number) => `<line x1="52" x2="248" y1="${y}" y2="${y}" stroke="#5D5972" stroke-width="1" stroke-dasharray="1.5 2.5"/>`;
   return `<svg viewBox="0 0 300 390" class="shield" aria-hidden="true">
-  <path d="M150 6 L294 50 L294 150 Q294 300 150 384 Q6 300 6 150 L6 50 Z" fill="#fff" stroke="#D96A2B" stroke-width="4" stroke-dasharray="9 6" stroke-linejoin="round"/>
+  <path d="M150 6 L294 50 L294 150 Q294 300 150 384 Q6 300 6 150 L6 50 Z" fill="#fff" stroke="#EE7B4D" stroke-width="4" stroke-dasharray="9 6" stroke-linejoin="round"/>
   <path d="M150 28 L272 66 L272 150 Q272 280 150 352 Q28 280 28 150 L28 66 Z" fill="#FBEADF"/>
-  <text x="150" y="82" text-anchor="middle" font-family="Rubik, Heebo, sans-serif" font-weight="800" font-size="19" fill="#7A3712">המשפט שבחרתי</text>
+  <text x="150" y="82" text-anchor="middle" font-family="Rubik, Heebo, sans-serif" font-weight="800" font-size="19" fill="#8A3A18">המשפט שבחרתי</text>
   ${dots(106)}${dots(126)}${dots(146)}
-  <text x="150" y="176" text-anchor="middle" font-family="Heebo, sans-serif" font-weight="700" font-size="13" fill="#241C11">של: ____________ ז״ל</text>
-  <text x="150" y="222" text-anchor="middle" font-family="Rubik, Heebo, sans-serif" font-weight="800" font-size="19" fill="#7A3712">כוח העל שלי</text>
+  <text x="150" y="176" text-anchor="middle" font-family="Heebo, sans-serif" font-weight="700" font-size="13" fill="#3B3652">של: ____________ ז״ל</text>
+  <text x="150" y="222" text-anchor="middle" font-family="Rubik, Heebo, sans-serif" font-weight="800" font-size="19" fill="#8A3A18">כוח העל שלי</text>
   ${dots(250)}${dots(272)}${dots(294)}
 </svg>`;
 }
@@ -174,7 +174,7 @@ function renderAppendix(ap: { label: string; content: string }): string {
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Heebo:wght@400;500;700&display=swap');
   @import url('${FONT_IMPORT}');
-  :root { --paper:#FBF9F2; --ink:#1A140B; --soft:#3A2F20; --faint:#6A5D48; --line:#E4DBC8; --flame:#D96A2B; --flame-ink:#7A3712; --tint:#FBE4D2; }
+  :root { --paper:#FBF9F2; --ink:#1A140B; --soft:#3A2F20; --faint:#8A8699; --line:#E4DBC8; --flame:#EE7B4D; --flame-ink:#8A3A18; --tint:#FFE8DC; }
   * { box-sizing: border-box; }
   html { background-color: var(--paper); background-image: radial-gradient(#E9E1CF 1px, transparent 1.2px); background-size: 18px 18px;
          -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -190,7 +190,7 @@ const CSS = `
   .chip { display: inline-block; padding: 4px 13px; border-radius: 999px; background: var(--tint); color: var(--flame-ink); font-weight: 700; font-size: 12px; margin-bottom: 8px; }
   h1 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 34px; line-height: 1.2; margin: 0 0 10px; }
   .desc { color: var(--soft); font-size: 14.5px; margin: 0; }
-  .meta { background: #FFFEFA; border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; font-size: 13px; line-height: 1.7; }
+  .meta { background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; font-size: 13px; line-height: 1.7; }
   .meta .row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
   .meta .dot { color: var(--flame); font-size: 12px; }
   .meta hr { border: 0; border-top: 1px solid var(--line); margin: 9px 0; }
@@ -208,8 +208,8 @@ const CSS = `
   .num { flex: none; width: 23px; height: 23px; border-radius: 50%; color: #fff; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; }
   .min { font-family: 'Heebo', sans-serif; font-weight: 500; color: var(--faint); font-size: 12.5px; }
   .step-body { padding-inline-start: 4px; }
-  blockquote { margin: 6px 0 8px; padding: 2px 14px 2px 0; border-inline-start: 3px solid #D96A2B; color: var(--ink); }
-  .linkrow { margin: 6px 0; padding: 7px 12px; background: #FFFEFA; border: 1px solid var(--line); border-radius: 10px; font-size: 12.5px; }
+  blockquote { margin: 6px 0 8px; padding: 2px 14px 2px 0; border-inline-start: 3px solid #EE7B4D; color: var(--ink); }
+  .linkrow { margin: 6px 0; padding: 7px 12px; background: #FFFFFF; border: 1px solid var(--line); border-radius: 10px; font-size: 12.5px; }
   .linkrow span { color: var(--faint); font-size: 11.5px; margin-inline-start: 6px; word-break: break-all; }
   .note { color: var(--faint); font-size: 12.5px; }
   .guide li { margin-bottom: 5px; }
@@ -223,32 +223,32 @@ const CSS = `
   .app-h { display: flex; align-items: center; gap: 8px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 18px; margin: 0 0 12px; }
   .app-h .bar { width: 9px; height: 22px; border-radius: 5px; background: var(--flame); }
   .app-intro { text-align: center; color: var(--faint); font-size: 13px; margin: 0 0 12px; }
-  .textcard { border: 2px solid var(--ink); border-radius: 22px; background: #FFFEFA; padding: 22px 26px; font-size: 14.5px; line-height: 1.95; }
+  .textcard { border: 2px solid var(--ink); border-radius: 22px; background: #FFFFFF; padding: 22px 26px; font-size: 14.5px; line-height: 1.95; }
   .textcard p { margin-bottom: 9px; }
   .infobox { margin-top: 18px; background: #DDEAF3; border-radius: 16px; padding: 14px 20px; break-inside: avoid; font-size: 13px; }
   .infobox h4 { margin: 0 0 6px; font-family: 'Rubik', sans-serif; font-weight: 800; color: #1F3F5C; font-size: 14px; }
   .cols { column-count: 2; column-gap: 26px; }
-  .colblock { break-inside: avoid; margin: 0 0 14px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 14px; background: #FFFEFA; }
+  .colblock { break-inside: avoid; margin: 0 0 14px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 14px; background: #FFFFFF; }
   .colhead { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 13px; color: var(--flame-ink); margin-bottom: 4px; }
   .coltext { font-size: 15px; line-height: 1.9; }
   .colnote { margin-top: 10px; font-size: 12.5px; color: var(--faint); }
   .slips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .slip { border: 2px dashed #E6B94F; border-radius: 12px; background: #FFFEFA; padding: 16px 14px; min-height: 84px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 14.5px; line-height: 1.7; break-inside: avoid; }
+  .slip { border: 2px dashed #E6B94F; border-radius: 12px; background: #FFFFFF; padding: 16px 14px; min-height: 84px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 14.5px; line-height: 1.7; break-inside: avoid; }
   .slip-h { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 15px; color: var(--flame-ink); margin-bottom: 6px; }
   .qgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .qcard { position: relative; min-height: 118px; border: 2px dashed #E6B94F; border-radius: 14px; background: #FFFEFA; padding: 22px 16px 14px; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 6px; break-inside: avoid; }
+  .qcard { position: relative; min-height: 118px; border: 2px dashed #E6B94F; border-radius: 14px; background: #FFFFFF; padding: 22px 16px 14px; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 6px; break-inside: avoid; }
   .qn { position: absolute; top: 7px; left: 11px; font-size: 12px; font-weight: 700; color: var(--faint); }
   .qt { font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 15.5px; line-height: 1.5; }
-  .qw { color: #7A3712; font-weight: 700; font-size: 12.5px; }
-  .qcard.blank .line { border-top: 1px dotted #5B4E3C; margin: 8px 6px; }
-  .sources { margin-top: 14px; background: #FFFEFA; border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; font-size: 12.5px; line-height: 1.6; break-inside: avoid; }
+  .qw { color: #8A3A18; font-weight: 700; font-size: 12.5px; }
+  .qcard.blank .line { border-top: 1px dotted #5D5972; margin: 8px 6px; }
+  .sources { margin-top: 14px; background: #FFFFFF; border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; font-size: 12.5px; line-height: 1.6; break-inside: avoid; }
   .shields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 22px; justify-items: center; }
   .shield { width: 100%; max-width: 262px; }
   .qcard, .slip, .colblock, .textcard, .meta, .tipbox, .ideas, .infobox { overflow-wrap: anywhere; }
   .qt.long, .slip.long { font-size: 13.5px; line-height: 1.55; }
   @page { size: A4; margin: 13mm 13mm 16mm;
-    @bottom-right { content: 'המדריך למדריך'; font: 10px 'Heebo', sans-serif; color: #6A5D48; }
-    @bottom-left { content: 'עמוד ' counter(page); font: 10px 'Heebo', sans-serif; color: #6A5D48; } }
+    @bottom-right { content: 'המדריך למדריך'; font: 10px 'Heebo', sans-serif; color: #8A8699; }
+    @bottom-left { content: 'עמוד ' counter(page); font: 10px 'Heebo', sans-serif; color: #8A8699; } }
   @media print { .doc { max-width: none; padding: 0; } .crumbs { margin-top: 0; } }
 `;
 
@@ -275,7 +275,7 @@ function renderIdeas(a: Activity): string {
   const more = sensitive
     ? '<p><b>יש עוד זמן?</b> זו פעולה על זיכרון, ולכן לא מציעים להוסיף משחק. עדיף להאריך את השיחה, לתת לכל חניכה לשתף בשקט, או לקרוא יחד קטע נוסף.</p>'
     : games.length
-      ? `<p><b>יש עוד זמן?</b> אפשר להוסיף משחק מוכר שקשור לנושא${shabbat ? ' (בלי ציוד, מתאים לשבת)' : ''}:</p>${games.map((c) => `<div class="g"><b>${escapeHtml(c.g.name)}</b> <span style="color:#6A5D48">· ${escapeHtml(c.g.kind)} · ${escapeHtml(c.g.players)}${c.theme ? ` · מתאים ל${escapeHtml(c.theme)}` : ''}</span><div>${escapeHtml(c.g.description)}</div><div class="how"><b>איך מקשרים:</b> ${escapeHtml(fillTopic(c.game.how, a))}</div></div>`).join('')}`
+      ? `<p><b>יש עוד זמן?</b> אפשר להוסיף משחק מוכר שקשור לנושא${shabbat ? ' (בלי ציוד, מתאים לשבת)' : ''}:</p>${games.map((c) => `<div class="g"><b>${escapeHtml(c.g.name)}</b> <span style="color:#8A8699">· ${escapeHtml(c.g.kind)} · ${escapeHtml(c.g.players)}${c.theme ? ` · מתאים ל${escapeHtml(c.theme)}` : ''}</span><div>${escapeHtml(c.g.description)}</div><div class="how"><b>איך מקשרים:</b> ${escapeHtml(fillTopic(c.game.how, a))}</div></div>`).join('')}`
       : '';
   return `<div class="ideas"><h3>לפי הזמן שיש</h3>${skip}${more}</div>`;
 }
@@ -393,10 +393,10 @@ function renderPersonalBody(c: PersonalCopy): string {
   const steps = c.steps.map((s, i) => {
     const body = s.body.trim()
       ? `<div>${renderBody(s.body)}</div>`
-      : `${s.hint && !c.cleanPrint ? `<div style="color:#6A5D48;font-size:12px">${escapeHtml(s.hint)}</div>` : ''}${('<div style="height:' + (c.cleanPrint ? 34 : 46) + 'px;border-bottom:1px solid #C9BFA9"></div>').repeat(c.cleanPrint ? 4 : 1)}`;
-    return `<section style="border-inline-start:5px solid ${escapeHtml(s.color || '#D96A2B')};padding:6px 14px 8px;margin:0 0 10px;break-inside:avoid;background:#FFFEFA;border-radius:6px"><h2 style="font-size:17px;margin:0 0 3px">${i + 1}. ${escapeHtml(s.label)}</h2>${body}</section>`;
+      : `${s.hint && !c.cleanPrint ? `<div style="color:#8A8699;font-size:12px">${escapeHtml(s.hint)}</div>` : ''}${('<div style="height:' + (c.cleanPrint ? 34 : 46) + 'px;border-bottom:1px solid #C9BFA9"></div>').repeat(c.cleanPrint ? 4 : 1)}`;
+    return `<section style="border-inline-start:5px solid ${escapeHtml(s.color || '#EE7B4D')};padding:6px 14px 8px;margin:0 0 10px;break-inside:avoid;background:#FFFFFF;border-radius:6px"><h2 style="font-size:17px;margin:0 0 3px">${i + 1}. ${escapeHtml(s.label)}</h2>${body}</section>`;
   }).join('');
-  const notes = c.notes.trim() ? `<div style="margin-top:12px;padding:10px 14px;border:1.5px dashed #8C7F6B;border-radius:8px"><b>הערות אישיות:</b><br>${escapeHtml(c.notes).replace(/\n/g, '<br>')}</div>` : '';
+  const notes = c.notes.trim() ? `<div style="margin-top:12px;padding:10px 14px;border:1.5px dashed #8A8699;border-radius:8px"><b>הערות אישיות:</b><br>${escapeHtml(c.notes).replace(/\n/g, '<br>')}</div>` : '';
   return goals + steps + notes;
 }
 

@@ -50,7 +50,7 @@ export function PlanBuilder() {
             <button className={`chip${shabbat ? ' is-active' : ''}`} onClick={() => setShabbat((v) => !v)}>מתאים לשבת</button>
           </div>
           <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="מילת נושא (לא חובה): חברות, קנאה, אחריות..." aria-label="מילת נושא"
-            style={{ width: '100%', maxWidth: 420, padding: '10px 16px', borderRadius: 999, border: '2px solid var(--ink)', fontSize: 14.5, fontFamily: 'Heebo, sans-serif' }} />
+            style={{ width: '100%', maxWidth: 420, padding: '10px 16px', borderRadius: 999, border: '1.5px solid var(--stroke)', fontSize: 14.5, fontFamily: 'Heebo, sans-serif' }} />
         </div>
       </Reveal>
 

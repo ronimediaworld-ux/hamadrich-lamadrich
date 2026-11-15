@@ -311,13 +311,13 @@ export function CategoryPage() {
             <summary style={{ cursor: 'pointer', fontWeight: 800, fontSize: 14, marginBottom: 10 }}>סינון מתקדם: כיתה, משך, סוג, מקום וציוד</summary>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, alignItems: 'end', padding: '12px 0' }}>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, fontWeight: 700 }}>כיתה
-                <select value={gradeFilter} onChange={(e) => setGradeFilter(Number(e.target.value))} style={{ padding: '8px 10px', borderRadius: 10, border: '2px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
+                <select value={gradeFilter} onChange={(e) => setGradeFilter(Number(e.target.value))} style={{ padding: '8px 10px', borderRadius: 10, border: '1.5px solid var(--stroke)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
                   <option value={0}>כל הכיתות</option>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((g) => <option key={g} value={g}>{['', 'א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ז׳', 'ח׳', 'ט׳', 'י׳', 'י״א', 'י״ב'][g]}</option>)}
                 </select>
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, fontWeight: 700 }}>משך
-                <select value={maxMinutes} onChange={(e) => setMaxMinutes(Number(e.target.value))} style={{ padding: '8px 10px', borderRadius: 10, border: '2px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
+                <select value={maxMinutes} onChange={(e) => setMaxMinutes(Number(e.target.value))} style={{ padding: '8px 10px', borderRadius: 10, border: '1.5px solid var(--stroke)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
                   <option value={0}>כל משך</option>
                   <option value={20}>עד 20 דקות</option>
                   <option value={30}>עד 30 דקות</option>
@@ -327,13 +327,13 @@ export function CategoryPage() {
                 </select>
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, fontWeight: 700 }}>סוג פעילות
-                <select value={kindFilter} onChange={(e) => setKindFilter(e.target.value as ActivityKind | 'הכל')} style={{ padding: '8px 10px', borderRadius: 10, border: '2px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
+                <select value={kindFilter} onChange={(e) => setKindFilter(e.target.value as ActivityKind | 'הכל')} style={{ padding: '8px 10px', borderRadius: 10, border: '1.5px solid var(--stroke)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
                   <option value="הכל">הכל</option>
                   {ACTIVITY_KINDS.map((k) => <option key={k} value={k}>{k}</option>)}
                 </select>
               </label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13, fontWeight: 700 }}>פנים או חוץ
-                <select value={placeFilter} onChange={(e) => setPlaceFilter(e.target.value as 'הכל' | 'פנים' | 'חוץ')} style={{ padding: '8px 10px', borderRadius: 10, border: '2px solid var(--ink)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
+                <select value={placeFilter} onChange={(e) => setPlaceFilter(e.target.value as 'הכל' | 'פנים' | 'חוץ')} style={{ padding: '8px 10px', borderRadius: 10, border: '1.5px solid var(--stroke)', background: 'var(--paper)', fontFamily: 'Heebo, sans-serif' }}>
                   <option value="הכל">לא משנה</option>
                   <option value="פנים">בפנים</option>
                   <option value="חוץ">בחוץ</option>

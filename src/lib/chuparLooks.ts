@@ -120,11 +120,11 @@ export const LOOKS: Record<string, LookFn> = {
     return {
       svg: frame(X.w, X.h) + blob(cx, cy, b * 0.6, X.c[0], X.hh)
         + rect(cx - sq / 2 - b * 0.04, cy - sq / 2 - b * 0.06, sq, sq, dark, 14)
-        + rect(cx - b * 0.3, cy - b * 0.3, b * 0.46, b * 0.46, '#404040')
-        + rect(cx - b * 0.02, cy + b * 0.02, b * 0.3, b * 0.3, '#404040')
+        + rect(cx - b * 0.3, cy - b * 0.3, b * 0.46, b * 0.46, '#4B4666')
+        + rect(cx - b * 0.02, cy + b * 0.02, b * 0.3, b * 0.3, '#4B4666')
         + X.icon(cx - b * 0.27, cy - b * 0.27, b * 0.4, WHITE_ICON(X)),
       box: s.box,
-      rule: '#404040',
+      rule: '#4B4666',
     };
   },
 
@@ -207,7 +207,7 @@ export const LOOKS: Record<string, LookFn> = {
       `<g transform="rotate(${rot} ${n2(cx)} ${n2(cy)})"><rect x="${n2(cx - 8.5)}" y="${n2(cy - 2.6)}" width="17" height="5.2" fill="${col}" fill-opacity=".88" stroke="#111" stroke-width=".2"/>${line(cx - 4, cy - 2.6, cx - 4, cy + 2.6, '#fff', 0.35)}${line(cx + 4, cy - 2.6, cx + 4, cy + 2.6, '#fff', 0.35)}</g>`;
     return {
       svg: `<rect x="${FR + 1}" y="${FR + 1.6}" width="${n2(w - 2 * FR - 2)}" height="${n2(h - 2 * FR - 2.2)}" fill="${X.c[1]}" fill-opacity=".34" stroke="#111" stroke-width=".35"/>`
-        + t(FR + 6, FR + 3.2, -32, X.c[0]) + t(w - FR - 6, FR + 3.2, 32, X.c[2] === '#404040' ? X.c[1] : X.c[0])
+        + t(FR + 6, FR + 3.2, -32, X.c[0]) + t(w - FR - 6, FR + 3.2, 32, X.c[2] === '#4B4666' ? X.c[1] : X.c[0])
         + sticker(X, w - FR - 7, h - FR - 7, Math.max(3.6, Math.min(5.4, Math.min(w, h) * 0.09)), 8),
       box: { x: 6, y: 8, w: w - 12, h: h - 15 },
     };

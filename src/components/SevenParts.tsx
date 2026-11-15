@@ -38,10 +38,10 @@ export function buildSevenPartsPrintHtml(): string {
   @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500;800&family=Heebo:wght@400;700&display=swap');
   * { box-sizing: border-box; }
   @page { size: A4; margin: 10mm; }
-  body { margin: 0; color: #241C11; direction: rtl; font-family: 'Heebo', sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; color: #3B3652; direction: rtl; font-family: 'Heebo', sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .doc { max-width: 190mm; margin: 0 auto; padding: 6mm 0; }
   h1 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 6.5mm; margin: 0 0 1mm; }
-  .sub { font-size: 3.4mm; color: #5B4E3C; margin: 0 0 3mm; }
+  .sub { font-size: 3.4mm; color: #5D5972; margin: 0 0 3mm; }
   .legend { display: flex; flex-wrap: wrap; gap: 1.6mm; margin-bottom: 4mm; }
   .lg { background: var(--t); border: .3mm solid var(--c); border-radius: 99mm; padding: .8mm 3mm; font-size: 3.2mm; }
   .lg b { display: inline-block; background: var(--c); color: #fff; border-radius: 50%; width: 5mm; height: 5mm; line-height: 5mm; text-align: center; font-size: 3mm; margin-inline-end: 1mm; }
@@ -49,8 +49,8 @@ export function buildSevenPartsPrintHtml(): string {
   h2 { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 4.6mm; margin: 0 0 .6mm; display: flex; align-items: center; gap: 2mm; }
   .n { background: var(--c); color: #fff; border-radius: 50%; width: 6.4mm; height: 6.4mm; line-height: 6.4mm; text-align: center; font-size: 3.8mm; }
   .hint { margin: 0 0 1.2mm; font-size: 3.2mm; color: #4B4030; }
-  .lines i { display: block; border-bottom: .25mm solid #8C7F6B; height: 6.5mm; }
-  .foot { font-size: 3mm; color: #8C7F6B; margin-top: 2mm; }
+  .lines i { display: block; border-bottom: .25mm solid #8A8699; height: 6.5mm; }
+  .foot { font-size: 3mm; color: #8A8699; margin-top: 2mm; }
 </style></head><body><div class="doc">
   <h1>שיטת שבעת החלקים: דף בנייה לפעולה</h1>
   <p class="sub">שם הפעולה: ______________________ &nbsp; גיל: ________ &nbsp; משך: ________ דק׳</p>
@@ -128,10 +128,10 @@ export function SevenParts() {
         </section>
       </div>
 
-      <section aria-labelledby="seven-check" style={{ border: '2px solid var(--ink)', borderRadius: 16, padding: '18px 22px', marginBottom: 40, background: 'var(--paper)' }}>
+      <section aria-labelledby="seven-check" style={{ border: '1.5px solid var(--stroke)', borderRadius: 16, padding: '18px 22px', marginBottom: 40, background: 'var(--paper)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 10 }}>
           <h3 id="seven-check" style={{ fontSize: 18, fontWeight: 800, margin: 0 }}>רשימת בדיקה: האם בנית את כל החלקים?</h3>
-          <span style={{ fontSize: 13, fontWeight: 700, color: done === 7 ? '#2F7A4B' : 'var(--ink-faint)' }}>{done} מתוך 7</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: done === 7 ? '#4F9E70' : 'var(--ink-faint)' }}>{done} מתוך 7</span>
         </div>
         <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 12px', display: 'grid', gap: 6 }}>
           {[...SEVEN_PARTS, SEVEN_BONUS].map((p, i) => (
