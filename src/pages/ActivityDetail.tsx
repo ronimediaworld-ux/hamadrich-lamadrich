@@ -27,6 +27,7 @@ import { SEVEN_BONUS, SEVEN_PARTS } from '../data/sevenParts';
 function partFor(label: string) {
   const find = (key: string) => SEVEN_PARTS.find((p) => p.key === key);
   if (/צ[׳']ופר/.test(label)) return SEVEN_BONUS;
+  if (/^מטרות/.test(label)) return find('topic');
   if (/^פתיחה/.test(label)) return find('opening');
   if (/דיון|שאלות/.test(label)) return find('discussion');
   if (/קטע|סיפור|מקור|קריאה/.test(label)) return find('reading');
@@ -36,7 +37,35 @@ function partFor(label: string) {
   return undefined;
 }
 
-function Section({ label, children }: { label: string; step?: number; children: React.ReactNode }) {
+
+// שמות השלבים לפי התבנית, לפי הסדר בפעולה: פתיחה, משחק, מתודה, דיון, הסבר, סיכום.
+// שלב בשם חופשי (למשל "הזוג המשלים") מקבל את שם השלב שלו וצבע השלב, והשם החופשי נשאר כשורת משנה.
+interface FlowStage { stage: string; minutes: string; sub: string }
+function assignStages(flow: { label: string }[], hasGame: boolean): FlowStage[] {
+  let seenOpening = false, seenDiscussion = false, seenGame = false;
+  return flow.map((f) => {
+    const m = f.label.match(/\s*\(([^()]*דק[^()]*)\)\s*$/);
+    const minutes = m ? m[1] : '';
+    const base = (m ? f.label.slice(0, m.index) : f.label).trim();
+    let stage: string;
+    if (/^פתיחה/.test(base)) { stage = 'פתיחה'; seenOpening = true; }
+    else if (/דיון|שאלות/.test(base)) { stage = 'דיון'; seenDiscussion = true; }
+    else if (/סיכום|^סיום/.test(base)) stage = 'סיכום';
+    else if (/צ[׳']ופר/.test(base)) stage = 'צ׳ופר';
+    else if (/הסבר|חיבור/.test(base)) stage = 'הסבר';
+    else if (/קטע|סיפור|מקור|קריאה/.test(base)) stage = 'קטע קריאה';
+    else if (/^משחק/.test(base)) { stage = 'משחק'; seenGame = true; }
+    else if (/^מתודה/.test(base)) stage = 'מתודה';
+    else if (!seenOpening) { stage = 'פתיחה'; seenOpening = true; }
+    else if (seenDiscussion) stage = 'הסבר';
+    else if (!seenGame && hasGame) { stage = 'משחק'; seenGame = true; }
+    else stage = 'מתודה';
+    const sub = base === stage ? '' : base.replace(new RegExp('^' + stage + '\\s*[—:\\-–]\\s*'), '');
+    return { stage, minutes, sub: sub === base && base === stage ? '' : sub };
+  });
+}
+
+function Section({ label, subtitle, children }: { label: string; subtitle?: string; step?: number; children: React.ReactNode }) {
   const part = partFor(label);
   const color = part?.color ?? 'var(--flame)';
   return (
@@ -44,6 +73,7 @@ function Section({ label, children }: { label: string; step?: number; children: 
       <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 8 }}>
         <span style={{ flex: 'none', width: 12, height: 12, borderRadius: 4, background: color }} />
         <h3 style={{ fontSize: 16.5, fontWeight: 800, color: part ? color : undefined }}>{label}</h3>
+        {subtitle && <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--ink-soft)' }}>· {subtitle}</span>}
       </div>
       <div style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-soft)', paddingInlineStart: 16, borderInlineStart: `3px solid ${color}`, marginInlineStart: 5 }}>{children}</div>
     </div>
@@ -84,6 +114,8 @@ export function ActivityDetail() {
   const category = getCategory(activity.categorySlug);
   const chuparim = (activity.chuparIds ?? []).map((cid) => getChupar(cid)).filter((c): c is NonNullable<typeof c> => !!c);
   const badgeLabel = activity.categorySlug === 'activities' ? getActivityDomain(activity.tags) : category?.label;
+
+  const flowStages = assignStages(activity.flow ?? [], !!activity.game);
 
   return (
     <div className="wrap" style={{ paddingTop: 24, paddingBottom: 80 }}>
@@ -178,7 +210,7 @@ export function ActivityDetail() {
           {activity.flow && activity.flow.length > 0 ? (
             <>
               {activity.flow.map((s, i) => (
-                <Section key={i} label={s.label} step={i + 1}>
+                <Section key={i} label={flowStages[i].stage + (flowStages[i].minutes ? ` (${flowStages[i].minutes})` : '')} subtitle={flowStages[i].sub} step={i + 1}>
                   {s.body && <p style={{ margin: 0, whiteSpace: 'pre-line' }}>{s.body}</p>}
                   {s.items && s.items.length > 0 && (
                     <ul style={{ margin: s.body ? '8px 0 0' : 0, paddingInlineStart: 18 }}>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { SEVEN_PARTS } from '../data/sevenParts';
 import { Link, useSearchParams } from 'react-router-dom';
 import { MascotIcon } from '../components/TeenAvatar';
 import { Reveal } from '../components/Reveal';
@@ -524,39 +525,54 @@ function Card({ children, style }: { children: React.ReactNode; style?: React.CS
   );
 }
 
+// צבעי שבעת החלקים של בניית פעולה, מחזוריים לאורך כל המדריכים
+const PAL = SEVEN_PARTS.map((p) => ({ c: p.color, t: p.tint }));
+const PALETTE_ORDER = [1, 2, 0, 3, 4, 5, 6]; // ירוק, כתום, כחול, סגול, ורוד, צהוב, טורקיז: מתחיל בירוק כמו הפתיחה
+const pal = (i: number) => PAL[PALETTE_ORDER[i % 7] % PAL.length];
+
+function H2({ children, i }: { children: React.ReactNode; i: number }) {
+  const c = pal(i).c;
+  return (
+    <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <span aria-hidden="true" style={{ width: 12, height: 12, borderRadius: 4, background: c, flex: 'none' }} />
+      <span style={{ color: c }}>{children}</span>
+    </h2>
+  );
+}
+
 function GuideBody({ guide }: { guide: Guide }) {
   return (
     <div>
       <p style={{ fontSize: 15.5, lineHeight: 1.9, color: 'var(--ink-soft)', marginBottom: 34 }}>{guide.intro}</p>
 
-      <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 14 }}>{guide.partsTitle}</h2>
+      <H2 i={0}>{guide.partsTitle}</H2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 40 }}>
-        {guide.parts.map((p) => (
-          <Card key={p.name}>
+        {guide.parts.map((p, i) => (
+          <Card key={p.name} style={{ background: pal(i).t, borderInlineStart: `5px solid ${pal(i).c}` }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10, marginBottom: 6 }}>
-              <span style={{ fontWeight: 800, fontSize: 15.5 }}>{p.name}</span>
-              <span style={{ fontSize: 12.5, color: 'var(--flame-ink)', fontWeight: 700, whiteSpace: 'nowrap' }}>{p.meta}</span>
+              <span style={{ fontWeight: 800, fontSize: 15.5, color: pal(i).c }}>{p.name}</span>
+              <span style={{ fontSize: 12.5, color: pal(i).c, fontWeight: 700, whiteSpace: 'nowrap' }}>{p.meta}</span>
             </div>
             <p style={{ margin: '0 0 8px', fontSize: 14, color: 'var(--ink-soft)' }}>{p.what}</p>
-            <p style={{ margin: 0, fontSize: 13, color: 'var(--ink-faint)' }}>
-              <strong style={{ color: 'var(--lime-ink)' }}>טיפ:</strong> {p.tip}
+            <p style={{ margin: 0, fontSize: 13, color: 'var(--ink-soft)' }}>
+              <strong style={{ color: pal(i).c }}>טיפ:</strong> {p.tip}
             </p>
           </Card>
         ))}
       </div>
 
-      <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 14 }}>שלב אחרי שלב</h2>
+      <H2 i={1}>שלב אחרי שלב</H2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 40 }}>
-        {guide.steps.map((s) => (
-          <Card key={s.n} style={{ display: 'flex', gap: 14 }}>
+        {guide.steps.map((s, i) => (
+          <Card key={s.n} style={{ display: 'flex', gap: 14, borderInlineStart: `5px solid ${pal(i).c}` }}>
             <div
               style={{
                 flexShrink: 0,
                 width: 34,
                 height: 34,
                 borderRadius: '50%',
-                background: 'var(--flame)',
-                color: '#fff6ee',
+                background: pal(i).c,
+                color: '#ffffff',
                 fontWeight: 800,
                 fontFamily: 'Rubik, sans-serif',
                 display: 'flex',
@@ -574,8 +590,8 @@ function GuideBody({ guide }: { guide: Guide }) {
         ))}
       </div>
 
-      <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 14 }}>טעויות נפוצות</h2>
-      <Card style={{ marginBottom: 40, background: 'var(--magenta-tint)' }}>
+      <H2 i={4}>טעויות נפוצות</H2>
+      <Card style={{ marginBottom: 40, background: PAL[4].t, borderInlineStart: `5px solid ${PAL[4].c}` }}>
         <ul style={{ margin: 0, paddingInlineStart: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
           {guide.mistakes.map((m, i) => (
             <li key={i} style={{ fontSize: 14, color: 'var(--ink-soft)' }}>{m}</li>
@@ -583,12 +599,12 @@ function GuideBody({ guide }: { guide: Guide }) {
         </ul>
       </Card>
 
-      <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 14 }}>רשימת בדיקה</h2>
-      <Card style={{ marginBottom: 40, background: 'var(--lime-tint)' }}>
+      <H2 i={6}>רשימת בדיקה</H2>
+      <Card style={{ marginBottom: 40, background: PAL[6].t, borderInlineStart: `5px solid ${PAL[6].c}` }}>
         <ul style={{ margin: 0, paddingInlineStart: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
           {guide.checklist.map((c, i) => (
             <li key={i} style={{ fontSize: 14, color: 'var(--ink-soft)', display: 'flex', gap: 10 }}>
-              <span style={{ color: 'var(--lime-ink)', fontWeight: 800 }}>✓</span>
+              <span style={{ color: PAL[6].c, fontWeight: 800 }}>✓</span>
               <span>{c}</span>
             </li>
           ))}
@@ -689,15 +705,20 @@ export function HowToBuild() {
 
       <Reveal delay={40}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 30 }}>
-          {GUIDES.filter((g, i) => !g.variant || GUIDES.findIndex((x) => x.variant?.group === g.variant?.group) === i).map((g) => (
-            <button
-              key={g.id}
-              className={`chip${g.id === active || (g.variant && g.variant.group === guide.variant?.group) ? ' is-active' : ''}`}
-              onClick={() => openGuide(g.id)}
-            >
-              {g.tab}
-            </button>
-          ))}
+          {GUIDES.filter((g, i) => !g.variant || GUIDES.findIndex((x) => x.variant?.group === g.variant?.group) === i).map((g, i) => {
+            const on = g.id === active || (!!g.variant && g.variant.group === guide.variant?.group);
+            const col = pal(i);
+            return (
+              <button
+                key={g.id}
+                className={`chip${on ? ' is-active' : ''}`}
+                style={{ background: on ? col.c : col.t, color: on ? '#ffffff' : col.c, borderColor: col.c }}
+                onClick={() => openGuide(g.id)}
+              >
+                {g.tab}
+              </button>
+            );
+          })}
         </div>
       </Reveal>
 

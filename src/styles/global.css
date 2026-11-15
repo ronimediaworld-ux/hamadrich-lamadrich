@@ -804,3 +804,6 @@ h1, h2, h3, h4 { font-weight: 700; }
   .detail-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "head" "side" "body"; }
   .detail-side { position: static; margin-bottom: 22px; }
 }
+
+.variant-opt.is-on { background: var(--yellow-tint); border-color: #7A5B00; }
+.variant-opt.is-on b { color: #7A5B00; }
