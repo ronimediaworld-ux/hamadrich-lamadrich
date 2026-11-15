@@ -8,28 +8,28 @@
   --line-strong: #DDD2C4;
   --stroke: #E8E2DA;
 
-  --flame: #E58A62;
+  --flame: #F08A5D;
   --flame-deep: #CF4F24;
   --flame-ink: #8A3A18;
-  --flame-tint: #FBEBE1;
+  --flame-tint: #FFE8DC;
 
-  --lime: #8DB59A;
+  --lime: #86B894;
   --lime-ink: #2F5A3C;
-  --lime-tint: #E9F1EA;
+  --lime-tint: #E4F2E8;
 
-  --magenta: #D582A0;
+  --magenta: #E88CA8;
   --magenta-ink: #8A2E4D;
-  --magenta-tint: #F6E6EA;
+  --magenta-tint: #FCE5EC;
 
-  --sky: #6A9DBB;
+  --sky: #72B5D6;
   --sky-ink: #1F5272;
-  --sky-tint: #E6EFF5;
+  --sky-tint: #DFF0F8;
 
-  --lilac: #9A8CCB;
-  --lilac-tint: #EDEAF6;
+  --lilac: #B8A8EA;
+  --lilac-tint: #EEE9FB;
 
-  --yellow: #EBCB7A;
-  --yellow-tint: #F8F0DA;
+  --yellow: #F5CB63;
+  --yellow-tint: #FFF4D6;
 
   --marker: #FFE28F;
   --ease: cubic-bezier(.2, .8, .2, 1);
@@ -407,7 +407,7 @@ a:hover > .logo-flame { animation-duration: .9s; }
 .step-body { font-size: 16.5px; line-height: 1.8; color: var(--ink); padding-top: 4px; }
 .fact-box { background: var(--t); border: 1.5px solid var(--stroke); border-radius: 14px; padding: 8px 14px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 .fact-box svg { color: var(--c, var(--flame)); }
-.stamp-shabbat { display: inline-block; border: 3px solid #6A9A78; color: #6A9A78; background: var(--paper); border-radius: 10px; padding: 2px 14px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 16px; transform: rotate(-4deg); animation: pop .5s .4s var(--ease) both; }
+.stamp-shabbat { display: inline-block; border: 3px solid #5E9A6E; color: #5E9A6E; background: var(--paper); border-radius: 10px; padding: 2px 14px; font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 16px; transform: rotate(-4deg); animation: pop .5s .4s var(--ease) both; }
 
 /* ---- מובייל: שבעת השלבים בעטיפה, ובלי גלישה צדדית ---- */
 html, body { overflow-x: clip; }
@@ -531,14 +531,14 @@ a.new-card:hover { transform: perspective(800px) translate(-3px, -5px) rotateX(v
 .ai-copy p { font-size: 15.5px; color: #CFC3AB; margin-bottom: 24px; max-width: 42ch; }
 .ai-win { position: relative; background: #FFFFFF; color: var(--ink); border-radius: 22px; box-shadow: 8px 10px 0 rgba(0, 0, 0, .35); overflow: hidden; transform: rotate(-1deg); transition: transform .3s var(--ease); }
 .ai-win:hover { transform: rotate(0deg) translateY(-4px); }
-.ai-head { display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: #FBEBE1; border-bottom: 1.5px solid var(--stroke); font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+.ai-head { display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: #FFE8DC; border-bottom: 1.5px solid var(--stroke); font-size: 13px; font-weight: 700; color: var(--ink-soft); }
 .ai-head b { font-family: 'Rubik', sans-serif; font-size: 17px; color: var(--ink); margin-inline-end: 6px; }
-.ai-dot { width: 9px; height: 9px; border-radius: 50%; background: #6A9A78; box-shadow: 0 0 0 0 rgba(47, 122, 75, .6); animation: aiPing 2s infinite; }
+.ai-dot { width: 9px; height: 9px; border-radius: 50%; background: #5E9A6E; box-shadow: 0 0 0 0 rgba(47, 122, 75, .6); animation: aiPing 2s infinite; }
 @keyframes aiPing { 0% { box-shadow: 0 0 0 0 rgba(47, 122, 75, .55); } 70%, 100% { box-shadow: 0 0 0 9px rgba(47, 122, 75, 0); } }
 .ai-body { padding: 18px; display: grid; gap: 10px; }
 .ai-me { justify-self: start; max-width: 80%; background: var(--marker); border: 1.5px solid var(--stroke); border-radius: 16px 16px 16px 4px; padding: 10px 15px; font-weight: 600; font-size: 14.5px; }
 .ai-bot { justify-self: end; max-width: 92%; background: #fff; border: 1.5px solid var(--stroke); border-radius: 16px 16px 4px 16px; padding: 12px 16px; font-size: 14.5px; }
-.ai-found { background: #E6F1EA; border: 1.5px solid var(--stroke); border-radius: 10px; padding: 6px 12px; font-weight: 700; font-size: 14px; margin-top: 6px; }
+.ai-found { background: #E2F4EA; border: 1.5px solid var(--stroke); border-radius: 10px; padding: 6px 12px; font-weight: 700; font-size: 14px; margin-top: 6px; }
 .ai-typing { justify-self: end; display: flex; gap: 5px; padding: 6px 12px; }
 .ai-typing i { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-faint); animation: typingDot 1.2s infinite; }
 .ai-typing i:nth-child(2) { animation-delay: .15s; } .ai-typing i:nth-child(3) { animation-delay: .3s; }
@@ -557,7 +557,7 @@ a.new-card:hover { transform: perspective(800px) translate(-3px, -5px) rotateX(v
 .chup-mini:after { content: ''; position: absolute; inset: 7px; border: 1.5px dashed var(--c); border-radius: 12px; opacity: .55; pointer-events: none; }
 .chup-ic { width: 46px; height: 46px; }
 
-.subscribe-box { position: relative; background: #F8F0DA; border: 1.5px solid var(--stroke); border-radius: 28px; box-shadow: 0 8px 20px -14px rgba(60, 50, 100, .22); padding: 32px 40px 34px; overflow: hidden; }
+.subscribe-box { position: relative; background: #FFF4D6; border: 1.5px solid var(--stroke); border-radius: 28px; box-shadow: 0 8px 20px -14px rgba(60, 50, 100, .22); padding: 32px 40px 34px; overflow: hidden; }
 .subscribe-box:before { content: ''; position: absolute; inset-inline-start: -50px; bottom: -60px; width: 190px; height: 190px; border-radius: 50%; background: rgba(242, 184, 75, .45); }
 .subscribe-box > * { position: relative; }
 .subscribe-env { position: absolute !important; inset-inline-end: 32px; top: 22px; width: 76px; height: 76px; animation: floaty 4.4s ease-in-out infinite; }
@@ -656,7 +656,7 @@ a.mt:hover .mt-ic { transform: rotate(-8deg) scale(1.08); }
 .adm { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: 100vh; background: var(--bg); }
 .adm-side { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 6px; padding: 22px 14px 16px; background: var(--paper); border-inline-end: 1.5px solid var(--stroke); }
 .adm-brand { display: flex; align-items: center; gap: 10px; font-family: 'Rubik', sans-serif; font-weight: 900; font-size: 19px; padding: 0 8px 16px; }
-.adm-flame { width: 26px; height: 30px; background: linear-gradient(#F2C85B, #E58A62); border: 1.5px solid var(--stroke); border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; }
+.adm-flame { width: 26px; height: 30px; background: linear-gradient(#F2C85B, #EE7B4D); border: 1.5px solid var(--stroke); border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; }
 .adm-side nav { display: flex; flex-direction: column; gap: 3px; }
 .adm-nav { display: flex; align-items: center; gap: 11px; width: 100%; padding: 10px 12px; border: 2px solid transparent; border-radius: 12px; background: transparent; color: var(--ink-soft); font: 700 14.5px 'Heebo', sans-serif; text-align: start; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
 .adm-nav:hover { background: var(--flame-tint); }
@@ -774,17 +774,13 @@ a.mt:hover .mt-ic { transform: rotate(-8deg) scale(1.08); }
 
 
 /* =====================================================================
-   עידון: פחות צבעים, יותר רוגע. כרטיסים לבנים עם נגיעה קלה של צבע, משקלי כתב עדינים
+   עידון: כותרות עדינות, אבל עם צבע (שבעת הצבעים של בניית פעולה)
    ===================================================================== */
 h1, h2, h3, h4 { font-weight: 700; }
-.cat-tile { background: linear-gradient(180deg, color-mix(in srgb, var(--t) 50%, #fff) 0%, var(--paper) 62%); border-radius: 18px; }
 .cat-tile h3 { font-weight: 700; font-size: 19px; }
-.cat-tile .cat-n { font-weight: 700; font-size: 18px; opacity: .85; }
-.stat-card > div:first-child { color: var(--ink) !important; font-weight: 700 !important; font-size: 26px !important; }
-.roadmap b { width: 40px; height: 40px; font-size: 16px; font-weight: 700; background: color-mix(in srgb, var(--c) 78%, #fff); }
-.step-badge { font-weight: 700; background: color-mix(in srgb, var(--c) 80%, #fff); transform: none; box-shadow: none; }
-.new-card:before { height: 3px; }
-.act-card .act-tag { font-weight: 700; }
+.cat-tile .cat-n { font-weight: 800; font-size: 20px; }
+.stat-card > div:first-child { font-size: 28px !important; }
+.new-card:before { height: 5px; }
 .binder-btn { background: var(--paper); font-weight: 700; }
 .binder-btn:hover { background: var(--yellow-tint); }
 .hero-scene::after { display: none; }

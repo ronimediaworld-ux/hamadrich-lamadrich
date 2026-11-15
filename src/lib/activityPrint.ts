@@ -11,7 +11,7 @@ import { getChupar } from '../data/chuparim';
 import type { PersonalCopy } from './personalCopies';
 import glufotBook from '../data/glufotBook.json';
 
-const PALETTE = ['#C85B2A', '#D66E9F', '#5AA3C9', '#5E7B2F', '#5FB09A', '#9A8CCB', '#C98A66', '#B17824'];
+const PALETTE = ['#C85B2A', '#D66E9F', '#5AA3C9', '#5E7B2F', '#5FB09A', '#8E7BD6', '#C98A66', '#B17824'];
 
 function stepColor(name: string, index: number): string {
   if (/פתיחה/.test(name)) return '#C85B2A';
@@ -19,7 +19,7 @@ function stepColor(name: string, index: number): string {
   if (/קריאה|סיפור|עדות|קטע/.test(name)) return '#D66E9F';
   if (/מתודה|תערוכה|תרגיל|משימה|פעילות/.test(name)) return '#5E7B2F';
   if (/משחק|סבב/.test(name)) return '#5FB09A';
-  if (/דיון|שאלות/.test(name)) return '#9A8CCB';
+  if (/דיון|שאלות/.test(name)) return '#8E7BD6';
   if (/סיכום|צ[׳']ופר|מגן/.test(name)) return '#C98A66';
   return PALETTE[index % PALETTE.length];
 }
@@ -92,7 +92,7 @@ function renderStep(s: FlowStep, i: number): string {
 function shieldSvg(): string {
   const dots = (y: number) => `<line x1="52" x2="248" y1="${y}" y2="${y}" stroke="#5D5972" stroke-width="1" stroke-dasharray="1.5 2.5"/>`;
   return `<svg viewBox="0 0 300 390" class="shield" aria-hidden="true">
-  <path d="M150 6 L294 50 L294 150 Q294 300 150 384 Q6 300 6 150 L6 50 Z" fill="#fff" stroke="#E58A62" stroke-width="4" stroke-dasharray="9 6" stroke-linejoin="round"/>
+  <path d="M150 6 L294 50 L294 150 Q294 300 150 384 Q6 300 6 150 L6 50 Z" fill="#fff" stroke="#EE7B4D" stroke-width="4" stroke-dasharray="9 6" stroke-linejoin="round"/>
   <path d="M150 28 L272 66 L272 150 Q272 280 150 352 Q28 280 28 150 L28 66 Z" fill="#FBEADF"/>
   <text x="150" y="82" text-anchor="middle" font-family="Rubik, Heebo, sans-serif" font-weight="800" font-size="19" fill="#8A3A18">המשפט שבחרתי</text>
   ${dots(106)}${dots(126)}${dots(146)}
@@ -174,7 +174,7 @@ function renderAppendix(ap: { label: string; content: string }): string {
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Heebo:wght@400;500;700&display=swap');
   @import url('${FONT_IMPORT}');
-  :root { --paper:#FBF9F2; --ink:#1A140B; --soft:#3A2F20; --faint:#8A8699; --line:#E4DBC8; --flame:#E58A62; --flame-ink:#8A3A18; --tint:#FBEBE1; }
+  :root { --paper:#FBF9F2; --ink:#1A140B; --soft:#3A2F20; --faint:#8A8699; --line:#E4DBC8; --flame:#EE7B4D; --flame-ink:#8A3A18; --tint:#FFE8DC; }
   * { box-sizing: border-box; }
   html { background-color: var(--paper); background-image: radial-gradient(#E9E1CF 1px, transparent 1.2px); background-size: 18px 18px;
          -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -208,7 +208,7 @@ const CSS = `
   .num { flex: none; width: 23px; height: 23px; border-radius: 50%; color: #fff; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; }
   .min { font-family: 'Heebo', sans-serif; font-weight: 500; color: var(--faint); font-size: 12.5px; }
   .step-body { padding-inline-start: 4px; }
-  blockquote { margin: 6px 0 8px; padding: 2px 14px 2px 0; border-inline-start: 3px solid #E58A62; color: var(--ink); }
+  blockquote { margin: 6px 0 8px; padding: 2px 14px 2px 0; border-inline-start: 3px solid #EE7B4D; color: var(--ink); }
   .linkrow { margin: 6px 0; padding: 7px 12px; background: #FFFFFF; border: 1px solid var(--line); border-radius: 10px; font-size: 12.5px; }
   .linkrow span { color: var(--faint); font-size: 11.5px; margin-inline-start: 6px; word-break: break-all; }
   .note { color: var(--faint); font-size: 12.5px; }
@@ -394,7 +394,7 @@ function renderPersonalBody(c: PersonalCopy): string {
     const body = s.body.trim()
       ? `<div>${renderBody(s.body)}</div>`
       : `${s.hint && !c.cleanPrint ? `<div style="color:#8A8699;font-size:12px">${escapeHtml(s.hint)}</div>` : ''}${('<div style="height:' + (c.cleanPrint ? 34 : 46) + 'px;border-bottom:1px solid #C9BFA9"></div>').repeat(c.cleanPrint ? 4 : 1)}`;
-    return `<section style="border-inline-start:5px solid ${escapeHtml(s.color || '#E58A62')};padding:6px 14px 8px;margin:0 0 10px;break-inside:avoid;background:#FFFFFF;border-radius:6px"><h2 style="font-size:17px;margin:0 0 3px">${i + 1}. ${escapeHtml(s.label)}</h2>${body}</section>`;
+    return `<section style="border-inline-start:5px solid ${escapeHtml(s.color || '#EE7B4D')};padding:6px 14px 8px;margin:0 0 10px;break-inside:avoid;background:#FFFFFF;border-radius:6px"><h2 style="font-size:17px;margin:0 0 3px">${i + 1}. ${escapeHtml(s.label)}</h2>${body}</section>`;
   }).join('');
   const notes = c.notes.trim() ? `<div style="margin-top:12px;padding:10px 14px;border:1.5px dashed #8A8699;border-radius:8px"><b>הערות אישיות:</b><br>${escapeHtml(c.notes).replace(/\n/g, '<br>')}</div>` : '';
   return goals + steps + notes;

@@ -22,9 +22,9 @@ import { staffStudy } from '../data/staffStudy';
 import { situations } from '../data/situations';
 
 const shortcuts = ['אני צריך פעולה', 'משחק מהיר', 'פרשת השבוע', 'פעולה לשבת', 'משהו בלי ציוד', 'פעולה אמונית', '20 דקות פנויות'];
-const shortcutTint = ['#FFFFFF'];
+const shortcutTint = ['#FFE8DC', '#E4F2E8', '#E4EEF8', '#F8E3EC', '#FBF0CC', '#EDE4F6', '#DDF1F1'];
 
-const statColor: Record<string, string> = { 'פעולות ומערכים': '#E58A62', 'קטעי קריאה': '#9A8CCB', 'רעיונות לצ׳ופרים': '#C9A24A', 'סיטואציות בהדרכה': '#6A9A78', 'מפגשי לימוד צוות': '#6A9DBB' };
+const statColor: Record<string, string> = { 'פעולות ומערכים': '#B34E14', 'קטעי קריאה': '#6B4A9B', 'רעיונות לצ׳ופרים': '#A63D6B', 'סיטואציות בהדרכה': '#2F7A4B', 'מפגשי לימוד צוות': '#2F5F95' };
 
 const recommendedIds = ['circle-of-friendship', 'faith-in-hard-times', 'noach-one-persons-power', 'lonely-island-game', 'white-night-outdoors'];
 
@@ -296,34 +296,34 @@ export function Home() {
       <div className="wrap" style={{ paddingBottom: 70 }}>
         <Reveal>
           <div className="mini-tiles stagger">
-            <Link to="/ai" className="mt" style={{ ['--t' as string]: '#E6EFF5', ['--c' as string]: '#6A9DBB' }}>
+            <Link to="/ai" className="mt" style={{ ['--t' as string]: '#DFF0F8', ['--c' as string]: '#4A93BD' }}>
               <span className="mt-ic"><MascotIcon size={40} /></span>
               <h3>עוזר AI</h3>
               <b className="mt-sub">שאלו אותו כל דבר — הוא מכיר את המאגר וגם את ההדרכה</b>
               <p>קודם מחפש במאגר הקיים, ואז עונה על כל שאלה — עצה בהדרכה, רעיון לצ׳ופר, או פעולה חדשה לגמרי.</p>
               <span className="mt-go">פתחו את הצ׳אט ←</span>
             </Link>
-            <Link to="/how-to-build" className="mt" style={{ ['--t' as string]: '#F8F0DA', ['--c' as string]: '#C9A24A' }}>
+            <Link to="/how-to-build" className="mt" style={{ ['--t' as string]: '#FFF4D6', ['--c' as string]: '#D9A21F' }}>
               <span className="mt-ic"><CategoryIcon slug="methods" /></span>
               <h3>רוצים לבנות פעולה בעצמכם?</h3>
               <p>גם אם בא לכם לנסות לבד — יש לכם כלים. "נדבר ת׳כלס" מראה איך מרכיבים פעולה שלב־שלב, ולצידו מאגר מתודות, קטעי קריאה ומשחקים מוכנים לשלוף.</p>
               <span className="mt-go">נדבר ת׳כלס ←</span>
             </Link>
-            <Link to="/chuparim" className="mt" style={{ ['--t' as string]: '#F6E6EA', ['--c' as string]: '#D582A0' }}>
+            <Link to="/chuparim" className="mt" style={{ ['--t' as string]: '#FCE5EC', ['--c' as string]: '#DE6F92' }}>
               <span className="mt-ic"><CategoryIcon slug="chuparim" /></span>
               <h3>רעיונות לצ׳ופרים</h3>
               <span className="mt-go">כל הצ׳ופרים ←</span>
             </Link>
-            <div className="mt" style={{ ['--t' as string]: '#E9F1EA', ['--c' as string]: '#6A9A78' }}>
+            <div className="mt" style={{ ['--t' as string]: '#E4F2E8', ['--c' as string]: '#5E9A6E' }}>
               <SubscribeBox compact />
             </div>
-            <Link to="/about" className="mt" style={{ ['--t' as string]: '#FBEBE1', ['--c' as string]: '#E58A62' }}>
+            <Link to="/about" className="mt" style={{ ['--t' as string]: '#FFE8DC', ['--c' as string]: '#EE7B4D' }}>
               <span className="mt-ic"><MascotIcon size={40} /></span>
               <h3>רוני גרוס, מנהלת האתר</h3>
               <p>שמיניסטית, הדרכתי שנתיים שכבת גדולות — ובניתי את המקום שהיה חסר לי.</p>
               <span className="mt-go">הסיפור שלי ←</span>
             </Link>
-            <Link to="/submit" className="mt mt-solid" style={{ ['--t' as string]: '#E58A62', ['--c' as string]: '#8A3A18' }}>
+            <Link to="/submit" className="mt mt-solid" style={{ ['--t' as string]: '#EE7B4D', ['--c' as string]: '#8A3A18' }}>
               <span className="mt-ic"><CategoryIcon slug="activities" /></span>
               <h3>יש לכם פעולה מטורפת?</h3>
               <p>שתפו אותה, אפשר גם לצרף קובץ — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p>

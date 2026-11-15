@@ -16,7 +16,7 @@ export const PALETTES: Record<string, Palette> = {
   mint: { bg: '#DDF6EE', fg: '#0F4D42', acc: '#1FAF92', acc2: '#8FE3CE' },
   sky: { bg: '#E6EEFF', fg: '#1B2F6B', acc: '#3F6BE8', acc2: '#A9C0FF' },
   chalk: { bg: '#2B3A33', fg: '#F4F1E6', acc: '#F4D35E', acc2: '#8FD1B5' },
-  cream: { bg: '#FFF8E7', fg: '#3B2A14', acc: '#E05D2D', acc2: '#EBCB7A' },
+  cream: { bg: '#FFF8E7', fg: '#3B2A14', acc: '#E05D2D', acc2: '#F5CB63' },
 };
 
 export const FONT_IMPORT = "https://fonts.googleapis.com/css2?family=Rubik:wght@500;800;900&family=Heebo:wght@400;500;700;800&family=Suez+One&family=Secular+One&family=Amatic+SC:wght@400;700&family=Karantina:wght@700&family=Frank+Ruhl+Libre:wght@700;900&family=Varela+Round&family=Gveret+Levin&family=Playpen+Sans+Hebrew:wght@700;800&family=Alef:wght@700&family=David+Libre:wght@700&display=swap";

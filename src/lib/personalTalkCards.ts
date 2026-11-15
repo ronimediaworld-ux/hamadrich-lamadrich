@@ -4,12 +4,12 @@ import { escapeHtml, mascotSvg } from './printFile';
 export interface TalkCard { topic: string; q: string }
 
 export const TALK_TOPICS: { name: string; color: string; tint: string }[] = [
-  { name: 'להכיר', color: '#C85B2A', tint: '#FBEBE1' },
-  { name: 'בקבוצה', color: '#6A9DBB', tint: '#E6EFF5' },
-  { name: 'החיים עכשיו', color: '#8DB59A', tint: '#E9F1EA' },
-  { name: 'חלומות', color: '#D582A0', tint: '#F6E6EA' },
-  { name: 'ערכים ואמונה', color: '#8A6A12', tint: '#F8F0DA' },
-  { name: 'חיזוק', color: '#9A8CCB', tint: '#E6E1F4' },
+  { name: 'להכיר', color: '#C85B2A', tint: '#FFE8DC' },
+  { name: 'בקבוצה', color: '#4A93BD', tint: '#DFF0F8' },
+  { name: 'החיים עכשיו', color: '#86B894', tint: '#E4F2E8' },
+  { name: 'חלומות', color: '#DE6F92', tint: '#FCE5EC' },
+  { name: 'ערכים ואמונה', color: '#8A6A12', tint: '#FFF4D6' },
+  { name: 'חיזוק', color: '#8E7BD6', tint: '#E6E1F4' },
 ];
 
 const RAW: Record<string, string[]> = {

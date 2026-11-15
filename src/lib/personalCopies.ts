@@ -84,7 +84,7 @@ export function personalText(c: PersonalCopy): string {
 
 export function buildPersonalPrintHtml(c: PersonalCopy): string {
   const steps = c.steps.map((s, i) => `
-  <section class="st" style="--c:${s.color || '#E58A62'}">
+  <section class="st" style="--c:${s.color || '#EE7B4D'}">
     <h2><span class="n">${i + 1}</span>${escapeHtml(s.label)}</h2>
     <p>${s.body.trim() ? para(s.body) : (c.cleanPrint ? '<span class="blank">&nbsp;</span>'.repeat(4) : '<span class="blank">&nbsp;</span>')}</p>
   </section>`).join('');

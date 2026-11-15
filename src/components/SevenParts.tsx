@@ -131,7 +131,7 @@ export function SevenParts() {
       <section aria-labelledby="seven-check" style={{ border: '1.5px solid var(--stroke)', borderRadius: 16, padding: '18px 22px', marginBottom: 40, background: 'var(--paper)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 10 }}>
           <h3 id="seven-check" style={{ fontSize: 18, fontWeight: 800, margin: 0 }}>רשימת בדיקה: האם בנית את כל החלקים?</h3>
-          <span style={{ fontSize: 13, fontWeight: 700, color: done === 7 ? '#6A9A78' : 'var(--ink-faint)' }}>{done} מתוך 7</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: done === 7 ? '#2F7A4B' : 'var(--ink-faint)' }}>{done} מתוך 7</span>
         </div>
         <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 12px', display: 'grid', gap: 6 }}>
           {[...SEVEN_PARTS, SEVEN_BONUS].map((p, i) => (
