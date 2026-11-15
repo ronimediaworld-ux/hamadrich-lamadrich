@@ -39,6 +39,7 @@ export function CategoryPage() {
   useDocumentTitle(category?.label);
   const [ageFilter, setAgeFilter] = useState<string | null>(null);
   const [shabbatOnly, setShabbatOnly] = useState(false);
+  const [seriesOnly, setSeriesOnly] = useState(searchParams.get('series') === '1');
   const initialDomain = searchParams.get('domain');
   const [domainFilter, setDomainFilter] = useState(initialDomain && activityDomains.includes(initialDomain) ? initialDomain : 'הכל');
   const [readingDomainFilter, setReadingDomainFilter] = useState('הכל');
@@ -57,6 +58,7 @@ export function CategoryPage() {
   const filtered = items
     .filter((a) => {
       if (shabbatOnly && a.shabbat === 'חול') return false;
+      if (seriesOnly && !a.series) return false;
       if (ageFilter === 'young' && a.ageMin > 6) return false;
       if (ageFilter === 'mid' && (a.ageMax < 7 || a.ageMin > 9)) return false;
       if (ageFilter === 'old' && a.ageMax < 9) return false;
@@ -299,6 +301,9 @@ export function CategoryPage() {
             {slug === 'activities' && activityDomains.map((d) => (
               <button key={d} className={`chip${domainFilter === d ? ' is-active' : ''}`} onClick={() => { setDomainFilter(d); setParshaFilter(null); }}>{d}</button>
             ))}
+            {slug === 'activities' && (
+              <button className={`chip${seriesOnly ? ' is-active' : ''}`} onClick={() => setSeriesOnly((v) => !v)} aria-pressed={seriesOnly}>מערכים</button>
+            )}
             <span style={{ width: 1, background: 'var(--line)', margin: '0 4px' }} />
             <button className={`chip${ageFilter === null ? ' is-active' : ''}`} onClick={() => setAgeFilter(null)}>כל הגילאים</button>
             <button className={`chip${ageFilter === 'young' ? ' is-active' : ''}`} onClick={() => setAgeFilter('young')}>גיל צעיר (א'-ו')</button>
