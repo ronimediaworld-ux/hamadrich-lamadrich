@@ -820,3 +820,13 @@ h1, h2, h3, h4 { font-weight: 700; }
 .home-vid { display: block; overflow: hidden; padding: 0; }
 .home-vid img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: center 30%; display: block; background: #14122a; }
 @media (max-width: 720px) { .home-vids { grid-template-columns: 1fr 1fr 1fr; gap: 8px; } .home-vid div { padding: 6px 8px 10px !important; } .home-vid div div:last-child { font-size: 12.5px !important; } }
+
+/* אייקוני רשתות חברתיות */
+.social-icons { display: flex; gap: 10px; align-items: center; }
+.social-ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--stroke); background: var(--paper); color: var(--ink-soft); transition: transform .2s var(--ease), color .2s ease, background .2s ease, border-color .2s ease; }
+.social-icons.sm .social-ic { width: 38px; height: 38px; }
+.social-ic:hover { transform: translateY(-2px); color: #fff; }
+.social-ic.yt:hover { background: #E0353B; border-color: #E0353B; }
+.social-ic.ig:hover { background: #C13584; border-color: #C13584; }
+.social-ic.wa:hover { background: #25A559; border-color: #25A559; }
+.social-ic:focus-visible { outline: 3px solid var(--flame); outline-offset: 2px; }

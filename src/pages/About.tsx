@@ -8,7 +8,7 @@ import { situations } from '../data/situations';
 import { methods } from '../data/methods';
 import { readings } from '../data/readings';
 import { staffStudy } from '../data/staffStudy';
-import { SOCIAL } from '../data/social';
+import { SocialIcons } from '../components/SocialIcons';
 
 const stats = [
   { label: 'פעולות ומערכים', getCount: () => activities.length },
@@ -124,10 +124,8 @@ export function About() {
           <p style={{ fontSize: 14.5, color: 'var(--ink-soft)', marginBottom: 18 }}>
             סרטונים חדשים, רעיונות לפעולות ועדכונים על תוכן חדש באתר, בכל המקומות שאנחנו נמצאים בהם.
           </p>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            {SOCIAL.youtube && <a className="btn btn-outline" href={SOCIAL.youtube} target="_blank" rel="noopener noreferrer">ערוץ היוטיוב ↗</a>}
-            {SOCIAL.instagram && <a className="btn btn-outline" href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer">אינסטגרם ↗</a>}
-            {SOCIAL.whatsapp && <a className="btn btn-outline" href={SOCIAL.whatsapp} target="_blank" rel="noopener noreferrer">קבוצת הוואטסאפ ↗</a>}
+          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+            <SocialIcons />
             <Link to="/videos" className="btn btn-outline">הסרטונים באתר</Link>
           </div>
         </div>
