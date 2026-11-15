@@ -87,6 +87,7 @@ export interface Chupar {
   character: Character;
   designImage?: string; // תמונת תצוגה מקדימה של עיצוב מקורי (קנבה וכו'), נתיב תחת public/
   print?: ChuparPrint; // עיצוב הכרטיס להדפסה (נוצר לפי תוכן הצ׳ופר)
+  occasion?: string; // למשל 'מסע': צ׳ופרים שמתאימים לאירוע מסוים
   canvaTemplateUrl?: string; // קישור "שימוש בתבנית" של קנבה — מבקרים יכולים ללחוץ ולקבל עותק עריך משלהם
 }
 

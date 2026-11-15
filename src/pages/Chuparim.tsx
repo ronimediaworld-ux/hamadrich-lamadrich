@@ -20,7 +20,13 @@ const budgetColor: Record<string, string> = {
 export function Chuparim() {
   useDocumentTitle('רעיונות לצ׳ופרים');
   const [pq, setPq] = useState('');
-  const shown = chuparim.filter((c) => matchesQuery([c.title, c.description, c.kind, c.forWhom, c.tip], pq));
+  const [kindFilter, setKindFilter] = useState('הכל');
+  const [tripsOnly, setTripsOnly] = useState(false);
+  const KINDS = ['הכל', 'אכיל', 'מתנה מוחשית', 'חוויה', 'DIY'];
+  const tripCount = chuparim.filter((c) => c.occasion === 'מסע').length;
+  const shown = chuparim.filter((c) => matchesQuery([c.title, c.description, c.kind, c.forWhom, c.tip], pq))
+    .filter((c) => kindFilter === 'הכל' || c.kind === kindFilter)
+    .filter((c) => !tripsOnly || c.occasion === 'מסע');
   return (
     <div className="wrap" style={{ paddingTop: 30, paddingBottom: 70 }}>
       <Reveal>
@@ -29,6 +35,13 @@ export function Chuparim() {
       </Reveal>
 
       <PageSearch value={pq} onChange={setPq} placeholder="חיפוש בצ׳ופרים..." />
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 22 }}>
+        {KINDS.map((k) => (
+          <button key={k} type="button" className={`chip${kindFilter === k ? ' is-active' : ''}`} onClick={() => setKindFilter(k)}>{k}</button>
+        ))}
+        <span style={{ width: 1, background: 'var(--line)', margin: '0 4px' }} />
+        <button type="button" className={`chip${tripsOnly ? ' is-active' : ''}`} onClick={() => setTripsOnly((v) => !v)} aria-pressed={tripsOnly}>למסעות ({tripCount})</button>
+      </div>
       {shown.length === 0 && <p style={{ color: 'var(--ink-faint)' }}>לא נמצא צ׳ופר שמתאים — נסו מילה אחרת.</p>}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 18 }}>
         {shown.map((c, i) => (
