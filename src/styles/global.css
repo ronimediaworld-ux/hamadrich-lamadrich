@@ -798,3 +798,13 @@ h1, h2, h3, h4 { font-weight: 700; }
 .variant-opt:hover { border-color: var(--line-strong); }
 .variant-opt.is-on { background: var(--flame-tint); border-color: var(--flame); }
 @media (max-width: 560px) { .variant-switch { grid-template-columns: 1fr; } }
+
+/* דף פעולה: התוכן מתחיל מיד מתחת לכותרת, וכרטיס הפרטים יושב בצד ונדבק בגלילה */
+.detail-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); grid-template-rows: auto 1fr; grid-template-areas: "head side" "body side"; column-gap: 40px; align-items: start; }
+.detail-head { grid-area: head; margin-bottom: 22px; }
+.detail-side { grid-area: side; position: sticky; top: 88px; }
+.detail-body { grid-area: body; min-width: 0; }
+@media (max-width: 720px) {
+  .detail-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "head" "side" "body"; }
+  .detail-side { position: static; margin-bottom: 22px; }
+}

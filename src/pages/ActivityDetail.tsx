@@ -93,8 +93,8 @@ export function ActivityDetail() {
         <span style={{ color: 'var(--ink)', fontWeight: 700 }}>{activity.title}</span>
       </div>
 
-      <Reveal>
-        <div className="detail-hero" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 40, marginBottom: 30 }}>
+      <div className="detail-layout">
+        <div className="detail-head"><Reveal>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
               <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'var(--bg)', border: '1px solid var(--line)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -116,7 +116,9 @@ export function ActivityDetail() {
             <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', maxWidth: '58ch', marginBottom: 10 }}>{activity.description}</p>
             <ViewCount kind="activity" id={activity.id} />
           </div>
+        </Reveal></div>
 
+        <div className="detail-side"><Reveal>
           <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12, height: 'fit-content' }}>
             <Row icon={<UsersIcon size={16} />} label={activity.ageLabel} />
             <Row icon={<ClockIcon size={16} />} label={`${activity.duration} דקות`} />
@@ -149,9 +151,9 @@ export function ActivityDetail() {
             <Link to={`/my/${activity.id}`} className="btn btn-outline no-print" style={{ justifyContent: 'center' }}>עותק אישי לעריכה והערות</Link>
             <Link to={`/present/${activity.id}`} className="btn btn-flame no-print" style={{ justifyContent: 'center' }}>מצב "בפעולה" — מסך גדול</Link>
           </div>
-        </div>
-      </Reveal>
+        </Reveal></div>
 
+        <div className="detail-body">
       {activity.shabbatNote && (
         <Reveal>
           <div style={{ background: 'var(--sky-tint)', border: '1px solid var(--sky)', borderRadius: 12, padding: '14px 18px', fontSize: 14, color: 'var(--sky-ink)', marginBottom: 28 }}>
@@ -344,6 +346,8 @@ export function ActivityDetail() {
           <Comments kind="activity" targetId={activity.id} />
         </div>
       </Reveal>
+        </div>
+      </div>
     </div>
   );
 }
