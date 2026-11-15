@@ -830,3 +830,40 @@ h1, h2, h3, h4 { font-weight: 700; }
 .social-ic.ig:hover { background: #C13584; border-color: #C13584; }
 .social-ic.wa:hover { background: #25A559; border-color: #25A559; }
 .social-ic:focus-visible { outline: 3px solid var(--flame); outline-offset: 2px; }
+
+/* ===== ריענון דשבורד הניהול: רגוע, בוגר, בצבעי המותג ===== */
+.adm-side { background: #FBF8F4; border-inline-end: 1px solid var(--line); }
+.adm-brand { font-size: 18px; letter-spacing: -.01em; }
+.adm-nav { border: none; border-radius: 10px; font-weight: 600; color: var(--ink-soft); }
+.adm-nav svg { color: var(--ink-faint); transition: color .15s ease; }
+.adm-nav:hover { background: #F3EEE8; color: var(--ink); }
+.adm-nav.is-active { background: var(--flame-tint); color: var(--flame-ink); font-weight: 800; }
+.adm-nav.is-active svg { color: var(--flame-deep); }
+.adm-badge { background: var(--flame-deep); }
+.adm-main { background: var(--bg); }
+.adm-hero { border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(135deg, #fff 0%, #FFF8F2 60%, #F6F1FB 100%); box-shadow: none; }
+.adm-hero h1 { font-size: clamp(24px, 3vw, 30px); letter-spacing: -.02em; }
+.adm-card, .adm-tile, .adm-list, .adm-form { border: 1px solid var(--line); border-radius: 16px; box-shadow: none; }
+.adm-card h2, .adm-head h2 { font-size: 16px; font-weight: 800; color: var(--ink-soft); }
+.adm-tile { position: relative; overflow: hidden; padding: 18px 20px 18px 18px; transition: box-shadow .2s var(--ease), border-color .2s var(--ease); }
+.adm-tile::before { content: ''; position: absolute; inset-block: 14px; inset-inline-start: 0; width: 4px; border-radius: 0 4px 4px 0; background: var(--line-strong); }
+.adm-tile:nth-child(1)::before { background: #6B4A9B; }
+.adm-tile:nth-child(2)::before { background: #2F7A4B; }
+.adm-tile:nth-child(3)::before { background: #2F5F95; }
+.adm-tile:hover { transform: none; border-color: var(--line-strong); box-shadow: var(--shadow-soft); }
+.adm-tile b { font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
+.adm-tile.is-hot { background: #fff; border-color: var(--flame); }
+.adm-tile.is-hot b { color: var(--flame-deep); }
+.adm-tag { background: #F3EEE8; border: none; color: var(--ink-soft); font-weight: 700; }
+.adm-kpis b { font-weight: 800; letter-spacing: -.02em; }
+.adm-bar i { background: #DCD3EE; border-radius: 4px 4px 1px 1px; }
+.adm-bar.is-today i { background: #6B4A9B; }
+.adm-rank li::before { color: var(--flame-deep); }
+.adm-setup { border: 1px dashed var(--line-strong); }
+.adm-setup:hover { border-color: var(--flame); background: #FFFBF8; }
+.adm-setup-bar i { background: #2F7A4B; }
+.adm-row.is-active { background: var(--flame-tint); box-shadow: inset 3px 0 0 var(--flame-deep); }
+.adm-content-mix { display: flex; height: 10px; border-radius: 99px; overflow: hidden; margin: 2px 0 14px; background: var(--line); }
+.adm-content-mix i { display: block; height: 100%; }
+.adm-date { margin: 0 0 4px; font-size: 13px; font-weight: 700; color: var(--ink-faint); }
+@media (max-width: 860px) { .adm-cols { grid-template-columns: minmax(0, 1fr); } }

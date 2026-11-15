@@ -19,6 +19,7 @@ interface Submission { id: string; name: string; contact: string; title: string;
 interface Sub { email: string; name: string; createdAt: number }
 interface Health { storage: string; githubConnected: boolean; deployHookConfigured: boolean; googleVerification: boolean; forceCanonical: boolean; mailConfigured: boolean; notifyConfigured: boolean; aiConfigured: boolean; siteUrl: string; production: boolean }
 
+const MIX_COLORS = ['#2F5F95', '#A63D6B', '#7A5B00', '#9A4A2A', '#176B6B'];
 const SEEN_KEY = 'hlm-admin-last-seen';
 const getJson = <T,>(url: string): Promise<T | null> => fetch(url).then((r) => (r.ok ? (r.json() as Promise<T>) : null)).catch(() => null);
 const nf = (n: number) => n.toLocaleString('he-IL');
@@ -103,6 +104,7 @@ export function Overview({ onGo }: { onGo: (s: Section) => void }) {
     <div className="adm-stack">
       <div className="adm-hero">
         <div>
+          <p className="adm-date">{new Date().toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
           <h1>{greet}, רוני</h1>
           <p>{todo > 0 ? `יש ${nf(todo)} דברים חדשים שמחכים לך.` : 'הכל מטופל. אין כרגע משהו שדורש אותך.'}</p>
         </div>
@@ -183,6 +185,9 @@ export function Overview({ onGo }: { onGo: (s: Section) => void }) {
 
         <section className="adm-card">
           <div className="adm-head"><h2>מה יש באתר</h2></div>
+          <div className="adm-content-mix" aria-hidden="true">
+            {CONTENT_COUNTS.map((c, i) => <i key={c.label} style={{ flex: c.n, background: MIX_COLORS[i % MIX_COLORS.length] }} />)}
+          </div>
           <div className="adm-kpis">
             {CONTENT_COUNTS.map((c) => <div key={c.label}><b>{nf(c.n)}</b><span>{c.label}</span></div>)}
           </div>

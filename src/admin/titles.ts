@@ -2,6 +2,7 @@ import { activities } from '../data/activities';
 import { readings } from '../data/readings';
 import { staffStudy } from '../data/staffStudy';
 import { chuparim } from '../data/chuparim';
+import { videos } from '../data/videos';
 
 // מפתחות הצפיות והדירוגים נשמרים כ-"סוג:id" — כאן הופכים אותם לשם קריא וקישור
 const KINDS: Record<string, { label: string; path: string; find: (id: string) => string | undefined }> = {
@@ -30,4 +31,5 @@ export const CONTENT_COUNTS = [
   { label: 'קטעי קריאה', n: readings.length },
   { label: 'לימודי צוות', n: staffStudy.length },
   { label: 'צ׳ופרים', n: chuparim.length },
+  { label: 'סרטונים', n: videos.length },
 ];
