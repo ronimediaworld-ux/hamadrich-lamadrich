@@ -5,7 +5,6 @@ import { ActivityCard } from '../components/ActivityCard';
 import { MascotIcon } from '../components/TeenAvatar';
 import { CategoryIcon, CAT_STYLE } from '../components/CategoryIcon';
 import { HeroMascot } from '../components/HeroMascot';
-import { HeroScene } from '../components/HeroScene';
 import { quickGames } from '../data/quickGames';
 import { methods } from '../data/methods';
 import { movementNames } from '../data/movementNames';
@@ -23,9 +22,9 @@ import { staffStudy } from '../data/staffStudy';
 import { situations } from '../data/situations';
 
 const shortcuts = ['אני צריך פעולה', 'משחק מהיר', 'פרשת השבוע', 'פעולה לשבת', 'משהו בלי ציוד', 'פעולה אמונית', '20 דקות פנויות'];
-const shortcutTint = ['#FFE8DC', '#E2F4EA', '#DFF0F8', '#FCE5EC', '#FFF4D6', '#EEE9FB', '#DDF3F2'];
+const shortcutTint = ['#FFFFFF'];
 
-const statColor: Record<string, string> = { 'פעולות ומערכים': '#EE7B4D', 'קטעי קריאה': '#8E7BD6', 'רעיונות לצ׳ופרים': '#D9A21F', 'סיטואציות בהדרכה': '#5E9A6E', 'מפגשי לימוד צוות': '#4A93BD' };
+const statColor: Record<string, string> = { 'פעולות ומערכים': '#E58A62', 'קטעי קריאה': '#9A8CCB', 'רעיונות לצ׳ופרים': '#C9A24A', 'סיטואציות בהדרכה': '#6A9A78', 'מפגשי לימוד צוות': '#6A9DBB' };
 
 const recommendedIds = ['circle-of-friendship', 'faith-in-hard-times', 'noach-one-persons-power', 'lonely-island-game', 'white-night-outdoors'];
 
@@ -83,8 +82,7 @@ export function Home() {
     <div>
       {/* HERO */}
       <section className="hero-scene">
-      <HeroScene />
-      <div className="wrap" style={{ position: 'relative', zIndex: 1, paddingTop: 52, paddingBottom: 96, textAlign: 'center' }}>
+      <div className="wrap" style={{ position: 'relative', zIndex: 1, paddingTop: 52, paddingBottom: 72, textAlign: 'center' }}>
         <Reveal>
           <div style={{ marginBottom: 4 }}>
             <HeroMascot size={150} />
@@ -93,7 +91,7 @@ export function Home() {
         </Reveal>
 
         <Reveal delay={60}>
-          <h1 style={{ fontSize: 'clamp(36px, 5.6vw, 62px)', fontWeight: 800, lineHeight: 1.1, marginBottom: 18 }}>
+          <h1 style={{ fontSize: 'clamp(34px, 5vw, 56px)', fontWeight: 700, lineHeight: 1.12, marginBottom: 18 }}>
             מה אתם צריכים<br />להעביר{' '}
             <span className="squig">היום<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C25 2 40 18 62 9s38 9 60 0 38 9 60 1 15-2 15-2" /></svg></span>?
           </h1>
@@ -298,34 +296,34 @@ export function Home() {
       <div className="wrap" style={{ paddingBottom: 70 }}>
         <Reveal>
           <div className="mini-tiles stagger">
-            <Link to="/ai" className="mt" style={{ ['--t' as string]: '#DFF0F8', ['--c' as string]: '#4A93BD' }}>
+            <Link to="/ai" className="mt" style={{ ['--t' as string]: '#E6EFF5', ['--c' as string]: '#6A9DBB' }}>
               <span className="mt-ic"><MascotIcon size={40} /></span>
               <h3>עוזר AI</h3>
               <b className="mt-sub">שאלו אותו כל דבר — הוא מכיר את המאגר וגם את ההדרכה</b>
               <p>קודם מחפש במאגר הקיים, ואז עונה על כל שאלה — עצה בהדרכה, רעיון לצ׳ופר, או פעולה חדשה לגמרי.</p>
               <span className="mt-go">פתחו את הצ׳אט ←</span>
             </Link>
-            <Link to="/how-to-build" className="mt" style={{ ['--t' as string]: '#FFF4D6', ['--c' as string]: '#D9A21F' }}>
+            <Link to="/how-to-build" className="mt" style={{ ['--t' as string]: '#F8F0DA', ['--c' as string]: '#C9A24A' }}>
               <span className="mt-ic"><CategoryIcon slug="methods" /></span>
               <h3>רוצים לבנות פעולה בעצמכם?</h3>
               <p>גם אם בא לכם לנסות לבד — יש לכם כלים. "נדבר ת׳כלס" מראה איך מרכיבים פעולה שלב־שלב, ולצידו מאגר מתודות, קטעי קריאה ומשחקים מוכנים לשלוף.</p>
               <span className="mt-go">נדבר ת׳כלס ←</span>
             </Link>
-            <Link to="/chuparim" className="mt" style={{ ['--t' as string]: '#FCE5EC', ['--c' as string]: '#DE6F92' }}>
+            <Link to="/chuparim" className="mt" style={{ ['--t' as string]: '#F6E6EA', ['--c' as string]: '#D582A0' }}>
               <span className="mt-ic"><CategoryIcon slug="chuparim" /></span>
               <h3>רעיונות לצ׳ופרים</h3>
               <span className="mt-go">כל הצ׳ופרים ←</span>
             </Link>
-            <div className="mt" style={{ ['--t' as string]: '#E4F2E8', ['--c' as string]: '#5E9A6E' }}>
+            <div className="mt" style={{ ['--t' as string]: '#E9F1EA', ['--c' as string]: '#6A9A78' }}>
               <SubscribeBox compact />
             </div>
-            <Link to="/about" className="mt" style={{ ['--t' as string]: '#FFE8DC', ['--c' as string]: '#EE7B4D' }}>
+            <Link to="/about" className="mt" style={{ ['--t' as string]: '#FBEBE1', ['--c' as string]: '#E58A62' }}>
               <span className="mt-ic"><MascotIcon size={40} /></span>
               <h3>רוני גרוס, מנהלת האתר</h3>
               <p>שמיניסטית, הדרכתי שנתיים שכבת גדולות — ובניתי את המקום שהיה חסר לי.</p>
               <span className="mt-go">הסיפור שלי ←</span>
             </Link>
-            <Link to="/submit" className="mt mt-solid" style={{ ['--t' as string]: '#EE7B4D', ['--c' as string]: '#8A3A18' }}>
+            <Link to="/submit" className="mt mt-solid" style={{ ['--t' as string]: '#E58A62', ['--c' as string]: '#8A3A18' }}>
               <span className="mt-ic"><CategoryIcon slug="activities" /></span>
               <h3>יש לכם פעולה מטורפת?</h3>
               <p>שתפו אותה, אפשר גם לצרף קובץ — כל הצעה עוברת בדיקת איכות קצרה לפני שהיא מתפרסמת.</p>

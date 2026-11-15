@@ -67,7 +67,7 @@ export function PersonalCopy() {
     <div className="wrap" style={{ paddingTop: 30, paddingBottom: 70, maxWidth: 780 }}>
       <p style={{ fontSize: 13, color: 'var(--ink-faint)', margin: '0 0 6px' }}>
         {copy.kind === 'copy' ? 'עותק אישי' : 'תבנית אישית לפי שיטת שבעת החלקים'} · נשמר רק בדפדפן שלך, ולא משנה את המקור
-        {saved && <span style={{ color: '#4F9E70', fontWeight: 700 }}> · נשמר ✓</span>}
+        {saved && <span style={{ color: '#6A9A78', fontWeight: 700 }}> · נשמר ✓</span>}
       </p>
       <input aria-label="שם הפעולה" value={copy.title} onChange={(e) => update({ ...copy, title: e.target.value })} style={{ ...FIELD, fontSize: 24, fontWeight: 800, marginBottom: 14 }} />
 

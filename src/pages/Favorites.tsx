@@ -21,14 +21,14 @@ interface Tab { id: string; label: string; color: string; tint: string }
 
 // כל לשונית היא "מחיצה" בקלסר.
 const TABS: Tab[] = [
-  { id: 'activities', label: 'פעולות ומערכים', color: '#EE7B4D', tint: '#FFE8DC' },
-  { id: 'games', label: 'משחקים', color: '#86B894', tint: '#E4F2E8' },
-  { id: 'social-nights', label: 'ערבי גיבוש', color: '#F5CB63', tint: '#FFF4D6' },
-  { id: 'readings', label: 'קטעי קריאה', color: '#DE6F92', tint: '#FCE5EC' },
-  { id: 'staff-study', label: 'לימוד צוות', color: '#8E7BD6', tint: '#E6E1F4' },
-  { id: 'chuparim', label: 'צ׳ופרים', color: '#4A93BD', tint: '#DFF0F8' },
+  { id: 'activities', label: 'פעולות ומערכים', color: '#E58A62', tint: '#FBEBE1' },
+  { id: 'games', label: 'משחקים', color: '#8DB59A', tint: '#E9F1EA' },
+  { id: 'social-nights', label: 'ערבי גיבוש', color: '#EBCB7A', tint: '#F8F0DA' },
+  { id: 'readings', label: 'קטעי קריאה', color: '#D582A0', tint: '#F6E6EA' },
+  { id: 'staff-study', label: 'לימוד צוות', color: '#9A8CCB', tint: '#E6E1F4' },
+  { id: 'chuparim', label: 'צ׳ופרים', color: '#6A9DBB', tint: '#E6EFF5' },
   { id: 'files', label: 'קבצים להורדה', color: '#B5651D', tint: '#F6E6D3' },
-  { id: 'personal', label: 'התבניות והעותקים שלי', color: '#4F9E70', tint: '#DCEFE3' },
+  { id: 'personal', label: 'התבניות והעותקים שלי', color: '#6A9A78', tint: '#DCEFE3' },
 ];
 
 interface Item { tab: string; key: string; kind: FavKind; id: string; title: string; sub: string; url: string }

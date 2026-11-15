@@ -1,5 +1,5 @@
 // אפקטים קטנים ומתוחכמים: פיצוץ קונפטי מנקודה (בשמירה למועדפים), בלי ספריות חיצוניות.
-const COLORS = ['#EE7B4D', '#F5CB63', '#DE6F92', '#4A93BD', '#86B894'];
+const COLORS = ['#E58A62', '#EBCB7A', '#D582A0', '#6A9DBB', '#8DB59A'];
 
 export function burst(origin: Element, count = 16) {
   if (typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

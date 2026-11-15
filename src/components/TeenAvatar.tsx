@@ -3,41 +3,41 @@ import { Spark } from './Spark';
 
 const paths: Record<Character, { hair: string; hairFill: string; skin: string; shirt: string; extra?: string }> = {
   A: {
-    shirt: '#4A93BD',
+    shirt: '#6A9DBB',
     skin: '#C99B6E',
     hairFill: '#2A1D12',
     hair: 'M25 42c-6-16 6-28 25-28s31 12 25 28c-2-8-8-6-10-12-5 7-14 7-20 2-4 6-9 5-13 6-3 1-6 3-7 4z',
   },
   B: {
-    shirt: '#EE7B4D',
+    shirt: '#E58A62',
     skin: '#E9C9A8',
     hairFill: '#5C4127',
     hair: 'M27 30c8-10 38-10 46 0 3 8 2 22-3 30-1-10-2-18-6-20-8 4-24 4-32 0-4 2-5 10-6 20-5-8-6-22-3-30z',
     extra: 'headband',
   },
   C: {
-    shirt: '#86B894',
+    shirt: '#8DB59A',
     skin: '#7A5230',
     hairFill: '#1F2430',
     hair: 'M28 34c10-8 34-8 44 0 2-4-2-10-8-11-6-6-22-6-28 0-6 1-10 7-8 11z',
     extra: 'strap',
   },
   D: {
-    shirt: '#DE6F92',
+    shirt: '#D582A0',
     skin: '#B98150',
     hairFill: '#6B4322',
     hair: 'M27 34c9-11 37-11 46 0-1 8-4 14-4 14s-9-8-19-8-18 8-19 8 0-6-4-14z',
     extra: 'glasses,wavy',
   },
   E: {
-    shirt: '#F5CB63',
+    shirt: '#EBCB7A',
     skin: '#8A5A34',
     hairFill: '#3B2A1C',
     hair: 'M29 36c8-7 34-7 42 0',
     extra: 'chefhat',
   },
   F: {
-    shirt: '#4A93BD',
+    shirt: '#6A9DBB',
     skin: '#8A5A34',
     hairFill: '#1F2430',
     hair: 'M28 40c-2-14 8-22 22-22s24 8 22 22c-10-6-34-6-44 0z',
@@ -69,10 +69,10 @@ export function TeenAvatar({ character, size = 60 }: { character: Character; siz
         <path d={p.hair} fill={p.hairFill} stroke="#6A6485" strokeWidth="2.2" strokeLinejoin="round" />
       )}
       {p.extra?.includes('headband') && (
-        <path d="M29 32c14 5 28 5 42 0" fill="none" stroke="#F5CB63" strokeWidth="5" strokeLinecap="round" />
+        <path d="M29 32c14 5 28 5 42 0" fill="none" stroke="#EBCB7A" strokeWidth="5" strokeLinecap="round" />
       )}
       {p.extra?.includes('cap') && (
-        <path d="M63 24c8-2 15 2 15 8s-9 6-15 4z" fill="#DE6F92" stroke="#6A6485" strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M63 24c8-2 15 2 15 8s-9 6-15 4z" fill="#D582A0" stroke="#6A6485" strokeWidth="2.2" strokeLinejoin="round" />
       )}
       {p.extra?.includes('glasses') ? (
         <>

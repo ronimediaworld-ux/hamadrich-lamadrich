@@ -2,12 +2,7 @@ import { MascotIcon } from './TeenAvatar';
 
 // ניצוץ בדף הבית: הדמות המקורית של האתר, עם ריחוף עדין, קרני אור דקות וכוכבים מנצנצים בצדדים.
 // בלי תזוזות עיניים ובלי סיבוב אחרי העכבר.
-const STARS: { x: string; y: string; s: number; d: number }[] = [
-  { x: '-30%', y: '24%', s: 0.14, d: 0 },
-  { x: '-48%', y: '60%', s: 0.09, d: 1.4 },
-  { x: '124%', y: '30%', s: 0.12, d: 2.1 },
-  { x: '142%', y: '66%', s: 0.08, d: 0.7 },
-];
+const STARS: { x: string; y: string; s: number; d: number }[] = [];
 
 export function HeroMascot({ size = 120 }: { size?: number }) {
   return (

@@ -44,7 +44,7 @@ export function ActivityCard({ activity, rotate = 0 }: { activity: Activity; rot
         flex: '0 0 270px',
         padding: 20,
         transform: `rotate(${rotate}deg)`,
-        borderTop: `6px solid ${colors.accent ?? colors.fg}`,
+        borderTop: `3px solid ${colors.accent ?? colors.fg}`,
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>

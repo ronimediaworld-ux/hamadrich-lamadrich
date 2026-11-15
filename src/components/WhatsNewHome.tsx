@@ -6,10 +6,10 @@ import { staffStudy } from '../data/staffStudy';
 import { chuparim } from '../data/chuparim';
 
 const KIND_PALETTE: Record<string, [string, string]> = {
-  'פעולה': ['#EE7B4D', '#FFE8DC'],
-  'קטע קריאה': ['#8E7BD6', '#EEE9FB'],
-  'לימוד צוות': ['#4A93BD', '#DFF0F8'],
-  'צ׳ופר': ['#D9A21F', '#FFF4D6'],
+  'פעולה': ['#E58A62', '#FBEBE1'],
+  'קטע קריאה': ['#9A8CCB', '#EDEAF6'],
+  'לימוד צוות': ['#6A9DBB', '#E6EFF5'],
+  'צ׳ופר': ['#C9A24A', '#F8F0DA'],
 };
 
 interface Row { to: string; title: string; kind: string; sub: string }

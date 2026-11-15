@@ -19,7 +19,7 @@ export function SubscribeBox({ compact = false }: { compact?: boolean }) {
     return (
       <div className="no-print mt-sub-box">
         <span className="mt-ic">
-          <svg viewBox="0 0 56 56" aria-hidden="true"><rect x="6" y="14" width="44" height="30" rx="5" fill="#FFFFFF" stroke="#3B3652" strokeWidth="2.6" /><path d="M7 17l21 15 21-15" fill="none" stroke="#3B3652" strokeWidth="2.6" strokeLinejoin="round" /><circle cx="46" cy="14" r="6" fill="#EE7B4D" stroke="#3B3652" strokeWidth="2.2" /></svg>
+          <svg viewBox="0 0 56 56" aria-hidden="true"><rect x="6" y="14" width="44" height="30" rx="5" fill="#FFFFFF" stroke="#3B3652" strokeWidth="2.6" /><path d="M7 17l21 15 21-15" fill="none" stroke="#3B3652" strokeWidth="2.6" strokeLinejoin="round" /><circle cx="46" cy="14" r="6" fill="#E58A62" stroke="#3B3652" strokeWidth="2.2" /></svg>
         </span>
         <h3>פעולות פרשת השבוע — ישר למייל</h3>
         <p>פעם בשבוע, לפני שבת: הפעולות של הפרשה וקטע אחד חדש מהמאגר. בלי ספאם, אפשר לבטל בכל רגע.</p>
@@ -40,7 +40,7 @@ export function SubscribeBox({ compact = false }: { compact?: boolean }) {
   return (
     <div className="no-print subscribe-box">
       <div className="subscribe-env" aria-hidden="true">
-        <svg viewBox="0 0 56 56"><rect x="6" y="14" width="44" height="30" rx="5" fill="#FFFFFF" stroke="#3B3652" strokeWidth="2.6" /><path d="M7 17l21 15 21-15" fill="none" stroke="#3B3652" strokeWidth="2.6" strokeLinejoin="round" /><circle cx="46" cy="14" r="6" fill="#EE7B4D" stroke="#3B3652" strokeWidth="2.2" /></svg>
+        <svg viewBox="0 0 56 56"><rect x="6" y="14" width="44" height="30" rx="5" fill="#FFFFFF" stroke="#3B3652" strokeWidth="2.6" /><path d="M7 17l21 15 21-15" fill="none" stroke="#3B3652" strokeWidth="2.6" strokeLinejoin="round" /><circle cx="46" cy="14" r="6" fill="#E58A62" stroke="#3B3652" strokeWidth="2.2" /></svg>
       </div>
       <h2 style={{ fontSize: 24, fontWeight: 900, marginBottom: 6 }}>פעולות פרשת השבוע — ישר למייל</h2>
       <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', marginBottom: 16, maxWidth: '60ch' }}>פעם בשבוע, לפני שבת: הפעולות של הפרשה וקטע אחד חדש מהמאגר. בלי ספאם, אפשר לבטל בכל רגע.</p>
