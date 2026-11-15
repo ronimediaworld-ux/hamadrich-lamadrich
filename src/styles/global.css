@@ -505,7 +505,7 @@ a.new-card:hover { transform: perspective(800px) translate(-3px, -5px) rotateX(v
 
 /* ניצוץ בדף הבית: ריחוף עדין, קרני אור דקות וכוכבים רכים בצדדים */
 .hm { position: relative; margin: 0 auto; }
-.hm-flame { position: relative; z-index: 1; width: 100%; transform-origin: 50% 92%; }
+.hm-flame { position: relative; z-index: 1; width: 100%; transform-origin: 50% 92%; animation: bob 3.6s ease-in-out infinite; }
 .hm-flame svg { display: block; margin: 0 auto; filter: drop-shadow(0 8px 10px rgba(207, 79, 36, .18)); }
 .hm-rays { position: absolute; left: 50%; top: 46%; border-radius: 50%; pointer-events: none;
   background: repeating-conic-gradient(from 0deg, rgba(255, 205, 110, .3) 0deg 3deg, rgba(255, 205, 110, 0) 3deg 24deg);
@@ -771,36 +771,6 @@ a.mt:hover .mt-ic { transform: rotate(-8deg) scale(1.08); }
 .hero-brand { font-family: 'Rubik', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: .2px; margin-top: 6px; color: var(--ink-soft); }
 .hero-scene h1 { color: var(--ink); }
 .hero-scene .hero-search { border-color: var(--stroke); }
-
-
-/* =====================================================================
-   ניצוץ מונפש: נשימה, ריצוד להבה, מצמוץ, נפנוף ידיים, צעידה קלה וניצנוצים
-   ===================================================================== */
-.spark { overflow: visible; }
-.spark-anim .spark-eyes { transform-box: fill-box; transform-origin: 50% 55%; animation: sparkBlink 5.2s ease-in-out infinite; }
-.spark-anim:not(.spark-lite) .spark-root { transform-box: fill-box; transform-origin: 50% 100%; animation: sparkBreathe 3.4s ease-in-out infinite; }
-.spark-anim:not(.spark-lite) .spark-outer { transform-box: fill-box; transform-origin: 50% 100%; animation: sparkFlick 2.3s ease-in-out infinite; }
-.spark-anim:not(.spark-lite) .spark-mid { transform-box: fill-box; transform-origin: 50% 100%; animation: sparkFlick 1.9s ease-in-out -.6s infinite; }
-.spark-anim:not(.spark-lite) .spark-arm-r { transform-origin: 1024px 690px; animation: sparkWave 1.5s ease-in-out infinite; }
-.spark-anim:not(.spark-lite) .spark-arm-l { transform-origin: 522px 760px; animation: sparkSway 3s ease-in-out infinite; }
-.spark-anim:not(.spark-lite) .spark-leg-l { transform-origin: 692px 846px; animation: sparkStep 1.7s ease-in-out infinite; }
-.spark-anim:not(.spark-lite) .spark-leg-r { transform-origin: 786px 848px; animation: sparkStep 1.7s ease-in-out -.85s infinite; }
-.spark-anim:not(.spark-lite) .spark-s { transform-box: fill-box; transform-origin: 50% 50%; animation: sparkPulse 2.2s ease-in-out infinite; }
-.spark-anim:not(.spark-lite) .spark-s2 { animation-delay: -.5s; }
-.spark-anim:not(.spark-lite) .spark-s3 { animation-delay: -1.1s; }
-.spark-anim:not(.spark-lite) .spark-s4 { animation-delay: -1.6s; }
-
-@keyframes sparkBreathe { 0%, 100% { transform: translateY(0) scale(1, 1); } 50% { transform: translateY(-1.6%) scale(.992, 1.014); } }
-@keyframes sparkFlick { 0%, 100% { transform: scale(1, 1) skewX(0deg); } 35% { transform: scale(1.012, 1.03) skewX(-1.4deg); } 70% { transform: scale(.992, 1.012) skewX(1deg); } }
-@keyframes sparkBlink { 0%, 91%, 100% { transform: scaleY(1); } 94.5% { transform: scaleY(.08); } }
-@keyframes sparkWave { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(16deg); } }
-@keyframes sparkSway { 0%, 100% { transform: rotate(2deg); } 50% { transform: rotate(-5deg); } }
-@keyframes sparkStep { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
-@keyframes sparkPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.8); } }
-
-@media (prefers-reduced-motion: reduce) {
-  .spark, .spark * { animation: none !important; }
-}
 
 
 /* =====================================================================

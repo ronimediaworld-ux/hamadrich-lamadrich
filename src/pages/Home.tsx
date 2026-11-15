@@ -85,7 +85,7 @@ export function Home() {
       <div className="wrap" style={{ position: 'relative', zIndex: 1, paddingTop: 52, paddingBottom: 72, textAlign: 'center' }}>
         <Reveal>
           <div style={{ marginBottom: 4 }}>
-            <HeroMascot size={150} />
+            <HeroMascot size={112} />
             <div className="hero-brand">המדריך למדריך</div>
           </div>
         </Reveal>
