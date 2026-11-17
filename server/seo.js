@@ -34,6 +34,7 @@ const CATEGORIES = {
 const STATIC = {
   '/': { title: `${SITE_NAME} — מאגר פעולות איכותי למדריכים בתנועות נוער`, desc: 'מאגר פעולות איכותי, בנוי שלב־שלב ומוכן להעברה: פעולות, משחקים, ערבי גיבוש, קטעי קריאה, צ׳ופרים, לימוד צוות ועוזר AI למדריכים.' },
   '/about': { title: `אודות — ${SITE_NAME}`, desc: 'רוני גרוס, מנהלת האתר: שמיניסטית שהדריכה שנתיים שכבת גדולות ובנתה את המקום שהיה חסר לה.' },
+  '/videos': { title: `סרטונים: סדרת הרשת של ${SITE_NAME}`, desc: 'סדרת סרטונים קצרים למדריכים בתנועות נוער: איך בונים פעולה, איך בונים מערך ומה באמת מביא חניכים. עם קישור למדריך הכתוב.' },
   '/chuparim': { title: `רעיונות לצ׳ופרים להדפסה — ${SITE_NAME}`, desc: 'רעיונות לצ׳ופרים מעוצבים למדריכים, מוכנים להדפסה, עם אפשרות להוסיף את השם שלכם.' },
   '/how-to-build': { title: `נדבר ת׳כלס: איך בונים פעולה, שיחות אישיות ועיצוב בקנבה — ${SITE_NAME}`, desc: 'מדריכים פרקטיים למדריכים: איך בונים פעולה ומערך, איך עושים שיחה אישית עם חניך, ואיך מעצבים בקנבה.' },
   '/ai': { title: `ניצוץ — עוזר AI למדריכים — ${SITE_NAME}`, desc: 'ניצוץ, עוזר ה-AI של האתר: מחפש קודם במאגר ועוזר לבנות פעולה, לפתור סיטואציה או לחשוב על צ׳ופר.' },
@@ -58,6 +59,11 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
     chupar: readJson(rootDir, 'chuparim'),
   };
   const byId = (kind, id) => data[kind].find((x) => x.id === id);
+  // עמודי נושא: כל תת־נושא שיש בו לפחות שתי פעולות
+  const topics = new Map();
+  for (const a of data.activity) for (const t of a.subtopics || []) topics.set(t, [...(topics.get(t) || []), a]);
+  for (const [t, list] of [...topics]) if (list.length < 2) topics.delete(t);
+  const dataMtime = (name) => { try { return fs.statSync(path.join(rootDir, 'src', 'data', `${name}.json`)).mtime.toISOString().slice(0, 10); } catch { return undefined; } };
 
   const baseUrl = (req) => (siteUrlFromEnv || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
 
@@ -68,6 +74,12 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
     if (noindex) return { title: SITE_NAME, desc: STATIC['/'].desc, path: p, noindex: true, type: 'website', known: true };
     let m = p.match(/^\/category\/([\w-]+)$/);
     if (m && CATEGORIES[m[1]]) return { title: `${CATEGORIES[m[1]][0]} — ${SITE_NAME}`, desc: CATEGORIES[m[1]][1], path: p, noindex, type: 'website', category: m[1] };
+    m = p.match(/^\/topic\/([^/]+)$/);
+    if (m && topics.has(m[1])) {
+      const t = m[1];
+      const n = topics.get(t).length;
+      return { title: `${t.startsWith('פרשת ') ? `פעולות ל${t}` : `פעולות בנושא ${t}`} — ${n} רעיונות להדרכה | ${SITE_NAME}`, desc: trim(`${n} פעולות מוכנות להעברה בנושא ${t} בתנועות נוער: שלבים מסודרים, שאלות לדיון וקטעי קריאה, לכל הגילאים.`, 300), path: p, noindex, type: 'website', topic: t };
+    }
     m = p.match(/^\/activity\/([^/]+)$/);
     if (m) {
       const a = byId('activity', m[1]);
@@ -91,16 +103,50 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
     return { title: SITE_NAME, desc: STATIC['/'].desc, path: p, noindex: true, type: 'website' };
   }
 
+  const videoList = (() => {
+    try {
+      const src = fs.readFileSync(path.join(rootDir, 'src', 'data', 'videos.ts'), 'utf8');
+      return [...src.matchAll(/platform: 'youtube', code: '([\w-]+)'[^}]*?title: '([^']+)'/g)].map((m) => ({ code: m[1], title: m[2] }));
+    } catch { return []; }
+  })();
+
+  function breadcrumb(d, base) {
+    const trail = [['בית', '/']];
+    if (d.item) {
+      const k = d.item.kind;
+      if (k === 'reading') trail.push(['קטעי קריאה', '/category/readings']);
+      else if (k === 'staff') trail.push(['לימוד צוות', '/category/staff-study']);
+      else if (k === 'chupar') trail.push(['רעיונות לצ׳ופרים', '/chuparim']);
+      else trail.push(['פעולות', `/category/${d.item.a.categorySlug || 'activities'}`]);
+    } else if (d.topic) trail.push(['פעולות', '/category/activities']);
+    else if (d.category || STATIC[d.path]) trail.push([d.title.split(' — ')[0], d.path]);
+    else return null;
+    if (d.item || d.topic) trail.push([d.topic || d.item.a.title, d.path]);
+    if (trail.length < 2) return null;
+    return { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: trail.map(([name, p], i) => ({ '@type': 'ListItem', position: i + 1, name, item: base + (p === '/' ? '/' : encodeURI(p)) })) };
+  }
+
   function jsonLd(d, base) {
-    const url = base + d.path;
+    const url = base + encodeURI(d.path);
+    const out = [];
     if (d.path === '/') {
-      return { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_NAME, url: base + '/', inLanguage: 'he', potentialAction: { '@type': 'SearchAction', target: `${base}/search?q={search_term_string}`, 'query-input': 'required name=search_term_string' } };
+      out.push({ '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_NAME, url: base + '/', inLanguage: 'he', potentialAction: { '@type': 'SearchAction', target: `${base}/search?q={search_term_string}`, 'query-input': 'required name=search_term_string' } });
+      out.push({ '@context': 'https://schema.org', '@type': 'Organization', name: SITE_NAME, url: base + '/', logo: `${base}/icon-512.png`, founder: { '@type': 'Person', name: 'רוני גרוס' }, sameAs: ['https://www.instagram.com/hamadrich_lamadrich/', 'https://www.youtube.com/@%D7%94%D7%9E%D7%93%D7%A8%D7%99%D7%9A%D7%9C%D7%9E%D7%93%D7%A8%D7%99%D7%9A-%D7%94%D7%93%D7%95%D7%A8%D7%94%D7%91%D7%90%D7%A9%D7%9C%D7%94%D7%94%D7%93%D7%A8%D7%9B%D7%94'] });
+    }
+    if (d.path === '/videos') {
+      for (const v of videoList) out.push({ '@context': 'https://schema.org', '@type': 'VideoObject', name: v.title, description: `${v.title}: סרטון מסדרת "${SITE_NAME}" למדריכים בתנועות נוער.`, thumbnailUrl: `https://i.ytimg.com/vi/${v.code}/hqdefault.jpg`, embedUrl: `https://www.youtube-nocookie.com/embed/${v.code}`, contentUrl: `https://www.youtube.com/watch?v=${v.code}`, inLanguage: 'he', uploadDate: '2026-01-01' });
+    }
+    if (d.topic) {
+      const list = topics.get(d.topic) || [];
+      out.push({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: d.title, url, inLanguage: 'he', mainEntity: { '@type': 'ItemList', itemListElement: list.slice(0, 50).map((a, i) => ({ '@type': 'ListItem', position: i + 1, url: `${base}/activity/${a.id}`, name: a.title })) } });
     }
     if (d.item) {
       const a = d.item.a;
-      return { '@context': 'https://schema.org', '@type': 'LearningResource', name: a.title, description: trim(a.description, 300), url, inLanguage: 'he', educationalLevel: a.ageLabel, author: { '@type': 'Person', name: 'רוני גרוס' }, publisher: { '@type': 'Organization', name: SITE_NAME } };
+      out.push({ '@context': 'https://schema.org', '@type': 'LearningResource', name: a.title, description: trim(a.description, 300), url, inLanguage: 'he', educationalLevel: a.ageLabel, author: { '@type': 'Person', name: 'רוני גרוס' }, publisher: { '@type': 'Organization', name: SITE_NAME }, isAccessibleForFree: true, learningResourceType: d.item.kind === 'reading' ? 'קטע קריאה' : 'פעולה', ...(a.duration ? { timeRequired: `PT${a.duration}M` } : {}) });
     }
-    return null;
+    const bc = breadcrumb(d, base);
+    if (bc) out.push(bc);
+    return out;
   }
 
   // תוכן בסיסי שזחלנים רואים גם בלי JavaScript (React מחליף אותו בטעינה)
@@ -109,6 +155,8 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
     let extra = '';
     if (d.path === '/') {
       extra = `<ul>${Object.entries(CATEGORIES).map(([slug, [label]]) => link(`/category/${slug}`, label)).join('')}${link('/chuparim', 'רעיונות לצ׳ופרים')}${link('/how-to-build', 'נדבר ת׳כלס')}${link('/about', 'אודות')}</ul>`;
+    } else if (d.topic) {
+      extra = `<ul>${(topics.get(d.topic) || []).map((a) => link(`/activity/${a.id}`, a.title)).join('')}</ul>`;
     } else if (d.category) {
       const list = d.category === 'activities' ? data.activity.filter((a) => a.categorySlug === 'activities') : d.category === 'games' ? data.activity.filter((a) => a.categorySlug === 'games') : d.category === 'social-nights' ? data.activity.filter((a) => a.categorySlug === 'social-nights') : d.category === 'readings' ? data.reading : d.category === 'staff-study' ? data['staff-study'] : [];
       const route = d.category === 'readings' ? 'reading' : d.category === 'staff-study' ? 'staff-study' : 'activity';
@@ -116,7 +164,10 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
     } else if (d.item) {
       const a = d.item.a;
       const goals = Array.isArray(a.goals) ? `<h2>מטרות</h2><ul>${a.goals.map((g) => `<li>${esc(g)}</li>`).join('')}</ul>` : '';
-      extra = goals;
+      const steps = Array.isArray(a.flow) ? `<h2>שלבי הפעולה</h2><ol>${a.flow.map((f) => `<li>${esc(f.label)}</li>`).join('')}</ol>` : '';
+      const meta = [a.ageLabel && `גיל: ${a.ageLabel}`, a.duration && `משך: ${a.duration} דקות`, a.groupSize && `גודל קבוצה: ${a.groupSize}`].filter(Boolean).join(' · ');
+      const tops = Array.isArray(a.subtopics) && a.subtopics.length ? `<p>${a.subtopics.slice(0, 4).map((t) => `<a href="${esc(base)}/topic/${encodeURIComponent(t)}">${esc(t)}</a>`).join(' · ')}</p>` : '';
+      extra = (meta ? `<p>${esc(meta)}</p>` : '') + goals + steps + tops;
     }
     return `<main><h1>${esc(d.title.split(' — ')[0].split(' | ')[0])}</h1><p>${esc(d.desc)}</p>${extra}</main>`;
   }
@@ -124,7 +175,7 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
   function render(req) {
     const d = describe(req);
     const base = baseUrl(req);
-    const url = base + (d.path === '/' ? '/' : d.path);
+    const url = base + (d.path === '/' ? '/' : encodeURI(d.path));
     const tags = [
       `<meta name="description" content="${esc(d.desc)}" />`,
       `<link rel="canonical" href="${esc(url)}" />`,
@@ -135,13 +186,17 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
       `<meta property="og:url" content="${esc(url)}" />`,
       `<meta property="og:site_name" content="${SITE_NAME}" />`,
       `<meta property="og:locale" content="he_IL" />`,
-      `<meta property="og:image" content="${esc(base)}/icon-512.png" />`,
-      `<meta name="twitter:card" content="summary" />`,
+      `<meta property="og:image" content="${esc(base)}/og-image.png" />`,
+      `<meta property="og:image:width" content="1200" />`,
+      `<meta property="og:image:height" content="630" />`,
+      `<meta name="twitter:title" content="${esc(d.title)}" />`,
+      `<meta name="twitter:description" content="${esc(d.desc)}" />`,
+      `<meta name="twitter:image" content="${esc(base)}/og-image.png" />`,
+      `<meta name="twitter:card" content="summary_large_image" />`,
     ];
     // אימות בעלות ב-Google Search Console (אופציונלי): GOOGLE_SITE_VERIFICATION=הערך מתג ה-HTML
     if (process.env.GOOGLE_SITE_VERIFICATION) tags.push(`<meta name="google-site-verification" content="${esc(process.env.GOOGLE_SITE_VERIFICATION)}" />`);
-    const ld = jsonLd(d, base);
-    if (ld) tags.push(`<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`);
+    for (const ld of jsonLd(d, base)) tags.push(`<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`);
     let html = indexHtml
       .replace(/<title>.*?<\/title>/s, `<title>${esc(d.title)}</title>`)
       .replace(/<meta name="description"[^>]*>\s*/s, '')
@@ -161,8 +216,10 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
     const base = baseUrl(req);
     const urls = [...Object.keys(STATIC), ...Object.keys(CATEGORIES).map((s) => `/category/${s}`),
       ...data.activity.map((a) => `/activity/${a.id}`), ...data.reading.map((r) => `/reading/${r.id}`),
-      ...data['staff-study'].map((s) => `/staff-study/${s.id}`), ...data.chupar.map((c) => `/chupar/${c.id}`)];
-    res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${esc(base + (u === '/' ? '/' : encodeURI(u)))}</loc></url>`).join('\n')}\n</urlset>\n`);
+      ...data['staff-study'].map((s) => `/staff-study/${s.id}`), ...data.chupar.map((c) => `/chupar/${c.id}`),
+      ...[...topics.keys()].map((t) => `/topic/${encodeURIComponent(t)}`)];
+    const lastmod = (u) => (u.startsWith('/activity/') || u.startsWith('/topic/') || u.startsWith('/category/') || u === '/' ? dataMtime('activities') : u.startsWith('/reading/') ? dataMtime('readings') : u.startsWith('/chupar') ? dataMtime('chuparim') : undefined);
+    res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${esc(base + (u === '/' ? '/' : u.startsWith('/topic/') ? u : encodeURI(u)))}</loc>${lastmod(u) ? `<lastmod>${lastmod(u)}</lastmod>` : ''}</url>`).join('\n')}\n</urlset>\n`);
   });
 
   // כל כתובת שאינה קובץ סטטי ואינה API — מוגשת עם ה-SEO שלה

@@ -146,6 +146,11 @@ export function ActivityDetail() {
             )}
             <h1 style={{ fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 800, marginBottom: 12, lineHeight: 1.2 }}>{activity.title}</h1>
             <p style={{ fontSize: 15.5, color: 'var(--ink-soft)', maxWidth: '58ch', marginBottom: 10 }}>{activity.description}</p>
+            {activity.subtopics?.length > 0 && (
+              <p className="no-print" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, margin: '0 0 12px', fontSize: 13 }}>
+                {activity.subtopics.slice(0, 4).map((t) => <Link key={t} to={`/topic/${encodeURIComponent(t)}`} style={{ padding: '3px 11px', borderRadius: 999, background: '#F3EEE8', color: 'var(--ink-soft)', fontWeight: 600 }}>{t}</Link>)}
+              </p>
+            )}
             <ViewCount kind="activity" id={activity.id} />
           </div>
         </Reveal></div>
