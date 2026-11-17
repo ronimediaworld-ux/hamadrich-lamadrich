@@ -195,7 +195,8 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
       `<meta name="twitter:card" content="summary_large_image" />`,
     ];
     // אימות בעלות ב-Google Search Console (אופציונלי): GOOGLE_SITE_VERIFICATION=הערך מתג ה-HTML
-    if (process.env.GOOGLE_SITE_VERIFICATION) tags.push(`<meta name="google-site-verification" content="${esc(process.env.GOOGLE_SITE_VERIFICATION)}" />`);
+    const gsv = process.env.GOOGLE_SITE_VERIFICATION || 'CXp_ojvpvpGWv6xIXMYAE8n9i9vU-4AyBmGXtcmhpHM';
+    tags.push(`<meta name="google-site-verification" content="${esc(gsv)}" />`);
     for (const ld of jsonLd(d, base)) tags.push(`<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`);
     let html = indexHtml
       .replace(/<title>.*?<\/title>/s, `<title>${esc(d.title)}</title>`)
