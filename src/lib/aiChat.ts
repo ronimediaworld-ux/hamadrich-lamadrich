@@ -3,9 +3,12 @@ export interface ChatMessage {
   content: string;
 }
 
+// סוגי הודעות שמוצגות כחלון קופץ ידידותי (ולא כשגיאה יבשה)
+export type ChatNoticeCode = 'quota' | 'busy' | 'slow';
+
 export type ChatResult =
   | { ok: true; reply: string }
-  | { ok: false; message: string };
+  | { ok: false; message: string; code?: ChatNoticeCode };
 
 const CHAT_SYSTEM_PROMPT = `אתה "ניצוץ" — עוזר AI חם, בקיא ומועיל באתר "המדריך למדריך", אתר למדריכות ומדריכים בתנועות נוער.
 ענה על כל שאלה שמדריך/ה עשוי/ה לשאול — לא רק יצירת פעולות: עצות הדרכה, התמודדות עם חניכים, רעיונות לצ׳ופרים, שאלות כלליות, או סתם שיחה.
@@ -64,7 +67,8 @@ async function attemptChat(messages: ChatMessage[]): Promise<ChatResult> {
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {
-    return { ok: false, message: data?.message ?? 'לא הצלחנו לקבל תשובה כרגע. נסו שוב.' };
+    const code: ChatNoticeCode | undefined = data?.error === 'quota' ? 'quota' : data?.error === 'busy' ? 'busy' : data?.error === 'slow_down' ? 'slow' : undefined;
+    return { ok: false, message: data?.message ?? 'לא הצלחנו לקבל תשובה כרגע. נסו שוב.', code };
   }
   if (!data?.reply) {
     return { ok: false, message: 'התקבלה תשובה ריקה. נסו לנסח מחדש.' };
@@ -76,7 +80,8 @@ async function serverChat(messages: ChatMessage[]): Promise<ChatResult> {
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const result = await attemptChat(messages);
-      if (result.ok || attempt === 1) return result;
+      // מכסה/עומס/האטה הם מצב מכוון של השרת: אין טעם לנסות שוב מיד
+      if (result.ok || attempt === 1 || (!result.ok && result.code)) return result;
     } catch {
       if (attempt === 1) {
         return { ok: false, message: 'לא הצלחנו להתחבר לשרת. ודאו שהשרת רץ (npm run dev:full) ונסו שוב.' };

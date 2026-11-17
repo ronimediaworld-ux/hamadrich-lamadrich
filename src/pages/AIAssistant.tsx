@@ -4,7 +4,7 @@ import { MascotIcon } from '../components/TeenAvatar';
 import { ActivityCard } from '../components/ActivityCard';
 import { CopyButton } from '../components/CopyButton';
 import { searchActivities } from '../lib/search';
-import { sendChatMessage, type ChatMessage } from '../lib/aiChat';
+import { sendChatMessage, type ChatMessage, type ChatNoticeCode } from '../lib/aiChat';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { getActivity } from '../data/activities';
 import { FAQ, findFaq } from '../data/faq';
@@ -27,6 +27,27 @@ interface ChatEntry {
   isError?: boolean;
   faqId?: string;
 }
+
+const NOTICES: Record<ChatNoticeCode, { title: string; body: string; ok: string; showSearch: boolean }> = {
+  quota: {
+    title: 'ניצוץ סיים את יום העבודה',
+    body: 'ענינו היום על כל כך הרבה שאלות שנגמר לניצוץ הדלק. מחר בבוקר הוא חוזר רענן ומלא ברעיונות. עד אז אפשר לחפש במאגר, יש שם מאות פעולות מוכנות.',
+    ok: 'הבנתי, אחזור מחר',
+    showSearch: true,
+  },
+  busy: {
+    title: 'ניצוץ קצת עמוס',
+    body: 'הרבה מדריכים שואלים אותו בדיוק עכשיו. תנו לו דקה לנשום ונסו שוב.',
+    ok: 'בסדר, אנסה שוב עוד רגע',
+    showSearch: true,
+  },
+  slow: {
+    title: 'רגע, לאט לאט',
+    body: 'שאלתם אותו הרבה בזמן קצר, וגם לניצוץ מגיע לנשום. נסו שוב בעוד כמה דקות.',
+    ok: 'אוקיי',
+    showSearch: false,
+  },
+};
 
 const suggestions = ['פעולה על חברות לכיתה ז׳', 'איך מתמודדים עם חניך שמפריע?', 'רעיון לצ׳ופר זול וטוב', 'משהו בלי ציוד ל-20 דקות'];
 
@@ -55,6 +76,8 @@ export function AIAssistant() {
   const [entries, setEntries] = useState<ChatEntry[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [notice, setNotice] = useState<ChatNoticeCode | null>(null);
+  const noticeBtnRef = useRef<HTMLButtonElement>(null);
   const [convId, setConvId] = useState<string>(() => newConversationId());
   const [historyOpen, setHistoryOpen] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -138,11 +161,20 @@ export function AIAssistant() {
       const done = [...working, replyEntry];
       setEntries(done);
       persist(done);
+      if (!result.ok && result.code) setNotice(result.code);
     } finally {
       setLoading(false);
       sendingRef.current = false;
     }
   }
+
+  useEffect(() => {
+    if (!notice) return;
+    noticeBtnRef.current?.focus();
+    const onKey = (ev: KeyboardEvent) => { if (ev.key === 'Escape') setNotice(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [notice]);
 
   const hasHistory = conversations.length > 0;
   const activeExists = useMemo(() => conversations.some((c) => c.id === convId), [conversations, convId]);
@@ -273,6 +305,34 @@ export function AIAssistant() {
         )}
         <div ref={bottomRef} />
       </div>
+
+      {notice && (
+        <div
+          onClick={() => setNotice(null)}
+          style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(40, 24, 10, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ai-notice-title"
+            onClick={(ev) => ev.stopPropagation()}
+            className="card"
+            style={{ maxWidth: 400, width: '100%', padding: '28px 26px 24px', textAlign: 'center', background: 'var(--paper)', boxShadow: '0 24px 60px rgba(40, 24, 10, 0.35)' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+              <MascotIcon size={64} className="doodle-wiggle" />
+            </div>
+            <h2 id="ai-notice-title" style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{NOTICES[notice].title}</h2>
+            <p style={{ fontSize: 14.5, lineHeight: 1.75, color: 'var(--ink-soft)', marginBottom: 18 }}>{NOTICES[notice].body}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
+              <button ref={noticeBtnRef} type="button" className="btn btn-flame" onClick={() => setNotice(null)}>{NOTICES[notice].ok}</button>
+              {NOTICES[notice].showSearch && (
+                <Link to="/category/activities" className="chip" style={{ fontSize: 13 }} onClick={() => setNotice(null)}>לחיפוש במאגר הפעולות ←</Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSend} style={{ display: 'flex', gap: 10 }}>
         <input
