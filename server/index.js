@@ -32,7 +32,9 @@ const PORT = process.env.PORT || 3001;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 // אם שם המודל כבר לא קיים (גוגל מחליפה דגמים), מנסים את הבא ברשימה. gemini-flash-latest תמיד מצביע על ה-Flash העדכני.
 // בדקתי: gemini-3.6-flash מגיב תוך כשתי שניות; gemini-flash-latest נתקע, ו-gemini-2.5-flash כבר לא זמין. לכן הסדר הזה.
-const GEMINI_MODELS = [...new Set([process.env.GEMINI_MODEL, 'gemini-3.6-flash', 'gemini-flash-latest'].filter(Boolean))];
+// במסלול החינמי המכסה היומית (20 בקשות) היא לכל מודל בנפרד, ולכן כשמודל אחד מתמלא עוברים לבא אחריו.
+const GEMINI_MODELS = [...new Set([process.env.GEMINI_MODEL, 'gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.7-flash', 'gemini-2.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-flash-latest'].filter(Boolean))];
+const geminiBlockedUntil = new Map(); // מודל -> עד מתי לא מנסים אותו (מכסה יומית נגמרה)
 let GEMINI_MODEL = GEMINI_MODELS[0];
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -98,7 +100,7 @@ async function fetchWithTimeout(url, options, ms) {
 // Gemini occasionally returns a transient 503 ("high demand"), hangs, or drops the
 // connection — worth a couple of quick retries before giving up, since the exact
 // same request usually succeeds seconds later.
-async function fetchGeminiWithRetry(url, body) {
+async function fetchGeminiWithRetry(url, body, canFallback = false) {
   const delays = [800, 2000, 6000];
   let lastErr = 'unknown';
   for (let attempt = 0; attempt <= delays.length; attempt++) {
@@ -120,13 +122,15 @@ async function fetchGeminiWithRetry(url, body) {
         const m = text.match(/"retryDelay":\s*"(\d+(?:\.\d+)?)s"/);
         wait = Math.min(20000, Math.max(3000, m ? Number(m[1]) * 1000 + 500 : 8000));
       }
+      // יש עוד מודל לנסות: לא מחכים כאן, עוברים מיד למודל הבא
+      if (canFallback && (response.status === 429 || response.status === 503)) throw Object.assign(new Error(`Gemini API error ${lastErr}`), { code: 'fallback' });
       const retryable = response.status === 503 || response.status === 429 || response.status >= 500;
       if (!retryable || attempt === delays.length) {
         throw new Error(`Gemini API error ${lastErr}`);
       }
     } catch (err) {
       // network error / abort / timeout — retry unless we're out of attempts
-      if (err?.code === 'daily_quota') throw err;
+      if (err?.code === 'daily_quota' || err?.code === 'fallback') throw err;
       lastErr = err?.message || String(err);
       if (attempt === delays.length || /Gemini API error/.test(lastErr) && !/ 429:| 503:| 5\d\d:/.test(lastErr)) throw new Error(/^Gemini/.test(lastErr) ? lastErr : `Gemini request failed: ${lastErr}`);
     }
@@ -164,17 +168,34 @@ async function geminiGenerate(body) {
 
 async function geminiGenerateNow(body) {
   let lastErr;
-  for (const model of [GEMINI_MODEL, ...GEMINI_MODELS.filter((m) => m !== GEMINI_MODEL)]) {
+  const now = Date.now();
+  const order = [GEMINI_MODEL, ...GEMINI_MODELS.filter((m) => m !== GEMINI_MODEL)];
+  const live = order.filter((m) => (geminiBlockedUntil.get(m) || 0) <= now);
+  for (let i = 0; i < live.length; i++) {
+    const model = live[i];
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
     try {
-      const data = await fetchGeminiWithRetry(url, body);
+      const data = await fetchGeminiWithRetry(url, body, i < live.length - 1);
       GEMINI_MODEL = model; // המודל שעבד נשמר לבקשות הבאות
       return data;
     } catch (err) {
       lastErr = err;
-      if (err?.code === 'daily_quota' || !/\b404\b|NOT_FOUND|not found|not supported/i.test(String(err?.message))) throw err;
+      if (err?.code === 'daily_quota') {
+        // המכסה היומית של המודל הזה נגמרה: מסמנים אותו ועוברים למודל הבא (לכל מודל מכסה משלו)
+        const m = String(err.message).match(/"retryDelay":\s*"(\d+)s"/);
+        geminiBlockedUntil.set(model, Date.now() + (m ? Number(m[1]) * 1000 : 6 * 60 * 60 * 1000));
+        console.warn(`gemini ${model}: daily quota exhausted, trying next model`);
+        continue;
+      }
+      // מודל לא קיים, עומס זמני או מכסת דקה: מנסים את המודל הבא לפני שמוותרים
+      if (/\b404\b|\b503\b|\b429\b|NOT_FOUND|not found|not supported|UNAVAILABLE|aborted|timed out/i.test(String(err?.message))) {
+        console.warn(`gemini ${model} failed (${String(err?.message).slice(0, 80)}), trying next model`);
+        continue;
+      }
+      throw err;
     }
   }
+  if (!live.length) throw Object.assign(new Error('all gemini models exhausted for today'), { code: 'daily_quota' });
   throw lastErr;
 }
 
