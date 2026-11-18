@@ -22,6 +22,7 @@ import { chuparim } from '../data/chuparim';
 import { staffStudy } from '../data/staffStudy';
 import { situations } from '../data/situations';
 import { videos, thumbUrl } from '../data/videos';
+import { downloadFiles } from '../data/files';
 
 const shortcuts = ['אני צריך פעולה', 'משחק מהיר', 'פרשת השבוע', 'פעולה לשבת', 'משהו בלי ציוד', 'פעולה אמונית', '20 דקות פנויות'];
 const shortcutTint = ['#FFE8DC', '#E4F2E8', '#E4EEF8', '#F8E3EC', '#FBF0CC', '#EDE4F6', '#DDF1F1'];
@@ -43,6 +44,7 @@ export function Home() {
     readings: readings.length,
     games: quickGames.length,
     methods: methods.length,
+    'special-events': downloadFiles.filter((f) => f.id === 'lila-lavan').length,
     walls: movementNames.reduce((n, m) => n + m.groups.reduce((k, g) => k + g.slogans.length, 0), 0),
   };
   const recommended = recommendedIds.map((id) => activities.find((a) => a.id === id)!).filter(Boolean);

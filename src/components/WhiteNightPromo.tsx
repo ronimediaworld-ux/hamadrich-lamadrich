@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { usePdfViewer } from './PdfViewerModal';
 
 // קידום זמני בעמוד הבית: מדריך "לילה לבן". מוצג רק בטווח התאריכים, ונעלם לבד אחר כך.
 const FROM = new Date('2026-11-18T00:00:00');
 const TO = new Date('2026-11-25T23:59:59');
-const GUIDE_URL = '/how-to-build?guide=white-night';
-const PDF_URL = '/guides/lila-lavan-madrich.pdf';
+const EVENTS_URL = '/category/special-events';
+const PDF_URL = '/files/lila-lavan.pdf';
+const PDF_TITLE = 'מדריך לילה לבן בחודש ארגון';
 const SEEN_KEY = 'wn-popup-day';
 
 const KRAFT = '#F3E4C6';
@@ -40,8 +42,9 @@ const paper: React.CSSProperties = {
 
 export function WhiteNightPromo() {
   const [open, setOpen] = useState(false);
-  const btnRef = useRef<HTMLAnchorElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
   const on = active();
+  const { open: openPdf, modal: pdfModal } = usePdfViewer();
 
   useEffect(() => {
     if (!on) return;
@@ -78,12 +81,13 @@ export function WhiteNightPromo() {
             <div style={{ fontSize: 13.5, color: '#5a5170' }}>שיחות אישיות, גיבוש בין הקבוצות, רגע משמעותי וניצוצות לכל הלילה</div>
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <Link to={GUIDE_URL} className="btn btn-flame" style={{ padding: '9px 18px', fontSize: 14 }}>לפתיחת המדריך</Link>
+            <button type="button" onClick={() => openPdf(PDF_URL, PDF_TITLE)} className="btn btn-flame" style={{ padding: '9px 18px', fontSize: 14 }}>לפתיחת המדריך</button>
             <a href={PDF_URL} download className="btn btn-outline" style={{ padding: '9px 16px', fontSize: 14 }}>להורדה (PDF)</a>
           </div>
         </div>
       </div>
 
+      {pdfModal}
       {open && (
         <div onClick={close} style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(40, 24, 10, .55)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
           <div
@@ -105,8 +109,9 @@ export function WhiteNightPromo() {
               מדריך קצר ומעשי: שיחה אישית עם כל חניך, גיבוש בין הקבוצות בסניף, רגע משמעותי, הכרת תודה וניצוצות לכל הלילה.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
-              <Link ref={btnRef} to={GUIDE_URL} onClick={close} className="btn btn-flame">לפתיחת המדריך</Link>
+              <button ref={btnRef} type="button" className="btn btn-flame" onClick={() => { close(); openPdf(PDF_URL, PDF_TITLE); }}>לפתיחת המדריך</button>
               <a href={PDF_URL} download onClick={close} className="chip" style={{ fontSize: 13.5 }}>להורדה כקובץ להדפסה (PDF)</a>
+              <Link to={EVENTS_URL} onClick={close} className="chip" style={{ fontSize: 13 }}>לכל האירועים המיוחדים ←</Link>
               <button type="button" onClick={close} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 13, color: '#7a7090', textDecoration: 'underline' }}>אחר כך</button>
             </div>
           </div>

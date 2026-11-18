@@ -51,6 +51,13 @@ export const categories: CategoryDef[] = [
     icon: 'tent',
   },
   {
+    slug: 'special-events',
+    label: 'אירועים מיוחדים',
+    description: 'מדריכים לאירועי שיא בסניף ובחודש ארגון, כמו לילה לבן',
+    color: 'yellow',
+    icon: 'spark',
+  },
+  {
     slug: 'walls',
     label: 'קירות וגלופות',
     description: 'חודש ארגון: שמות השכבות בבני עקיבא, אריאל ועזרא',

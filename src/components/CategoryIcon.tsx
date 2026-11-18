@@ -8,6 +8,7 @@ export const CAT_STYLE: Record<string, CatStyle> = {
   tools: { color: '#5E9A6E', tint: '#E4F2E8' },
   readings: { color: '#8E7BD6', tint: '#EEE9FB' },
   walls: { color: '#4FB3AE', tint: '#DDF3F2' },
+  'special-events': { color: '#E8A93A', tint: '#FFF1CF' },
   games: { color: '#5E9A6E', tint: '#E2F4EA' },
   methods: { color: '#D9A21F', tint: '#FFF4D6' },
 };
@@ -27,6 +28,8 @@ export function CategoryIcon({ slug, className }: { slug: string; className?: st
       return (<svg {...common}><path d="M8 10h40a4 4 0 0 1 4 4v22a4 4 0 0 1-4 4H26l-10 9v-9H8a4 4 0 0 1-4-4V14a4 4 0 0 1 4-4Z" fill={c} {...st} /><circle cx="18" cy="25" r="2.8" fill="#fff" /><circle cx="28" cy="25" r="2.8" fill="#fff" /><circle cx="38" cy="25" r="2.8" fill="#fff" /></svg>);
     case 'readings':
       return (<svg {...common}><path d="M10 8h28a6 6 0 0 1 6 6v34H16a6 6 0 0 1-6-6Z" fill={c} {...st} /><path d="M16 48a6 6 0 0 1-6-6" fill="none" stroke={INK} strokeWidth="2.6" /><path d="M18 18h18M18 25h18M18 32h10" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" /></svg>);
+    case 'special-events':
+      return (<svg {...common}><path d="M28 6l6.2 13.4 14.6 1.6-10.9 9.9 3.1 14.4L28 37.7 15 45.3l3.1-14.4L7.2 21l14.6-1.6z" fill={c} {...st} /><circle cx="47" cy="10" r="3" fill="#F5CB63" stroke={INK} strokeWidth="1.6" /><circle cx="9" cy="47" r="2.6" fill="#F5CB63" stroke={INK} strokeWidth="1.5" /><circle cx="48" cy="46" r="2" fill="#fff" stroke={INK} strokeWidth="1.4" /></svg>);
     case 'walls':
       return (<svg {...common}><rect x="6" y="8" width="44" height="20" rx="5" fill={c} {...st} /><path d="M50 18h4v12H28v8" fill="none" stroke={INK} strokeWidth="2.6" strokeLinejoin="round" /><rect x="23" y="38" width="10" height="14" rx="3" fill="#F5CB63" {...st} /></svg>);
     case 'games':

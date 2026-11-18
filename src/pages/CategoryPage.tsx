@@ -104,6 +104,7 @@ export function CategoryPage() {
     : slug === 'readings' ? `${readings.length} קטעי קריאה`
     : slug === 'staff-study' ? `${staffStudy.length} מפגשי לימוד צוות`
     : slug === 'walls' ? 'שמות השכבות, גלופות ורעיונות לקירות'
+    : slug === 'special-events' ? 'מדריך לילה לבן'
     : `${items.length} פעולות במאגר`;
 
   return (
@@ -123,7 +124,14 @@ export function CategoryPage() {
         </div>
       </div>
 
-      <PageSearch value={pq} onChange={setPq} placeholder={`חיפוש ב${category.label}...`} />
+      {slug !== 'special-events' && <PageSearch value={pq} onChange={setPq} placeholder={`חיפוש ב${category.label}...`} />}
+
+      {slug === 'special-events' && (
+        <>
+          <p style={{ fontSize: 14.5, color: 'var(--ink-soft)', lineHeight: 1.8, marginBottom: 18 }}>מדריכים לאירועי שיא שקורים פעם בשנה ודורשים הכנה אחרת מפעולה רגילה. כל מדריך הוא קובץ קצר שאפשר לפתוח כאן, להוריד ולהדפיס.</p>
+          <DownloadFileCard id="lila-lavan" view />
+        </>
+      )}
 
       {slug === 'walls' && <><DownloadFileCard id="glufot-vekirot" /><WallsSection query={pq} /><WallIdeasSection query={pq} /></>}
 
