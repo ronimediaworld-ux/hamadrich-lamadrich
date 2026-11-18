@@ -15,6 +15,7 @@ import { getCurrentParsha, getCurrentParshaNames } from '../lib/parsha';
 import { CountUp } from '../components/CountUp';
 import { SubscribeBox } from '../components/SubscribeBox';
 import { WhatsNewHome } from '../components/WhatsNewHome';
+import { WhiteNightPromo } from '../components/WhiteNightPromo';
 import { SEVEN_BONUS, SEVEN_PARTS } from '../data/sevenParts';
 import { readings } from '../data/readings';
 import { chuparim } from '../data/chuparim';
@@ -81,6 +82,7 @@ export function Home() {
 
   return (
     <div>
+      <WhiteNightPromo />
       {/* HERO */}
       <section className="hero-scene">
       <div className="wrap" style={{ position: 'relative', zIndex: 1, paddingTop: 52, paddingBottom: 72, textAlign: 'center' }}>
