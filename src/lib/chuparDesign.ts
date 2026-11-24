@@ -124,17 +124,28 @@ function hash(id: string): number {
 
 // מייצר כרטיס אחד (HTML עם סגנון inline בלבד) — גודל במ"מ לפי הצורה
 
-export interface ChuparField { label: string }
+export interface ChuparField { label: string; def?: string; long?: boolean }
 
-// שדות דינמיים: כל קו תחתון ארוך (___) בטקסט הכרטיס הוא מקום שאפשר למלא בשם או בפרט
+// שדה הוא או קו תחתון ארוך (___), או {{תווית|ברירת מחדל}} (אפשר להשאיר ריק וכך נשארת ברירת המחדל)
+const FIELD_RE = /_{3,}|\{\{([^|}]*)\|([^}]*)\}\}/g;
+
+function fieldTexts(pr: ChuparPrint): string[] {
+  return [pr.text, pr.sub ?? '', pr.sign ?? '', pr.side ?? ''];
+}
+
 export function getFields(c: Chupar): ChuparField[] {
   const pr = c.print;
   if (!pr) return [];
   const out: ChuparField[] = [];
-  for (const str of [pr.text, pr.sub ?? '']) {
-    const re = /_{3,}/g;
+  for (const str of fieldTexts(pr)) {
+    const re = new RegExp(FIELD_RE.source, 'g');
     let m: RegExpExecArray | null;
     while ((m = re.exec(str))) {
+      if (m[0].startsWith('{{')) {
+        const def = (m[2] ?? '').trim();
+        out.push({ label: (m[1] ?? '').trim() || 'מילוי', def: def || undefined, long: def.length > 40 });
+        continue;
+      }
       const lineStart = str.lastIndexOf('\n', m.index) + 1;
       let before = str.slice(lineStart, m.index);
       before = before.slice(before.lastIndexOf('·') + 1).replace(/[:\s,]+$/g, '').trim();
@@ -145,13 +156,15 @@ export function getFields(c: Chupar): ChuparField[] {
   return out;
 }
 
-function fillBlanks(strs: [string, string], values: string[]): [string, string] {
+function fillAll(strs: string[], values: string[]): string[] {
   let k = 0;
-  const f = (str: string) => str.replace(/_{3,}/g, () => {
+  const f = (str: string) => str.replace(new RegExp(FIELD_RE.source, 'g'), (tok, _l, def) => {
     const v = (values[k++] ?? '').trim();
-    return v ? v : '_'.repeat(9);
+    if (v) return v;
+    const d = tok.startsWith('{{') ? String(def ?? '').trim() : '';
+    return d || '_'.repeat(9);
   });
-  return [f(strs[0]), f(strs[1])];
+  return strs.map(f);
 }
 
 // זוגות פונטים: כל "בגד" טיפוגרפי נבחר לפי שדה font של הצ׳ופר (ולפעמים לפי סוג הכרטיס)
@@ -266,10 +279,72 @@ function pickLook(want: string | undefined, w: number, h: number, hh: number, po
   return poem ? pool.filter((x) => x !== 'ribbon' && x !== 'circle')[hh % (pool.length - (pool.includes('ribbon') ? 1 : 0) - (pool.includes('circle') ? 1 : 0))] : pool[hh % pool.length];
 }
 
+// ---- כרטיס בסגנון חוברת פעולות השבת: מסגרת שחורה, כתב יד, ״בס״ד ובהשתדלותינו״, כיתוב אנכי בצד ושורת חתימה ----
+function fitFont(text: string, wmm: number, hmm: number, maxFs: number, minFs: number, cwf: number, lh: number): number {
+  for (let fs = maxFs; fs >= minFs; fs -= 0.1) {
+    const cpl = Math.max(1, Math.floor(wmm / (fs * cwf)));
+    let lines = 0;
+    for (const ln of text.split('\n')) lines += Math.max(1, Math.ceil(ln.length / cpl));
+    if (lines * fs * lh <= hmm) return Math.round(fs * 10) / 10;
+  }
+  return minFs;
+}
+
+function bsdDivider(kind: string, wmm: number): string {
+  const h = 3;
+  const heart = (cx: number) => `<path transform="translate(${cx} 1.15) scale(.17)" d="M0 4.2C-8 -2.5 -3.4 -7.4 0 -4.2C3.4 -7.4 8 -2.5 0 4.2z" fill="#111"/>`;
+  let body = '';
+  if (kind === 'arrow') {
+    body = `<line x1="1.6" y1="1.5" x2="${wmm - 1.6}" y2="1.5" stroke="#111" stroke-width=".3"/><path d="M0.4 1.5 L2.2 .5 L2.2 2.5Z M${wmm - 0.4} 1.5 L${wmm - 2.2} .5 L${wmm - 2.2} 2.5Z" fill="#111"/>`;
+  } else if (kind === 'wave') {
+    body = `<path d="M.6 1.8 C${wmm * 0.22} .2 ${wmm * 0.4} 2.8 ${wmm * 0.55} 1.3 S${wmm * 0.85} .4 ${wmm - 0.6} 1.6" fill="none" stroke="#111" stroke-width=".45" stroke-linecap="round"/>`;
+  } else {
+    body = `${heart(wmm / 2 - 2.8)}${heart(wmm / 2)}${heart(wmm / 2 + 2.8)}<line x1=".6" y1="2.3" x2="${wmm - 0.6}" y2="2.3" stroke="#111" stroke-width=".3"/>`;
+  }
+  return `<svg viewBox="0 0 ${wmm} ${h}" style="display:block;width:${wmm}mm;height:${h}mm;flex:none" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+}
+
+function renderBsd(pr: ChuparPrint, w: number, h: number): string {
+  const hand = TYPE.amatic.family;
+  const body = "'Heebo','Rubik',sans-serif";
+  const pad = 1.6, bd = 0.5;
+  const iw = w - 2 * pad - 2 * bd, ih = h - 2 * pad - 2 * bd;
+  const hasGreet = !!pr.sub;
+  const sideW = hasGreet ? 3.2 : 0;
+  const cw = iw - sideW - 2.6;
+  const headH = 3.1, signH = pr.sign ? 3.6 : 0, divH = hasGreet ? 3.2 : 0;
+  const avail = Math.max(10, ih - headH - signH - divH - 2);
+  const quote = pr.text;
+  const attr = pr.attr ?? '';
+  const greet = (pr.sub ?? '').trim();
+  let qH = avail, gH = 0;
+  if (hasGreet) {
+    const wq = quote.length + attr.length + 30, wg = greet.length + 30;
+    qH = Math.min(avail * 0.64, Math.max(avail * 0.36, (avail * wq) / (wq + wg)));
+    gH = avail - qH;
+  }
+  const qFamily = hasGreet ? hand : body;
+  const qWeight = hasGreet ? 700 : 700;
+  const qFs = fitFont(quote + (attr ? ' ' + attr : ''), cw, qH, hasGreet ? 6.4 : 3.6, 1.5, hasGreet ? 0.44 : 0.5, hasGreet ? 1.3 : 1.28);
+  const gFs = hasGreet ? fitFont(greet, cw, gH, 3.6, 1.5, 0.44, 1.3) : 0;
+  const sideTxt = pr.side ? esc(pr.side) : '';
+  const br = (t: string) => esc(t).replace(/\n/g, '<br>');
+  const header = `<div style="height:${headH}mm;display:flex;justify-content:space-between;align-items:flex-start;font-family:${hand};font-size:2.3mm;line-height:1.2;white-space:nowrap"><span>בס״ד${hasGreet ? ' ובהשתדלותינו' : ''}</span>${!hasGreet && sideTxt ? `<span>${sideTxt}</span>` : ''}</div>`;
+  const quoteBlock = `<div style="height:${qH}mm;display:flex;align-items:center;justify-content:${hasGreet ? 'center' : 'flex-start'};text-align:${hasGreet ? 'center' : 'justify'};overflow:hidden"><div style="font-family:${qFamily};font-weight:${qWeight};font-size:${qFs}mm;line-height:1.28;${hasGreet ? '' : 'text-align:justify;'}">${br(quote)}${attr ? ` <span style="font-weight:400;font-size:${Math.max(1.6, qFs * 0.62)}mm">${esc(attr)}</span>` : ''}</div></div>`;
+  const div = hasGreet ? `<div style="height:${divH}mm;display:flex;align-items:center;justify-content:center">${bsdDivider(pr.div ?? 'hearts', cw)}</div>` : '';
+  const greetBlock = hasGreet ? `<div style="height:${gH}mm;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden"><div style="font-family:${hand};font-size:${gFs}mm;line-height:1.3">${br(greet)}</div></div>` : '';
+  const signBlock = pr.sign ? `<div style="height:${signH}mm;display:flex;align-items:center;justify-content:${hasGreet ? 'center' : 'flex-start'};font-family:${hand};font-weight:700;font-size:2.9mm;line-height:1.1;white-space:nowrap">${hasGreet ? '' : '<span style="margin-inline-end:1mm">♡</span>'}${esc(pr.sign)}${hasGreet ? '<span style="margin-inline-start:1mm">♡</span>' : ''}</div>` : '';
+  const sideBlock = hasGreet && sideTxt ? `<div style="position:absolute;left:.9mm;top:1.2mm;bottom:1.2mm;width:2.4mm;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;white-space:nowrap;font-family:${hand};font-size:2.2mm;line-height:1">${sideTxt}</div>` : '';
+  return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;direction:rtl;padding:${pad}mm">
+<div style="width:100%;height:100%;box-sizing:border-box;border:${bd}mm solid #111;border-radius:1.2mm;position:relative;color:#111;display:flex;flex-direction:column;padding:.7mm 1.3mm .7mm ${sideW + 1.3}mm">
+${header}${quoteBlock}${div}${greetBlock}${signBlock}${sideBlock}
+</div></div>`;
+}
+
 export function renderCard(c: Chupar, imgBase = '', name = '', values: string[] = []): string {
   const base: ChuparPrint = c.print ?? { shape: 'card', layout: 'center', palette: 'cream', motif: 'star', font: 'rubik', text: c.title };
-  const [ft, fsub] = fillBlanks([base.text, base.sub ?? ''], values);
-  const pr: ChuparPrint = { ...base, text: ft, sub: base.sub ? fsub : undefined };
+  const [ft, fsub, fsign, fside] = fillAll(fieldTexts(base), values);
+  const pr: ChuparPrint = { ...base, text: ft, sub: base.sub ? fsub : undefined, sign: base.sign ? fsign : undefined, side: base.side ? fside : undefined };
   const shape = SHAPES[pr.shape] ?? SHAPES.card;
   const { w, h } = shape;
   const hh = hash(c.id);
@@ -277,6 +352,8 @@ export function renderCard(c: Chupar, imgBase = '', name = '', values: string[] 
   if (c.designImage && pr.shape.startsWith('image')) {
     return `<div style="width:${w}mm;height:${h}mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;"><img src="${esc(imgBase + c.designImage)}" alt="" style="max-width:100%;max-height:100%;object-fit:contain;display:block;margin:auto"></div>`;
   }
+
+  if (pr.layout === 'bsd') return renderBsd(pr, w, h);
 
   // כרטיס "פתק" נקי: ריבוע, מסגרת דקה, כתב שחור על לבן, דגל ישראל קטן — בלי קישוטים
   if (pr.layout === 'plain') {

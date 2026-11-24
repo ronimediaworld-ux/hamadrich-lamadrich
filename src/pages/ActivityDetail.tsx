@@ -316,16 +316,29 @@ export function ActivityDetail() {
               </div>
               <div className="card" style={{ padding: 18 }}>
                 {getFields(chuparim[0]).length > 0 && (
-                  <div className="no-print" style={{ marginBottom: 16, display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
-                    <div style={{ width: '100%', textAlign: 'center', fontSize: 13, color: 'var(--ink-faint)' }}>כתבו כאן את השם שלכם — לא לכולם קוראים רוני (או השאירו ריק וכתבו בעט):</div>
-                    {getFields(chuparim[0]).map((_f, i) => (
-                      <label key={i} style={{ fontSize: 13.5, fontWeight: 700 }}>
-                        השם שלכם:{' '}
-                        <input
-                          value={chuparVals[i] ?? ''}
-                          onChange={(e) => setChuparVals((prev) => { const next = [...prev]; next[i] = e.target.value.slice(0, 22); return next; })}
-                          style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid var(--line)', fontSize: 14.5, width: 150 }}
-                        />
+                  <div className="no-print" style={{ marginBottom: 16, display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'flex-start' }}>
+                    <div style={{ width: '100%', textAlign: 'center', fontSize: 13, color: 'var(--ink-faint)' }}>
+                      {getFields(chuparim[0]).some((f) => f.def !== undefined) ? 'אפשר לשנות כאן שמות וכיתובים לפני ההדפסה (או להשאיר ריק ולכתוב בעט):' : 'כתבו כאן את השם שלכם, לא לכולם קוראים רוני (או השאירו ריק וכתבו בעט):'}
+                    </div>
+                    {getFields(chuparim[0]).map((f, i) => (
+                      <label key={i} style={{ fontSize: 13.5, fontWeight: 700, display: 'flex', flexDirection: 'column', gap: 4, flex: f.long ? '1 1 100%' : '0 1 auto' }}>
+                        {f.def !== undefined || f.label !== 'מילוי' ? f.label : 'השם שלכם'}:
+                        {f.long ? (
+                          <textarea
+                            value={chuparVals[i] ?? ''}
+                            placeholder={f.def}
+                            rows={4}
+                            onChange={(e) => setChuparVals((prev) => { const next = [...prev]; next[i] = e.target.value.slice(0, 600); return next; })}
+                            style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid var(--line)', fontSize: 14, fontFamily: 'inherit', width: '100%', resize: 'vertical' }}
+                          />
+                        ) : (
+                          <input
+                            value={chuparVals[i] ?? ''}
+                            placeholder={f.def}
+                            onChange={(e) => setChuparVals((prev) => { const next = [...prev]; next[i] = e.target.value.slice(0, 40); return next; })}
+                            style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid var(--line)', fontSize: 14.5, width: 190 }}
+                          />
+                        )}
                       </label>
                     ))}
                   </div>

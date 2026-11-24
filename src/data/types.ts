@@ -65,13 +65,18 @@ export interface Activity {
 
 export interface ChuparPrint {
   shape: 'card' | 'cert' | 'ticket' | 'label' | 'tag' | 'square' | 'image' | 'imagesq' | 'imagewide' | 'wide' | 'cinema' | 'note' | 'candy' | 'lollipop' | 'heart' | 'bubble' | 'bandaid' | 'pill' | 'drop' | 'cloud' | 'balloon';
-  layout: 'center' | 'split' | 'seal' | 'label' | 'poem' | 'ticket' | 'sign' | 'pharmacy' | 'cinema' | 'plain';
+  layout: 'center' | 'split' | 'seal' | 'label' | 'poem' | 'ticket' | 'sign' | 'pharmacy' | 'cinema' | 'plain' | 'bsd';
   palette: string;
   motif: string;
   font: 'suez' | 'secular' | 'rubik' | 'amatic' | 'karantina' | 'heebo' | 'playpen' | 'alef';
   look?: string; // קומפוזיציית הכרטיס (blobs, highlight, stripe...) — ראו chuparLooks.ts
   text: string;
   sub?: string;
+  // כרטיס בסגנון חוברת פעולות השבת (layout: 'bsd'): ציטוט למעלה, ברכה בשורות מתחת, חתימה וכיתוב בצד. מותר להשתמש ב־{{תווית|ברירת מחדל}} כשדה שאפשר לשנות.
+  attr?: string; // מקור הציטוט, למשל (הרב דרוקמן)
+  sign?: string; // שורת חתימה
+  side?: string; // כיתוב אנכי בצד
+  div?: 'hearts' | 'arrow' | 'wave'; // סוג הקו שמפריד בין הציטוט לברכה
   customName?: { prefix: string; placeholder: string; example: string };
 }
 
