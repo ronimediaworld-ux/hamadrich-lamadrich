@@ -97,7 +97,6 @@ export function Home() {
 
         <Reveal delay={60}>
           <h1 style={{ fontSize: 'clamp(34px, 5vw, 56px)', fontWeight: 700, lineHeight: 1.12, marginBottom: 18 }}>
-            <span style={{ display: 'block', fontSize: 'clamp(16px, 2.2vw, 21px)', fontWeight: 800, color: 'var(--flame-ink)', letterSpacing: 0.3, marginBottom: 10 }}>פעולות ומערכים למדריכים:</span>
             מה אתם צריכים<br />להעביר{' '}
             <span className="squig">היום<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C25 2 40 18 62 9s38 9 60 0 38 9 60 1 15-2 15-2" /></svg></span>?
           </h1>
@@ -105,7 +104,7 @@ export function Home() {
 
         <Reveal delay={100}>
           <p style={{ maxWidth: 620, margin: '0 auto 30px', fontSize: 17.5, color: 'var(--ink-soft)' }}>
-            מאגר פעולות ומערכים להדרכה בתנועות נוער: משחקים, צ׳ופרים, קטעי קריאה ולימוד צוות. כל פעולה בנויה שלב־שלב ומוכנה להעברה. בוחרים, מדפיסים — ועולים להדרכה בביטחון.
+            מאגר פעולות ומערכים להדרכה בתנועות נוער: משחקים, צ׳ופרים, קטעי קריאה, לימוד צוות וכל דבר שמדריך צריך.<br /><strong style={{ color: 'var(--ink)' }}>כי תהליכים נוצרים במקומות איכותיים.</strong>
           </p>
         </Reveal>
 
