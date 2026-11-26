@@ -97,14 +97,15 @@ export function Home() {
 
         <Reveal delay={60}>
           <h1 style={{ fontSize: 'clamp(34px, 5vw, 56px)', fontWeight: 700, lineHeight: 1.12, marginBottom: 18 }}>
+            <span style={{ display: 'block', fontSize: 'clamp(16px, 2.2vw, 21px)', fontWeight: 800, color: 'var(--flame-ink)', letterSpacing: 0.3, marginBottom: 10 }}>פעולות ומערכים למדריכים:</span>
             מה אתם צריכים<br />להעביר{' '}
             <span className="squig">היום<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C25 2 40 18 62 9s38 9 60 0 38 9 60 1 15-2 15-2" /></svg></span>?
           </h1>
         </Reveal>
 
         <Reveal delay={100}>
-          <p style={{ maxWidth: 560, margin: '0 auto 30px', fontSize: 17.5, color: 'var(--ink-soft)' }}>
-            מאגר פעולות איכותי, בנוי שלב־שלב ומוכן להעברה. בוחרים, מדפיסים — ועולים לפעולה בביטחון.
+          <p style={{ maxWidth: 620, margin: '0 auto 30px', fontSize: 17.5, color: 'var(--ink-soft)' }}>
+            מאגר פעולות ומערכים להדרכה בתנועות נוער: משחקים, צ׳ופרים, קטעי קריאה ולימוד צוות. כל פעולה בנויה שלב־שלב ומוכנה להעברה. בוחרים, מדפיסים — ועולים להדרכה בביטחון.
           </p>
         </Reveal>
 
@@ -176,7 +177,7 @@ export function Home() {
       <div className="wrap" style={{ paddingBottom: 40 }}>
         <Reveal>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
-            <h2 style={{ fontSize: 24, fontWeight: 700 }}>סדרת הרשת: נדבר ת׳כלס</h2>
+            <h2 style={{ fontSize: 24, fontWeight: 700 }}>סדרת הרשת למדריכים: נדבר ת׳כלס</h2>
             <Link to="/videos" style={{ fontSize: 14, fontWeight: 700, color: 'var(--flame-ink)' }}>לכל הסרטונים ←</Link>
           </div>
           <div className="home-vids">
@@ -214,7 +215,7 @@ export function Home() {
       <div className="wrap" style={{ paddingBottom: 40 }}>
         <Reveal>
           <section aria-labelledby="home-build" className="build-section" style={{ border: '1.5px solid var(--stroke)', borderRadius: 28, padding: '30px 34px', background: 'var(--paper)' }}>
-            <h2 id="home-build" style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px' }}>רוצות לבנות פעולה משלכן? מאפס, בשיטה שלי</h2>
+            <h2 id="home-build" style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px' }}>רוצות לבנות פעולה או מערך משלכן? מאפס, בשיטה שלי</h2>
             <p style={{ fontSize: 15, color: 'var(--ink-soft)', margin: '0 0 14px', lineHeight: 1.75, maxWidth: '62ch' }}>
               שבעה חלקים בסדר קבוע, כל אחד בצבע משלו, ובסוף צ׳ופר כבונוס. ממלאות תבנית אישית, שומרות בדפדפן ומדפיסות.
             </p>
@@ -238,8 +239,9 @@ export function Home() {
       <div className="wrap" style={{ paddingBottom: 50 }}>
         <Reveal>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20 }}>
-            <h2 style={{ fontSize: 28, fontWeight: 800 }}>לפי מה מתחשק לכם היום</h2>
+            <h2 style={{ fontSize: 28, fontWeight: 800 }}>פעולות, צ׳ופרים ולימוד צוות — לפי מה מתחשק לכם היום</h2>
           </div>
+          <p style={{ color: 'var(--ink-soft)', fontSize: 15.5, lineHeight: 1.75, maxWidth: '64ch', margin: '-8px 0 20px' }}>בכל קטגוריה תמצאו פעולות ומערכים מוכנים להעברה, משחקים, צ׳ופרים להדפסה ולימוד צוות למדריכים בתנועות נוער.</p>
         </Reveal>
         <Reveal delay={40}>
           <div className="home-cats stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: 16 }}>
@@ -265,7 +267,7 @@ export function Home() {
         <div className="wrap">
           <Reveal>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 6 }}>
-              <h2 style={{ fontSize: 28, fontWeight: 800 }}>תוכן מומלץ השבוע</h2>
+              <h2 style={{ fontSize: 28, fontWeight: 800 }}>פעולות ומערכים מומלצים השבוע</h2>
             </div>
             <p style={{ color: 'var(--ink-faint)', fontSize: 14, marginBottom: 20 }}>לחצו על פעולה כדי לפתוח אותה במלואה — מטרות, פתיחה, מתודה, דיון וסיכום</p>
           </Reveal>

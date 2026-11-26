@@ -21,11 +21,11 @@ const trim = (s, n) => {
 };
 
 const CATEGORIES = {
-  activities: ['פעולות ומערכים', 'מאגר פעולות איכותי למדריכים: ערכים, אמונה, פרשת שבוע ותכנים כלליים — מוכנות להעברה.'],
+  activities: ['פעולות ומערכים', 'מאגר פעולות ומערכים למדריכים: ערכים, אמונה, פרשת שבוע ותכנים כלליים. כל פעולה בנויה שלב־שלב ומוכנה להעברה בהדרכה.'],
   games: ['רשימת משחקים', 'משחקי קרחונים, אמון, חידונים וגיבוש קליל — מוכנים לשילוב בכל פעולה.'],
   methods: ['מתודות', 'מאגר מתודות שאפשר לשלב בכל פעולה בתנועת נוער.'],
   readings: ['קטעי קריאה', 'סיפורים, משלים ושירה לפעולות בתנועת נוער, לכל טווח גילאים.'],
-  'staff-study': ['לימוד צוות', 'מפגשי לימוד קצרים להתפתחות צוות ההדרכה.'],
+  'staff-study': ['לימוד צוות', 'מפגשי לימוד צוות קצרים למדריכים: פרשת שבוע, ערכים והתמודדות בהדרכה, להתפתחות צוות ההדרכה.'],
   tools: ['סיטואציות בהדרכה', 'מצבים אמיתיים בהדרכה בתנועת נוער ואיך להתמודד איתם.'],
   'social-nights': ['ערבי גיבוש וכיף', 'ערבי נושא, משימות ולילות מיוחדים לקבוצה.'],
   'special-events': ['אירועים מיוחדים', 'מדריכים לאירועי שיא בסניף ובחודש ארגון, כמו לילה לבן: שיחות אישיות, גיבוש בין הקבוצות, הכרת תודה ורשימת בדיקה.'],
@@ -33,10 +33,10 @@ const CATEGORIES = {
 };
 
 const STATIC = {
-  '/': { title: `${SITE_NAME} — מאגר פעולות איכותי למדריכים בתנועות נוער`, desc: 'מאגר פעולות איכותי, בנוי שלב־שלב ומוכן להעברה: פעולות, משחקים, ערבי גיבוש, קטעי קריאה, צ׳ופרים, לימוד צוות ועוזר AI למדריכים.' },
+  '/': { title: `פעולות ומערכים למדריכים, צ'ופרים ולימוד צוות — המדריך למדריך`, desc: `מאגר פעולות ומערכים להדרכה בתנועות נוער: משחקים, צ'ופרים להדפסה, קטעי קריאה ולימוד צוות. כל פעולה בנויה שלב־שלב ומוכנה להעברה על ידי מדריכים.` },
   '/about': { title: `אודות — ${SITE_NAME}`, desc: 'רוני גרוס, מנהלת האתר: שמיניסטית שהדריכה שנתיים שכבת גדולות ובנתה את המקום שהיה חסר לה.' },
   '/videos': { title: `סרטונים: סדרת הרשת של ${SITE_NAME}`, desc: 'סדרת סרטונים קצרים למדריכים בתנועות נוער: איך בונים פעולה, איך בונים מערך ומה באמת מביא חניכים. עם קישור למדריך הכתוב.' },
-  '/chuparim': { title: `רעיונות לצ׳ופרים להדפסה — ${SITE_NAME}`, desc: 'רעיונות לצ׳ופרים מעוצבים למדריכים, מוכנים להדפסה, עם אפשרות להוסיף את השם שלכם.' },
+  '/chuparim': { title: `רעיונות לצ'ופרים להדפסה למדריכים — ${SITE_NAME}`, desc: 'רעיונות לצ\'ופרים מעוצבים לחניכים, מוכנים להדפסה, עם אפשרות להוסיף את השם שלכם. מתאימים לסיום פעולה בהדרכה.' },
   '/how-to-build': { title: `נדבר ת׳כלס: איך בונים פעולה, שיחות אישיות ועיצוב בקנבה — ${SITE_NAME}`, desc: 'מדריכים פרקטיים למדריכים: איך בונים פעולה ומערך, איך עושים שיחה אישית עם חניך, ואיך מעצבים בקנבה.' },
   '/ai': { title: `ניצוץ — עוזר AI למדריכים — ${SITE_NAME}`, desc: 'ניצוץ, עוזר ה-AI של האתר: מחפש קודם במאגר ועוזר לבנות פעולה, לפתור סיטואציה או לחשוב על צ׳ופר.' },
   '/builder': { title: `בונה פעולה — ${SITE_NAME}`, desc: 'בוחרים גיל, זמן ונושא, והאתר מרכיב פעולה שלמה מהמאגר.' },
@@ -131,7 +131,7 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
     const url = base + encodeURI(d.path);
     const out = [];
     if (d.path === '/') {
-      out.push({ '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_NAME, url: base + '/', inLanguage: 'he', potentialAction: { '@type': 'SearchAction', target: `${base}/search?q={search_term_string}`, 'query-input': 'required name=search_term_string' } });
+      out.push({ '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_NAME, url: base + '/', inLanguage: 'he', description: STATIC['/'].desc, potentialAction: { '@type': 'SearchAction', target: `${base}/search?q={search_term_string}`, 'query-input': 'required name=search_term_string' } });
       out.push({ '@context': 'https://schema.org', '@type': 'Organization', name: SITE_NAME, url: base + '/', logo: `${base}/icon-512.png`, founder: { '@type': 'Person', name: 'רוני גרוס' }, sameAs: ['https://www.instagram.com/hamadrich_lamadrich/', 'https://www.youtube.com/@%D7%94%D7%9E%D7%93%D7%A8%D7%99%D7%9A%D7%9C%D7%9E%D7%93%D7%A8%D7%99%D7%9A-%D7%94%D7%93%D7%95%D7%A8%D7%94%D7%91%D7%90%D7%A9%D7%9C%D7%94%D7%94%D7%93%D7%A8%D7%9B%D7%94'] });
     }
     if (d.path === '/videos') {
@@ -170,7 +170,8 @@ export function registerSeoRoutes(app, rootDir, distPath, siteUrlFromEnv) {
       const tops = Array.isArray(a.subtopics) && a.subtopics.length ? `<p>${a.subtopics.slice(0, 4).map((t) => `<a href="${esc(base)}/topic/${encodeURIComponent(t)}">${esc(t)}</a>`).join(' · ')}</p>` : '';
       extra = (meta ? `<p>${esc(meta)}</p>` : '') + goals + steps + tops;
     }
-    return `<main><h1>${esc(d.title.split(' — ')[0].split(' | ')[0])}</h1><p>${esc(d.desc)}</p>${extra}</main>`;
+    const h1 = d.path === '/' ? 'פעולות ומערכים למדריכים: מה אתם צריכים להעביר היום?' : d.title.split(' — ')[0].split(' | ')[0];
+    return `<main><h1>${esc(h1)}</h1><p>${esc(d.desc)}</p>${extra}</main>`;
   }
 
   function render(req) {
